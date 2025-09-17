@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient} from '../../generated/prisma/client';
 
 @Injectable()
 export class DatabaseService
@@ -14,7 +13,6 @@ export class DatabaseService
 
   async onModuleDestroy() {
     await this.$disconnect();
-
     console.log('❌ Database disconnected');
   }
 }

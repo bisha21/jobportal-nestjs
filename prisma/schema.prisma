@@ -1,5 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+    output   = "../generated/prisma"
+
 }
 
 datasource db {
@@ -37,6 +39,8 @@ model User {
   phoneNumber   String
   bio           String?
   role          Role          @default(USER)
+  otp Int? 
+  otpExpiry DateTime?
   
   companies     Company[]
   applications  Application[]
@@ -58,6 +62,7 @@ model Company {
   industry    String
   companySize String
   logoUrl     String?
+  
 
   ownerId     Int
   user        User     @relation(fields: [ownerId], references: [id])
@@ -66,6 +71,7 @@ model Company {
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
 }
 
 // Job Model
