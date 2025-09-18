@@ -179,4 +179,11 @@ export class AuthService {
     }
     return user;
   }
+
+  async updateProfilePicture(userId: number, imageUrl: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { profile: imageUrl },
+    });
+  }
 }

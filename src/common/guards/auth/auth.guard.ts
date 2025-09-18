@@ -50,6 +50,7 @@ export class JwtAuthGuard implements CanActivate {
 
       return true;
     } catch (err) {
+      console.error(err.message);
       throw new UnauthorizedException('Unauthorized: Invalid token');
     }
   }
