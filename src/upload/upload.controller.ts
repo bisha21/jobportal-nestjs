@@ -32,7 +32,7 @@ export class UploadController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: RequestWithUser,
   ) {
-    console.log("user", req.user);
+    console.log('user', req.user);
     const imageUrl = await this.cloudinaryService.uploadFile(file);
     await this.authService.updateProfilePicture(req.user.id, imageUrl);
     return { message: 'Profile picture uploaded', url: imageUrl };

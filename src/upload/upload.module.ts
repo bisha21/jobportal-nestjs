@@ -5,9 +5,17 @@ import { AuthService } from 'src/auth/auth.service';
 import { DatabaseModule } from 'src/database/database.module'; // import prisma provider
 import { JwtModule } from '@nestjs/jwt';
 import { MailModule } from 'src/mail/mail.module';
+import JwtConstants from 'src/config/jwt.config';
 
 @Module({
-  imports: [DatabaseModule, JwtModule, MailModule],
+  imports: [
+    DatabaseModule,
+    MailModule,
+    JwtModule.register({
+      secret: JwtConstants.secret,
+      signOptions: { expiresIn: JwtConstants.expiresIn },
+    }),
+  ],
   controllers: [UploadController],
   providers: [CloudinaryService, AuthService],
 })
