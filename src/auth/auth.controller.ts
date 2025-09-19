@@ -10,11 +10,6 @@ import {
   JwtAuthGuard,
   type RequestWithUser,
 } from 'src/common/guards/auth/auth.guard';
-import { Request } from 'express';
-import { RoleGuard } from 'src/common/guards/role/role.guard';
-import { Role } from 'src/common/guards/role/role.decorator';
-import { Role as Roles } from 'src/common/guards/role/role.enum';
-
 @Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
