@@ -169,4 +169,21 @@ export class AuthService {
     });
     return { message: 'Password reset successfully' };
   }
+
+  async getProfile(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async updateProfilePicture(userId: number, imageUrl: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { profile: imageUrl },
+    });
+  }
 }

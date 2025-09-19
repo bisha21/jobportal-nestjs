@@ -2,7 +2,7 @@
 import { JwtService } from '@nestjs/jwt';
 import JwtConstants from '../config/jwt.config';
 
-type TokenPayload = {
+export type TokenPayload = {
   userId: number;
   email: string;
   role?: string;
