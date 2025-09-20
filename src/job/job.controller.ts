@@ -8,11 +8,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDto } from './dto/createJob';
 import { JwtAuthGuard } from 'src/common/guards/auth/auth.guard';
+import { SearchJobDto } from './dto/searchJob.dto';
 @Controller('job')
 export class JobController {
   constructor(private readonly jobService: JobService) {}
@@ -24,8 +26,8 @@ export class JobController {
   }
 
   @Get()
-  async getAllJobs() {
-    return await this.jobService.getAllJobs();
+  async getAllJobs(@Query() query: SearchJobDto) {
+    return await this.jobService.getAllJobs(query);
   }
   @Get(':id')
   async getSingleJob(@Param('id', ParseIntPipe) id: number) {
