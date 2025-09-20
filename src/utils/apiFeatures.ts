@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable prettier/prettier */
-// src/utils/api-features-prisma.ts
 
 interface QueryParams {
   [key: string]: any;

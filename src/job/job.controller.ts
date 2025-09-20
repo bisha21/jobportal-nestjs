@@ -8,24 +8,32 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDto } from './dto/createJob';
-import { JwtAuthGuard } from 'src/common/guards/auth/auth.guard';
+import * as authGuard from 'src/common/guards/auth/auth.guard';
+import { SearchJobDto } from './dto/searchJob.dto';
+import { ApplicationService } from 'src/application/application.service';
+import { CreateApplicationDto } from 'src/application/dto/applyApplication.dto';
 @Controller('job')
 export class JobController {
-  constructor(private readonly jobService: JobService) {}
+  constructor(
+    private readonly jobService: JobService,
+    private readonly applicationService: ApplicationService,
+  ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard)
   async createJob(@Body() createJob: CreateJobDto) {
     return await this.jobService.createJob(createJob);
   }
 
   @Get()
-  async getAllJobs() {
-    return await this.jobService.getAllJobs();
+  async getAllJobs(@Query() query: SearchJobDto) {
+    return await this.jobService.getAllJobs(query);
   }
   @Get(':id')
   async getSingleJob(@Param('id', ParseIntPipe) id: number) {
@@ -33,7 +41,7 @@ export class JobController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard)
   async updateJob(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateJob: CreateJobDto,
@@ -41,8 +49,22 @@ export class JobController {
     return await this.jobService.updateJob(id, updateJob);
   }
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard)
   async deleteJob(@Param('id', ParseIntPipe) id: number) {
     return await this.jobService.deleteJob(id);
+  }
+  @Post('apply/:jobId')
+  @UseGuards(authGuard.JwtAuthGuard)
+  async applyJob(
+    @Param('jobId', ParseIntPipe) jobId: number,
+    @Body() createApplicationDto: CreateApplicationDto,
+    @Req() req: authGuard.RequestWithUser,
+  ) {
+    const userId = req.user.id;
+    return await this.applicationService.applyJob(
+      jobId,
+      userId,
+      createApplicationDto,
+    );
   }
 }

@@ -10,6 +10,7 @@ import { CompanyModule } from './company/company.module';
 import { CloudinaryService } from './cloudinary/cloudinary/cloudinary.service';
 import { UploadModule } from './upload/upload.module';
 import { JobModule } from './job/job.module';
+import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JobModule } from './job/job.module';
     UploadModule,
     CompanyModule,
     JobModule,
+    ApplicationModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],

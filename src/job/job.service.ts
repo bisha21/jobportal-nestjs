@@ -3,12 +3,15 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { CreateJobDto } from './dto/createJob';
 import { updateJobDto } from './dto/updateJob';
 import { DatabaseService } from 'src/database/database.service';
+import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
+import { Prisma } from 'generated/prisma';
+import { SearchJobDto } from './dto/searchJob.dto';
 
 @Injectable()
 export class JobService {
   private readonly logger = new Logger(JobService.name);
 
-  constructor(private  prisma: DatabaseService) {}
+  constructor(private prisma: DatabaseService) {}
 
   async createJob(createJobDto: CreateJobDto) {
     const company = await this.prisma.company.findUnique({
@@ -26,8 +29,16 @@ export class JobService {
     return job;
   }
 
-  async getAllJobs() {
-    const jobs = await this.prisma.job.findMany();
+  async getAllJobs(query: SearchJobDto) {
+    const features = new ApiFeaturesPrisma(query)
+      .filter()
+      .sort()
+      .paginate()
+      .limitFields()
+      .includeRelations();
+
+      const options= features.getOptions() as Prisma.JobFindManyArgs;
+    const jobs = await this.prisma.job.findMany(options);
     this.logger.log(`Fetched ${jobs.length} jobs`);
     return jobs;
   }
