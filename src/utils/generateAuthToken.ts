@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // src/utils/jwt.util.ts
 import { JwtService } from '@nestjs/jwt';
 import JwtConstants from '../config/jwt.config';

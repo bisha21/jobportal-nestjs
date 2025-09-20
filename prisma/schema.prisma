@@ -76,26 +76,26 @@ model Company {
 
 // Job Model
 model Job {
-  id          Int           @id @default(autoincrement())
-  title       String
-  description String
-  position    String
-  location    String?
-  experience  String
-  salaryMin   Int
-  salaryMax   Int
-  type        JobType       @default(INTERN)
-  deadline    DateTime?
+id          Int           @id @default(autoincrement())
+title       String
+description String
+position    String
+location    String?
+experience  String
+salaryMin   Int
+salaryMax   Int
+type        JobType       @default(INTERN)
+deadline    DateTime?
 
-  companyId   Int
-  company     Company       @relation(fields: [companyId], references: [id])
+companyId   Int
+company     Company       @relation(fields: [companyId], references: [id])
 
-  applications Application[]
-  jobSkills    JobSkill[]
-  favorites    Favorite[]
+applications Application[]
+jobSkills    JobSkill[]
+favorites    Favorite[]
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+createdAt   DateTime      @default(now())
+updatedAt   DateTime      @updatedAt
 }
 
 // Application Model
