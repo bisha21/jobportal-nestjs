@@ -11,6 +11,8 @@ import { CloudinaryService } from './cloudinary/cloudinary/cloudinary.service';
 import { UploadModule } from './upload/upload.module';
 import { JobModule } from './job/job.module';
 import { ApplicationModule } from './application/application.module';
+import { JobskillModule } from './jobskill/jobskill.module';
+import { UserskillModule } from './userskill/userskill.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { ApplicationModule } from './application/application.module';
     CompanyModule,
     JobModule,
     ApplicationModule,
+    JobskillModule,
+    UserskillModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],

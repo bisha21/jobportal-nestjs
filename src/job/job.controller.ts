@@ -18,6 +18,9 @@ import * as authGuard from 'src/common/guards/auth/auth.guard';
 import { SearchJobDto } from './dto/searchJob.dto';
 import { ApplicationService } from 'src/application/application.service';
 import { CreateApplicationDto } from 'src/application/dto/applyApplication.dto';
+import { Role as Roles } from 'src/common/guards/role/role.decorator';
+import { Role } from 'src/common/guards/role/role.enum';
+import { RoleGuard } from 'src/common/guards/role/role.guard';
 @Controller('job')
 export class JobController {
   constructor(
@@ -26,7 +29,8 @@ export class JobController {
   ) {}
 
   @Post()
-  @UseGuards(authGuard.JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
+  @Roles(Role.EMPLOYEE)
   async createJob(@Body() createJob: CreateJobDto) {
     return await this.jobService.createJob(createJob);
   }
@@ -41,7 +45,8 @@ export class JobController {
   }
 
   @Patch(':id')
-  @UseGuards(authGuard.JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
+  @Roles(Role.EMPLOYEE)
   async updateJob(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateJob: CreateJobDto,
@@ -49,12 +54,14 @@ export class JobController {
     return await this.jobService.updateJob(id, updateJob);
   }
   @Delete(':id')
-  @UseGuards(authGuard.JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
+  @Roles(Role.EMPLOYEE)
   async deleteJob(@Param('id', ParseIntPipe) id: number) {
     return await this.jobService.deleteJob(id);
   }
   @Post('apply/:jobId')
-  @UseGuards(authGuard.JwtAuthGuard)
+  @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
+  @Roles(Role.JOBSEEKER)
   async applyJob(
     @Param('jobId', ParseIntPipe) jobId: number,
     @Body() createApplicationDto: CreateApplicationDto,
