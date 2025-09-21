@@ -11,7 +11,8 @@ datasource db {
 
 // Enums
 enum Role {
-  USER
+  JOBSEEKER
+  EMPLOYEE
   ADMIN
 }
 
@@ -38,7 +39,7 @@ model User {
   profile       String?
   phoneNumber   String
   bio           String?
-  role          Role          @default(USER)
+  role          Role          @default(JOBSEEKER)
   otp Int? 
   otpExpiry DateTime?
   

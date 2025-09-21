@@ -18,6 +18,9 @@ import {
 } from 'src/common/guards/auth/auth.guard';
 import { CreateCompanyDto } from './dto/createDto';
 import { UpdateCompanyDto } from './dto/updateDto';
+import { RoleGuard } from 'src/common/guards/role/role.guard';
+import { Role } from 'src/common/guards/role/role.enum';
+import { Role as Roles } from 'src/common/guards/role/role.decorator';
 
 @Controller('company')
 export class CompanyController {
@@ -25,7 +28,8 @@ export class CompanyController {
 
   // Create a company
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.ADMIN, Role.EMPLOYEE)
   async createCompany(
     @Body() createCompanyDto: CreateCompanyDto,
     @Req() req: RequestWithUser,
@@ -49,7 +53,8 @@ export class CompanyController {
 
   // Update a company
   @Patch(':companyId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.EMPLOYEE, Role.ADMIN)
   async updateCompany(
     @Param('companyId', ParseIntPipe) companyId: number,
     @Body() updateCompanyDto: UpdateCompanyDto,
@@ -65,7 +70,8 @@ export class CompanyController {
 
   // Delete a company
   @Delete(':companyId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.ADMIN, Role.JOBSEEKER)
   async deleteCompany(
     @Param('companyId', ParseIntPipe) companyId: number,
     @Req() req: RequestWithUser,

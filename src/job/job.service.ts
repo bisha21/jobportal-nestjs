@@ -37,14 +37,28 @@ export class JobService {
       .limitFields()
       .includeRelations();
 
-      const options= features.getOptions() as Prisma.JobFindManyArgs;
+    const options = features.getOptions() as Prisma.JobFindManyArgs;
     const jobs = await this.prisma.job.findMany(options);
     this.logger.log(`Fetched ${jobs.length} jobs`);
     return jobs;
   }
 
   async getSingleJob(jobId: number) {
-    const job = await this.prisma.job.findUnique({ where: { id: jobId } });
+    const job = await this.prisma.job.findUnique({
+      where: { id: jobId },
+      include: {
+        jobSkills: {
+          select: {
+            skill: true,
+          },
+        },
+        applications: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
     if (!job) {
       this.logger.warn(`Job not found with ID ${jobId}`);
       throw new NotFoundException(`Job with ID ${jobId} not found`);
