@@ -13,6 +13,7 @@ import { JobModule } from './job/job.module';
 import { ApplicationModule } from './application/application.module';
 import { JobskillModule } from './jobskill/jobskill.module';
 import { UserskillModule } from './userskill/userskill.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserskillModule } from './userskill/userskill.module';
     ApplicationModule,
     JobskillModule,
     UserskillModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],

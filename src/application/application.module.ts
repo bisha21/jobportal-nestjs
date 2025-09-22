@@ -5,11 +5,15 @@ import { DatabaseModule } from 'src/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import JwtConstants from 'src/config/jwt.config';
 import { JobModule } from 'src/job/job.module';
+import { CompanyModule } from 'src/company/company.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
     forwardRef(() => JobModule),
     DatabaseModule,
+    CompanyModule,
+    NotificationModule,
     JwtModule.register({
       secret: JwtConstants.secret,
       signOptions: { expiresIn: JwtConstants.expiresIn },
