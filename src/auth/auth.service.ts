@@ -15,6 +15,7 @@ import { MailService } from 'src/mail/mail.service';
 import { ForgetPasswordDto } from './dto/forgetPassword.dto';
 import { VerifyOtpDto } from './dto/verifyotp.dto';
 import { ResetPasswordDto } from './dto/resetpassword.dto';
+import { CreateOAuthUserDto } from './dto/createoauth.dto';
 
 @Injectable()
 export class AuthService {
@@ -58,6 +59,28 @@ export class AuthService {
       user: userData,
       token,
     };
+  }
+  async registerOAuthUser(createOAuthUserDto: CreateOAuthUserDto) {
+    const { email, fullName, profile } = createOAuthUserDto;
+
+    // Check if user already exists
+    let user = await this.prisma.user.findUnique({ where: { email } });
+    if (user) {
+      return user;
+    }
+
+    // Create new OAuth user
+    user = await this.prisma.user.create({
+      data: {
+        email,
+        fullName,
+        profile: profile || null,
+        password: '', 
+        phoneNumber: '' 
+      },
+    });
+
+    return user;
   }
 
   async login(createLoginDto: CreateLoginDto) {
@@ -186,4 +209,10 @@ export class AuthService {
       data: { profile: imageUrl },
     });
   }
+  async findUserByEmail(email: string) {
+  // ✅ Correct way:
+  return await this.prisma.user.findFirst({
+    where: { email }, // you need to wrap email in `where`
+  });
+}
 }
