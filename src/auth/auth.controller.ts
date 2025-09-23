@@ -17,9 +17,10 @@ import {
   ApiBearerAuth,
   ApiBody,
 } from '@nestjs/swagger';
+import { GoogleAuthGuard } from 'src/common/guards/google/google.guard';
 
 @ApiTags('Authentication')
-@Controller('api/v1/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -83,4 +84,12 @@ export class AuthController {
     const userId = req.user.id;
     return await this.authService.getProfile(Number(userId));
   }
+
+  @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
+  async googleLogin() {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleCallback() {}
 }
