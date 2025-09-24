@@ -7,7 +7,7 @@
 </p>
 
 A modern, **scalable Job Portal API** built with **NestJS**, **Prisma**, and **JWT Authentication**.  
-Includes **Google OAuth Login** and **real-time notifications** using **Socket.IO**.
+Includes **Google OAuth Login**, **real-time notifications**, and a **chatting feature** using **Socket.IO**.
 
 ---
 
@@ -66,15 +66,31 @@ Includes **Google OAuth Login** and **real-time notifications** using **Socket.I
 - Registration confirmation
 - Password reset emails
 
-### 🌐 File Uploads
-- Profile pictures & company logos via Cloudinary
+### 💬 Chatting Feature
+We have integrated a **real-time chatting feature** so that **Job Seekers** can directly chat with the **Employer** of the company they applied for.
 
----
+#### Feature Highlights
+- Real-time messaging between Job Seekers and Employers.
+- Conversations restricted to only the Job Seeker and the Employer of the job applied for.
+- Messages stored in the database for persistence.
+- Notifications for new messages.
 
-## ⚡ Project Setup
+#### Chat Flow
+1. A Job Seeker applies for a job.
+2. A conversation room is created between the Job Seeker and the Employer.
+3. Both participants join the conversation room via **Socket.IO**.
+4. They send and receive messages in real-time.
+5. Messages are persisted for later access.
 
-1. **Clone the repository:**
+#### Socket.IO Events for Chat
 
-```bash
-git clone https://github.com/your-username/job-portal.git
-cd job-portal
+| Event               | Description                                  | Payload                                     |
+|---------------------|----------------------------------------------|----------------------------------------------|
+| `joinConversation` | Join the conversation room                  | `{ conversationId: number }`               |
+| `sendMessage`      | Send a message to the conversation room     | `{ conversationId: number, content: string }` |
+| `newMessage`       | Emitted when a new message is sent         | `{ message }`                               |
+
+#### How to Test Chat
+You can test this feature via **Postman WebSocket** or any frontend Socket.IO client.
+
+**Connect to Socket.IO:**
