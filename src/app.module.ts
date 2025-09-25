@@ -15,6 +15,7 @@ import { JobskillModule } from './jobskill/jobskill.module';
 import { UserskillModule } from './userskill/userskill.module';
 import { NotificationModule } from './notification/notification.module';
 import { MessageModule } from './message/message.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { MessageModule } from './message/message.module';
     UserskillModule,
     NotificationModule,
     MessageModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],
