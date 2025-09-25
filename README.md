@@ -7,7 +7,7 @@
 </p>
 
 A modern, **scalable Job Portal API** built with **NestJS**, **Prisma**, and **JWT Authentication**.  
-Includes **Google OAuth Login**, **real-time notifications**, and a **chatting feature** using **Socket.IO**.
+Includes **Google OAuth Login**, **real-time notifications**, **favorites**, and a **chatting feature** using **Socket.IO**.
 
 ---
 
@@ -60,6 +60,15 @@ Includes **Google OAuth Login**, **real-time notifications**, and a **chatting f
 - CRUD operations for companies
 - Associate jobs with companies
 
+### ⭐ Favorites (Save Jobs for Later)
+Job Seekers can **save jobs to their favorites list** and apply later.
+
+#### Feature Highlights
+- Add jobs to favorites  
+- View list of saved jobs  
+- Remove jobs from favorites  
+- Prevent duplicate entries with unique constraint  
+
 ### 📬 Notifications
 - Real-time notifications with **Socket.IO**
 - OTP verification
@@ -82,15 +91,3 @@ We have integrated a **real-time chatting feature** so that **Job Seekers** can 
 4. They send and receive messages in real-time.
 5. Messages are persisted for later access.
 
-#### Socket.IO Events for Chat
-
-| Event               | Description                                  | Payload                                     |
-|---------------------|----------------------------------------------|----------------------------------------------|
-| `joinConversation` | Join the conversation room                  | `{ conversationId: number }`               |
-| `sendMessage`      | Send a message to the conversation room     | `{ conversationId: number, content: string }` |
-| `newMessage`       | Emitted when a new message is sent         | `{ message }`                               |
-
-#### How to Test Chat
-You can test this feature via **Postman WebSocket** or any frontend Socket.IO client.
-
-**Connect to Socket.IO:**
