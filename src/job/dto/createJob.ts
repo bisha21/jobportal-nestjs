@@ -52,4 +52,8 @@ export class CreateJobDto {
   @IsNotEmpty()
   @IsInt()
   companyId: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  categoryId: number;
 }
