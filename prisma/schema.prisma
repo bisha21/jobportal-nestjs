@@ -44,6 +44,7 @@ model User {
   otpExpiry DateTime?
   
   companies     Company[]
+  categories Category[]
   applications  Application[]
   favorites     Favorite[]
   skills        UserSkill[]
@@ -82,6 +83,17 @@ model Company {
 
 }
 
+model Category {
+  id Int @id @default(autoincrement())
+  categoryName String
+  jobs Job[]
+  userId Int
+    user        User     @relation(fields: [userId], references: [id])
+    createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+}
+
 // Job Model
 model Job {
 id          Int           @id @default(autoincrement())
@@ -97,7 +109,8 @@ deadline    DateTime?
 
 companyId   Int
 company     Company       @relation(fields: [companyId], references: [id])
-
+categoryId  Int
+category Category   @relation(fields: [categoryId],references: [id])
 applications Application[]
 jobSkills    JobSkill[]
 favorites    Favorite[]
