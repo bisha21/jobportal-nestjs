@@ -87,7 +87,7 @@ exports.JobController = JobController;
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
-    (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE),
+    (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE, role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [createJob_1.CreateJobDto]),
