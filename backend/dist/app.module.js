@@ -22,9 +22,6 @@ const application_module_1 = require("./application/application.module");
 const jobskill_module_1 = require("./jobskill/jobskill.module");
 const userskill_module_1 = require("./userskill/userskill.module");
 const notification_module_1 = require("./notification/notification.module");
-const message_module_1 = require("./message/message.module");
-const favorite_module_1 = require("./favorite/favorite.module");
-const category_module_1 = require("./category/category.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,9 +39,6 @@ exports.AppModule = AppModule = __decorate([
             jobskill_module_1.JobskillModule,
             userskill_module_1.UserskillModule,
             notification_module_1.NotificationModule,
-            message_module_1.MessageModule,
-            favorite_module_1.FavoriteModule,
-            category_module_1.CategoryModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, cloudinary_service_1.CloudinaryService],
