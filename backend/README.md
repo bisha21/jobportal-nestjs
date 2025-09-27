@@ -7,7 +7,7 @@
 </p>
 
 A modern, **scalable Job Portal API** built with **NestJS**, **Prisma**, and **JWT Authentication**.  
-Includes **Google OAuth Login** and **real-time notifications** using **Socket.IO**.
+Includes **Google OAuth Login**, **real-time notifications**, **favorites**, and a **chatting feature** using **Socket.IO**.
 
 ---
 
@@ -60,21 +60,34 @@ Includes **Google OAuth Login** and **real-time notifications** using **Socket.I
 - CRUD operations for companies
 - Associate jobs with companies
 
+### ⭐ Favorites (Save Jobs for Later)
+Job Seekers can **save jobs to their favorites list** and apply later.
+
+#### Feature Highlights
+- Add jobs to favorites  
+- View list of saved jobs  
+- Remove jobs from favorites  
+- Prevent duplicate entries with unique constraint  
+
 ### 📬 Notifications
 - Real-time notifications with **Socket.IO**
 - OTP verification
 - Registration confirmation
 - Password reset emails
 
-### 🌐 File Uploads
-- Profile pictures & company logos via Cloudinary
+### 💬 Chatting Feature
+We have integrated a **real-time chatting feature** so that **Job Seekers** can directly chat with the **Employer** of the company they applied for.
 
----
+#### Feature Highlights
+- Real-time messaging between Job Seekers and Employers.
+- Conversations restricted to only the Job Seeker and the Employer of the job applied for.
+- Messages stored in the database for persistence.
+- Notifications for new messages.
 
-## ⚡ Project Setup
+#### Chat Flow
+1. A Job Seeker applies for a job.
+2. A conversation room is created between the Job Seeker and the Employer.
+3. Both participants join the conversation room via **Socket.IO**.
+4. They send and receive messages in real-time.
+5. Messages are persisted for later access.
 
-1. **Clone the repository:**
-
-```bash
-git clone https://github.com/your-username/job-portal.git
-cd job-portal
