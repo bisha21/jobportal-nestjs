@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  JOBSEEKER
+  EMPLOYEE
+  ADMIN
+}
+
+enum JobType {
+  FULLTIME
+  PARTTIME
+  INTERN
+  REMOTE
+}
+
+enum ApplicationStatus {
+  PENDING
+  REJECTED
+  APPROVED
+}
+
+// User Model
+model User {
+  id          Int       @id @default(autoincrement())
+  fullName    String
+  email       String    @unique
+  password    String
+  resume      String?
+  profile     String?
+  phoneNumber String
+  bio         String?
+  role        Role      @default(JOBSEEKER)
+  otp         Int?
+  otpExpiry   DateTime?
+
+  companies     Company[]
+  applications  Application[]
+  favorites     Favorite[]
+  skills        UserSkill[]
+  notifications Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Company Model
+model Company {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  location    String
+  website     String?
+  industry    String
+  companySize String
+  logoUrl     String?
+
+  ownerId Int
+  user    User @relation(fields: [ownerId], references: [id])
+
+  jobs Job[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Job Model
+model Job {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  position    String
+  location    String?
+  experience  String
+  salaryMin   Int
+  salaryMax   Int
+  type        JobType   @default(INTERN)
+  deadline    DateTime?
+
+  companyId Int
+  company   Company @relation(fields: [companyId], references: [id])
+
+  applications Application[]
+  jobSkills    JobSkill[]
+  favorites    Favorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Application Model
+model Application {
+  id        Int               @id @default(autoincrement())
+  userId    Int
+  jobId     Int
+  status    ApplicationStatus @default(PENDING)
+  resumeUrl String?
+
+  user User @relation(fields: [userId], references: [id])
+  job  Job  @relation(fields: [jobId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, jobId])
+}
+
+// Favorite Model
+model Favorite {
+  id     Int @id @default(autoincrement())
+  userId Int
+  jobId  Int
+
+  user User @relation(fields: [userId], references: [id])
+  job  Job  @relation(fields: [jobId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, jobId])
+}
+
+// JobSkill Model
+model JobSkill {
+  id    Int    @id @default(autoincrement())
+  skill String
+  jobId Int
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// UserSkill Model
+model UserSkill {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  skill  String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Notification Model
+model Notification {
+  id      Int     @id @default(autoincrement())
+  type    String?
+  message String
+  userId  Int
+  user    User    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

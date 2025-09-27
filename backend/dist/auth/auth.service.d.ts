@@ -1,0 +1,118 @@
+import { DatabaseService } from 'src/database/database.service';
+import { CreateUserDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt';
+import { CreateLoginDto } from './dto/login.dto';
+import { MailService } from 'src/mail/mail.service';
+import { ForgetPasswordDto } from './dto/forgetPassword.dto';
+import { VerifyOtpDto } from './dto/verifyotp.dto';
+import { ResetPasswordDto } from './dto/resetpassword.dto';
+import { CreateOAuthUserDto } from './dto/createoauth.dto';
+export declare class AuthService {
+    private prisma;
+    private jwtService;
+    private mailService;
+    constructor(prisma: DatabaseService, jwtService: JwtService, mailService: MailService);
+    registerUser(createUserDto: CreateUserDto): Promise<{
+        user: {
+            fullName: string;
+            email: string;
+            resume: string | null;
+            profile: string | null;
+            phoneNumber: string;
+            bio: string | null;
+            otp: number | null;
+            id: number;
+            role: import("generated/prisma").$Enums.Role;
+            otpExpiry: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        token: string;
+    }>;
+    registerOAuthUser(createOAuthUserDto: CreateOAuthUserDto): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    login(createLoginDto: CreateLoginDto): Promise<{
+        user: {
+            fullName: string;
+            email: string;
+            resume: string | null;
+            profile: string | null;
+            phoneNumber: string;
+            bio: string | null;
+            otp: number | null;
+            id: number;
+            role: import("generated/prisma").$Enums.Role;
+            otpExpiry: Date | null;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        token: string;
+    }>;
+    handleForgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<{
+        message: string;
+    }>;
+    verifyOtp(verifyOtpDto: VerifyOtpDto): Promise<{
+        message: string;
+    }>;
+    resetPassword(ressetPasswordDto: ResetPasswordDto): Promise<{
+        message: string;
+    }>;
+    getProfile(userId: number): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    updateProfilePicture(userId: number, imageUrl: string): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    findUserByEmail(email: string): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
+}
