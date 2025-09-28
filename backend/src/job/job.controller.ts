@@ -30,7 +30,7 @@ export class JobController {
 
   @Post()
   @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
-  @Roles(Role.EMPLOYEE,Role.ADMIN)
+  @Roles(Role.EMPLOYEE, Role.ADMIN)
   async createJob(@Body() createJob: CreateJobDto) {
     return await this.jobService.createJob(createJob);
   }

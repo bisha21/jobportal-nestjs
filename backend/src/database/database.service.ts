@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient} from '../../generated/prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 
 @Injectable()
 export class DatabaseService
@@ -7,8 +8,14 @@ export class DatabaseService
   implements OnModuleInit, OnModuleDestroy
 {
   async onModuleInit() {
-    await this.$connect();
-    console.log('✅ Database connected');
+    try {
+      await this.$connect();
+      console.log('✅ Database connected');
+    } catch (err) {
+      console.error('❌ Database connection failed:', err.message);
+      console.error(err); // full error with stack trace + Prisma info
+      throw err; // rethrow so NestJS knows init failed
+    }
   }
 
   async onModuleDestroy() {

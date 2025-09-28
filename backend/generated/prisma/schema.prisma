@@ -42,11 +42,16 @@ model User {
   otp         Int?
   otpExpiry   DateTime?
 
-  companies     Company[]
-  applications  Application[]
-  favorites     Favorite[]
-  skills        UserSkill[]
-  notifications Notification[]
+  companies        Company[]
+  categories       Category[]
+  applications     Application[]
+  favorites        Favorite[]
+  skills           UserSkill[]
+  notifications    Notification[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+
+  conversations Conversation[] @relation("ConversationParticipants")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,6 +77,16 @@ model Company {
   updatedAt DateTime @updatedAt
 }
 
+model Category {
+  id           Int      @id @default(autoincrement())
+  categoryName String
+  jobs         Job[]
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 // Job Model
 model Job {
   id          Int       @id @default(autoincrement())
@@ -85,9 +100,10 @@ model Job {
   type        JobType   @default(INTERN)
   deadline    DateTime?
 
-  companyId Int
-  company   Company @relation(fields: [companyId], references: [id])
-
+  companyId    Int
+  company      Company       @relation(fields: [companyId], references: [id])
+  categoryId   Int
+  category     Category      @relation(fields: [categoryId], references: [id])
   applications Application[]
   jobSkills    JobSkill[]
   favorites    Favorite[]
@@ -160,4 +176,28 @@ model Notification {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Conversation {
+  id           Int       @id @default(autoincrement())
+  jobId        Int?
+  participants User[]    @relation("ConversationParticipants")
+  messages     Message[] @relation("ConversationMessages")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  senderId       Int
+  receiverId     Int
+  conversationId Int
+  content        String
+  read           Boolean      @default(false)
+  conversation   Conversation @relation("ConversationMessages", fields: [conversationId], references: [id])
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  receiver       User         @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }

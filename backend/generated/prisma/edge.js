@@ -265,7 +265,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\BISHAL TIMIL SINA\\Desktop\\nestjs\\jobprotal\\generated\\prisma",
+      "value": "C:\\Users\\BISHAL TIMIL SINA\\Desktop\\nestjs\\jobprotal\\backend\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -279,7 +279,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\BISHAL TIMIL SINA\\Desktop\\nestjs\\jobprotal\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\BISHAL TIMIL SINA\\Desktop\\nestjs\\jobprotal\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -293,6 +293,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
