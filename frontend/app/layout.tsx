@@ -4,6 +4,8 @@ import './globals.css';
 import ModalX from '@/modals/modal';
 import { ModalProvider } from '@/context/modal-context';
 import Navbar from '@/components/navbar';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Footer } from '@/components/footer';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,11 +32,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <ModalProvider>
-        <ModalX />
-        <Navbar/>
-        {children}
-      </ModalProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ModalProvider>
+            <ModalX />
+            <Navbar />
+            {children}
+            <Footer />
+          </ModalProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

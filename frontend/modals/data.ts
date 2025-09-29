@@ -1,7 +1,8 @@
-"use client"
+'use client';
 
-import { ModalType } from "@/types/modal.types";
-import Helloworld from "@/types/test";
+import LoginForm from '@/components/login';
+import RegistrationForm from '@/components/register';
+import { ModalType } from '@/types/modal.types';
 
 type TModalData = {
   [key in TModalKeys]: {
@@ -11,11 +12,18 @@ type TModalData = {
 };
 
 export type TModalKeys =
-  | 'Hello'
+  | 'SIGNUP_MODAL'
+  | 'LOGIN_MODAL'
+  | 'FORGOT_PASSWORD_MODAL'
+  | 'RESET_PASSWORD_MODAL';
 
 export const ModalData: TModalData = {
-  Hello:{
-    title: 'Hello World',
-    component: Helloworld
-  }
+  SIGNUP_MODAL: {
+    title: 'SIGN_UP',
+    component: RegistrationForm,
+  },
+  LOGIN_MODAL: {
+    title: 'LOGIN',
+    component: LoginForm,
+  },
 };

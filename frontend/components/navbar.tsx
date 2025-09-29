@@ -2,15 +2,26 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, Moon, Sun, X } from 'lucide-react';
 import Image from 'next/image';
 import logo from '@/public/next.svg';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { Button } from './ui/button';
+import { useTheme } from 'next-themes';
+import useModalContext from '@/hooks/usemodal';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { setTheme } = useTheme();
+  const { openModal, closeModal } = useModalContext();
 
   return (
-    <nav className="bg-gray-900 text-white shadow-md">
+    <nav className="bg-background text-foreground shadow-md border-b border-border fixed top-0 w-full">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between items-center">
           {/* Left: Logo */}
@@ -23,38 +34,77 @@ export default function Navbar() {
 
           {/* Center: Navigation */}
           <div className="hidden md:flex space-x-8">
-            <Link href="/" className="hover:text-indigo-400 transition">
+            <Link href="/" className="hover:text-primary transition-colors">
               Home
             </Link>
-            <Link href="/jobs" className="hover:text-indigo-400 transition">
+            <Link href="/jobs" className="hover:text-primary transition-colors">
               Browse Jobs
             </Link>
-            <Link href="/about" className="hover:text-indigo-400 transition">
+            <Link
+              href="/about"
+              className="hover:text-primary transition-colors"
+            >
               About Us
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-primary transition-colors"
+            >
+              Contact Us
             </Link>
           </div>
 
           {/* Right: Login / Signup */}
           <div className="hidden md:flex space-x-4">
-            <Link
-              href="/login"
-              className="px-4 py-2 rounded-md border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white transition"
+             <Button
+              variant="outline"
+              onClick={() =>
+                openModal({
+                  key: 'LOGIN_MODAL',
+                })
+              }
+              className="flex-1 text-center px-3 py-2 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
             >
               Login
-            </Link>
-            <Link
-              href="/signup"
-              className="px-4 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 transition"
+            </Button>
+            <Button
+              onClick={() =>
+                openModal({
+                  key: 'SIGNUP_MODAL',
+                })
+              }
+              className="flex-1 text-center px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Sign Up
-            </Link>
+            </Button>
+           
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                  <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setTheme('light')}>
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="p-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white"
+              className="p-2 rounded-md hover:bg-muted transition-colors"
             >
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -64,35 +114,35 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-gray-800 px-2 pt-2 pb-3 space-y-2">
+        <div className="md:hidden bg-card border-t border-border px-2 pt-2 pb-3 space-y-2">
           <Link
             href="/"
-            className="block rounded-md px-3 py-2 hover:bg-gray-700 transition"
+            className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
           >
             Home
           </Link>
           <Link
             href="/jobs"
-            className="block rounded-md px-3 py-2 hover:bg-gray-700 transition"
+            className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
           >
             Browse Jobs
           </Link>
           <Link
             href="/about"
-            className="block rounded-md px-3 py-2 hover:bg-gray-700 transition"
+            className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
           >
             About Us
           </Link>
           <div className="flex space-x-2 pt-3">
             <Link
               href="/login"
-              className="flex-1 text-center px-3 py-2 rounded-md border border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white transition"
+              className="flex-1 text-center px-3 py-2 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="flex-1 text-center px-3 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 transition"
+              className="flex-1 text-center px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Sign Up
             </Link>

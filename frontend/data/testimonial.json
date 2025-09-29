@@ -1,0 +1,63 @@
+
+[
+  {
+    "name": "Ravi Kumar",
+    "role": "Car Enthusiast",
+    "avatar": "https://randomuser.me/api/portraits/men/12.jpg",
+    "review": "The quality of these seat covers is outstanding. They fit perfectly and add a touch of luxury to my car's interior. Highly recommend!",
+    "social": {
+      "platform": "twitter",
+      "url": "https://twitter.com/ravikumar/status/1234567890"
+    }
+  },
+  {
+    "name": "Anjali Sharma",
+    "role": "Marketing Professional",
+    "avatar": "https://randomuser.me/api/portraits/women/14.jpg",
+    "review": "I love the customizable designs! I was able to choose the perfect color to match my car's interior. The material feels very durable.",
+    "social": {
+      "platform": "instagram",
+      "url": "https://www.instagram.com/p/1234567890"
+    }
+  },
+  {
+    "name": "Vijay Singh",
+    "role": "Software Developer",
+    "avatar": "https://randomuser.me/api/portraits/men/18.jpg",
+    "review": "These seat covers are a game-changer for long drives. The added padding and ergonomic design make a huge difference in comfort.",
+    "social": {
+      "platform": "facebook",
+      "url": "https://www.facebook.com/vijaysingh/posts/1234567890"
+    }
+  },
+  {
+    "name": "Priya Patel",
+    "role": "Mobile Developer",
+    "avatar": "https://randomuser.me/api/portraits/women/2.jpg",
+    "review": "The installation was super easy, and the instructions were clear. My car looks and feels much more upscale now.",
+    "social": {
+      "platform": "twitter",
+      "url": "https://twitter.com/priyapatel/status/1234567890"
+    }
+  },
+  {
+    "name": "Arjun Mehta",
+    "role": "Manager",
+    "avatar": "https://randomuser.me/api/portraits/men/62.jpg",
+    "review": "Great value for money. The seat covers have a premium feel and have significantly improved the look of my car's interior.",
+    "social": {
+      "platform": "instagram",
+      "url": "https://www.instagram.com/p/1234567890"
+    }
+  },
+  {
+    "name": "Sneha Rao",
+    "role": "Product Designer",
+    "avatar": "https://randomuser.me/api/portraits/women/19.jpg",
+    "review": "Absolutely love these seat covers. They're stylish, comfortable, and were really easy to install. My car interior looks brand new!",
+    "social": {
+      "platform": "facebook",
+      "url": "https://www.facebook.com/sneharao/posts/1234567890"
+    }
+  }
+]
