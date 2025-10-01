@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { Menu, Moon, Sun, X, Bell } from 'lucide-react';
 import Image from 'next/image';
-import logo from '@/public/next.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,20 +13,21 @@ import {
 import { Button } from './ui/button';
 import { useTheme } from 'next-themes';
 import useModalContext from '@/hooks/usemodal';
+import { useAuth } from '@/context/auth-context';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setTheme } = useTheme();
-  const { openModal, closeModal } = useModalContext();
+  const { openModal } = useModalContext();
+  const { isAuthenticated, user, logout } = useAuth();
 
   return (
-    <nav className="bg-background text-foreground shadow-md border-b border-border fixed top-0 w-full">
+    <nav className="bg-background text-foreground shadow-md border-b border-border fixed top-0 w-full z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between items-center">
           {/* Left: Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src={logo} alt="Logo" className="h-8 w-auto" />
               <span className="text-lg font-bold">JobPortal</span>
             </Link>
           </div>
@@ -54,30 +54,63 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Right: Login / Signup */}
-          <div className="hidden md:flex space-x-4">
-             <Button
-              variant="outline"
-              onClick={() =>
-                openModal({
-                  key: 'LOGIN_MODAL',
-                })
-              }
-              className="flex-1 text-center px-3 py-2 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              Login
-            </Button>
-            <Button
-              onClick={() =>
-                openModal({
-                  key: 'SIGNUP_MODAL',
-                })
-              }
-              className="flex-1 text-center px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Sign Up
-            </Button>
-           
+          {/* Right: Auth / User */}
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated ? (
+              <>
+                {/* Notification Icon */}
+                <Button variant="ghost" size="icon">
+                  <Bell size={20} />
+                </Button>
+
+                {/* Profile Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Image
+                        src={user?.profile || '/default-profile.png'}
+                        alt="Profile"
+                        width={32}
+                        height={32}
+                        className="rounded-full"
+                      />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Link href="/profile">Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    openModal({
+                      key: 'LOGIN_MODAL',
+                    })
+                  }
+                  className="flex-1 text-center px-3 py-2 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={() =>
+                    openModal({
+                      key: 'SIGNUP_MODAL',
+                    })
+                  }
+                  className="flex-1 text-center px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+
+            {/* Theme Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -133,20 +166,38 @@ export default function Navbar() {
           >
             About Us
           </Link>
-          <div className="flex space-x-2 pt-3">
-            <Link
-              href="/login"
-              className="flex-1 text-center px-3 py-2 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="flex-1 text-center px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Sign Up
-            </Link>
-          </div>
+
+          {isAuthenticated ? (
+            <>
+              <Link
+                href="/profile"
+                className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={logout}
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-muted transition-colors"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

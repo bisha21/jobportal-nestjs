@@ -6,23 +6,32 @@ import { Button } from './ui/button';
 import { Form } from './ui/form';
 import { CreateUserInput, createUserSchema } from '@/schemas/register';
 import FormInput from './reusable/form-input';
+import { useRegisterMutation } from '@/services/mutations/auth';
 
 export default function RegistrationForm() {
+  const { mutate: register, isPending } = useRegisterMutation();
   const form = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
       fullName: '',
       email: '',
       password: '',
-      confirmPassword: '',
+      // confirmPassword: '',
       phoneNumber: '',
       bio: '',
     },
   });
 
   const onSubmit = (values: CreateUserInput) => {
-    console.log('Form Submitted:', values);
-    // 🔥 send to API
+    register(values, {
+      onSuccess: (data) => {
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      },
+      onError: (error) => {
+        console.error('Registration failed:', error);
+      },
+    });
   };
 
   return (
@@ -62,14 +71,14 @@ export default function RegistrationForm() {
           required
         />
 
-        <FormInput
+        {/* <FormInput
           form={form}
           name="confirmPassword"
           label="Confirm Password"
           placeholder="********"
           type="password"
           required
-        />
+        /> */}
 
         <FormInput
           form={form}

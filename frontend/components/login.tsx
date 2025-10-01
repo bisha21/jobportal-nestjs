@@ -7,8 +7,12 @@ import FormInput from './reusable/form-input';
 import { Button } from './ui/button';
 import { GoalIcon } from 'lucide-react';
 import { Form } from './ui/form';
+import { useLoginMutation } from '@/services/mutations/auth';
 
 export default function LoginForm() {
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+  console.log('jajajaj', url);
+  const { mutate: login, isPending } = useLoginMutation();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -18,8 +22,15 @@ export default function LoginForm() {
   });
 
   const onSubmit = (values: LoginInput) => {
-    console.log('Login Data:', values);
-    // 🔥 call login API here
+    login(values, {
+      onSuccess: (data) => {
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      },
+      onError: (error) => {
+        console.error('Login failed:', error);
+      },
+    });
   };
 
   const handleGoogleLogin = () => {
@@ -60,7 +71,7 @@ export default function LoginForm() {
           type="submit"
           className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
         >
-          Login
+          {isPending ? 'Logging in...' : 'Login'}
         </Button>
 
         {/* Divider */}

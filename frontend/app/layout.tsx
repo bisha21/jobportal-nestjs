@@ -6,6 +6,8 @@ import { ModalProvider } from '@/context/modal-context';
 import Navbar from '@/components/navbar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/components/footer';
+import { Providers } from './provider';
+import { AuthProvider } from '@/context/auth-context';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,12 +40,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ModalProvider>
-            <ModalX />
-            <Navbar />
-            {children}
-            <Footer />
-          </ModalProvider>
+          <Providers>
+            <AuthProvider>
+              <ModalProvider>
+                <ModalX />
+                <Navbar />
+                {children}
+                <Footer />
+              </ModalProvider>
+            </AuthProvider>
+          </Providers>
         </ThemeProvider>
       </body>
     </html>

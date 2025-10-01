@@ -62,9 +62,9 @@ export declare class JobController {
             createdAt: Date;
             updatedAt: Date;
             jobId: number;
-            userId: number;
-            status: import("generated/prisma").$Enums.ApplicationStatus;
             resumeUrl: string | null;
+            status: import("generated/prisma").$Enums.ApplicationStatus;
+            userId: number;
         })[];
         jobSkills: {
             skill: string;

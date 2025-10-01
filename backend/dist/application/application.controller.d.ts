@@ -41,9 +41,9 @@ export declare class ApplicationController {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     })[]>;
     getApplicationById(id: number): Promise<{
         user: {
@@ -82,27 +82,27 @@ export declare class ApplicationController {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     }>;
     updateApplication(id: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     }>;
     deleteApplication(id: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     }>;
     getMyApplications(req: RequestWithUser): Promise<({
         job: {
@@ -126,8 +126,8 @@ export declare class ApplicationController {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     })[]>;
 }
