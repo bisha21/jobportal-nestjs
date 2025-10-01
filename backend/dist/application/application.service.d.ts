@@ -46,9 +46,9 @@ export declare class ApplicationService {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     })[]>;
     getApplicationById(applicationId: number): Promise<{
         user: {
@@ -87,27 +87,27 @@ export declare class ApplicationService {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     }>;
     updateApplication(applicationId: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     }>;
     deleteApplication(applicationId: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     }>;
     getApplicationsByUser(userId: number): Promise<({
         job: {
@@ -131,9 +131,9 @@ export declare class ApplicationService {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     })[]>;
     getApplicationsByJob(jobId: number): Promise<({
         user: {
@@ -156,8 +156,8 @@ export declare class ApplicationService {
         createdAt: Date;
         updatedAt: Date;
         jobId: number;
-        userId: number;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        status: import("generated/prisma").$Enums.ApplicationStatus;
+        userId: number;
     })[]>;
 }
