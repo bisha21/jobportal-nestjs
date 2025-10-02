@@ -25,28 +25,28 @@ export declare class UserSkillController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }>;
     getUserSkills(req: RequestWithUser): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }[]>;
     updateUserSkill(skillId: number, updateUserSkillDto: UpdateUserSkillDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }>;
     deleteUserSkill(skillId: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }>;
 }

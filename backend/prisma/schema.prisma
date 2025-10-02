@@ -121,19 +121,19 @@ updatedAt   DateTime      @updatedAt
 
 // Application Model
 model Application {
-  id        Int                @id @default(autoincrement())
-  userId    Int
-  jobId     Int
-  status    ApplicationStatus  @default(PENDING)
-  resumeUrl String?
+id        Int                @id @default(autoincrement())
+userId    Int
+jobId     Int
+status    ApplicationStatus  @default(PENDING)
+resumeUrl String?
 
-  user      User  @relation(fields: [userId], references: [id])
-  job       Job   @relation(fields: [jobId], references: [id])
+user      User  @relation(fields: [userId], references: [id])
+job       Job   @relation(fields: [jobId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
 
-  @@unique([userId, jobId]) 
+@@unique([userId, jobId]) 
 }
 
 // Favorite Model

@@ -6,14 +6,12 @@ export interface UserType {
   id: number;
   fullName: string;
   email: string;
-  password: string; // hashed password
   resume: string; // URL
   profile: string; // URL
   phoneNumber: string;
+  skills: string;
   bio: string;
   role: 'ADMIN' | 'EMPLOYEE' | 'JOB_SEEKER';
-  otp: string | null;
-  otpExpiry: string | null;
 }
 
 type AuthContextType = {

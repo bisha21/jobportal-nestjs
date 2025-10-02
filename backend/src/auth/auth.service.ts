@@ -75,8 +75,8 @@ export class AuthService {
         email,
         fullName,
         profile: profile || null,
-        password: '', 
-        phoneNumber: '' 
+        password: '',
+        phoneNumber: '',
       },
     });
 
@@ -196,10 +196,28 @@ export class AuthService {
   async getProfile(userId: number) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        applications: {
+          include: {
+            job: {
+              select: {
+                title: true, 
+                company: {
+                  select: {
+                    name: true, 
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
     return user;
   }
 
@@ -210,9 +228,9 @@ export class AuthService {
     });
   }
   async findUserByEmail(email: string) {
-  // ✅ Correct way:
-  return await this.prisma.user.findFirst({
-    where: { email }, // you need to wrap email in `where`
-  });
-}
+    // ✅ Correct way:
+    return await this.prisma.user.findFirst({
+      where: { email }, // you need to wrap email in `where`
+    });
+  }
 }

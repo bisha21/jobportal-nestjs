@@ -52,6 +52,23 @@ export declare class AuthController {
         message: string;
     }>;
     getProfile(req: RequestWithUser): Promise<{
+        applications: ({
+            job: {
+                company: {
+                    name: string;
+                };
+                title: string;
+            };
+        } & {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
+            userId: number;
+            jobId: number;
+            resumeUrl: string | null;
+            status: import("generated/prisma").$Enums.ApplicationStatus;
+        })[];
+    } & {
         fullName: string;
         email: string;
         password: string;
