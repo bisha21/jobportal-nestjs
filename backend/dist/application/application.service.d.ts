@@ -29,26 +29,26 @@ export declare class ApplicationService {
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            description: string;
-            type: import("generated/prisma").$Enums.JobType;
-            location: string | null;
-            companyId: number;
             title: string;
+            description: string;
             position: string;
+            location: string | null;
             experience: string;
             salaryMin: number;
             salaryMax: number;
+            type: import("generated/prisma").$Enums.JobType;
             deadline: Date | null;
+            companyId: number;
             categoryId: number;
         };
     } & {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-        userId: number;
     })[]>;
     getApplicationById(applicationId: number): Promise<{
         user: {
@@ -70,70 +70,70 @@ export declare class ApplicationService {
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            description: string;
-            type: import("generated/prisma").$Enums.JobType;
-            location: string | null;
-            companyId: number;
             title: string;
+            description: string;
             position: string;
+            location: string | null;
             experience: string;
             salaryMin: number;
             salaryMax: number;
+            type: import("generated/prisma").$Enums.JobType;
             deadline: Date | null;
+            companyId: number;
             categoryId: number;
         };
     } & {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-        userId: number;
     }>;
     updateApplication(applicationId: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-        userId: number;
     }>;
     deleteApplication(applicationId: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-        userId: number;
     }>;
     getApplicationsByUser(userId: number): Promise<({
         job: {
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            description: string;
-            type: import("generated/prisma").$Enums.JobType;
-            location: string | null;
-            companyId: number;
             title: string;
+            description: string;
             position: string;
+            location: string | null;
             experience: string;
             salaryMin: number;
             salaryMax: number;
+            type: import("generated/prisma").$Enums.JobType;
             deadline: Date | null;
+            companyId: number;
             categoryId: number;
         };
     } & {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-        userId: number;
     })[]>;
     getApplicationsByJob(jobId: number): Promise<({
         user: {
@@ -155,9 +155,9 @@ export declare class ApplicationService {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-        userId: number;
     })[]>;
 }

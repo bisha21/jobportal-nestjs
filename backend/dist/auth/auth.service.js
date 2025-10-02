@@ -66,7 +66,7 @@ let AuthService = class AuthService {
                 fullName,
                 profile: profile || null,
                 password: '',
-                phoneNumber: ''
+                phoneNumber: '',
             },
         });
         return user;
@@ -160,6 +160,22 @@ let AuthService = class AuthService {
     async getProfile(userId) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
+            include: {
+                applications: {
+                    include: {
+                        job: {
+                            select: {
+                                title: true,
+                                company: {
+                                    select: {
+                                        name: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         });
         if (!user) {
             throw new common_1.NotFoundException('User not found');

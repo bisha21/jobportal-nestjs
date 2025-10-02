@@ -68,7 +68,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="icon">
                       <Image
-                        src={user?.profile || '/default-profile.png'}
+                        src={user?.profile||''}
                         alt="Profile"
                         width={32}
                         height={32}

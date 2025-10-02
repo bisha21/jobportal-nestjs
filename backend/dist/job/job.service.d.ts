@@ -7,112 +7,110 @@ export declare class JobService {
     private readonly logger;
     constructor(prisma: DatabaseService);
     createJob(createJobDto: CreateJobDto): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        type: import("generated/prisma").$Enums.JobType;
-        location: string | null;
-        companyId: number;
         title: string;
+        description: string;
         position: string;
+        location: string | null;
         experience: string;
         salaryMin: number;
         salaryMax: number;
+        type: import("generated/prisma").$Enums.JobType;
         deadline: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        companyId: number;
         categoryId: number;
     }>;
-    getAllJobs(query: SearchJobDto): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        type: import("generated/prisma").$Enums.JobType;
-        location: string | null;
-        companyId: number;
+    getAllJobs(query: SearchJobDto): Promise<({
+        company: {
+            id: number;
+            name: string;
+            logoUrl: string | null;
+        };
+        category: {
+            id: number;
+            categoryName: string;
+        };
+    } & {
         title: string;
+        description: string;
         position: string;
+        location: string | null;
         experience: string;
         salaryMin: number;
         salaryMax: number;
+        type: import("generated/prisma").$Enums.JobType;
         deadline: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        companyId: number;
         categoryId: number;
-    }[]>;
+    })[]>;
     getSingleJob(jobId: number): Promise<{
-        applications: ({
-            user: {
-                fullName: string;
-                email: string;
-                password: string;
-                resume: string | null;
-                profile: string | null;
-                phoneNumber: string;
-                bio: string | null;
-                otp: number | null;
-                id: number;
-                role: import("generated/prisma").$Enums.Role;
-                otpExpiry: Date | null;
-                createdAt: Date;
-                updatedAt: Date;
-            };
-        } & {
-            id: number;
+        company: {
+            description: string;
+            location: string;
             createdAt: Date;
             updatedAt: Date;
-            jobId: number;
-            resumeUrl: string | null;
-            status: import("generated/prisma").$Enums.ApplicationStatus;
-            userId: number;
-        })[];
+            id: number;
+            name: string;
+            website: string | null;
+            industry: string;
+            companySize: string;
+            logoUrl: string | null;
+            ownerId: number;
+        };
         jobSkills: {
             skill: string;
         }[];
     } & {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        type: import("generated/prisma").$Enums.JobType;
-        location: string | null;
-        companyId: number;
         title: string;
+        description: string;
         position: string;
+        location: string | null;
         experience: string;
         salaryMin: number;
         salaryMax: number;
+        type: import("generated/prisma").$Enums.JobType;
         deadline: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        companyId: number;
         categoryId: number;
     }>;
     updateJob(jobId: number, updateJobDto: updateJobDto): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        type: import("generated/prisma").$Enums.JobType;
-        location: string | null;
-        companyId: number;
         title: string;
+        description: string;
         position: string;
+        location: string | null;
         experience: string;
         salaryMin: number;
         salaryMax: number;
+        type: import("generated/prisma").$Enums.JobType;
         deadline: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        companyId: number;
         categoryId: number;
     }>;
     deleteJob(jobId: number): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string;
-        type: import("generated/prisma").$Enums.JobType;
-        location: string | null;
-        companyId: number;
         title: string;
+        description: string;
         position: string;
+        location: string | null;
         experience: string;
         salaryMin: number;
         salaryMax: number;
+        type: import("generated/prisma").$Enums.JobType;
         deadline: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        companyId: number;
         categoryId: number;
     }>;
 }

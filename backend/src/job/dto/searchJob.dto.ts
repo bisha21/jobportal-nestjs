@@ -12,9 +12,26 @@ export class SearchJobDto {
   location?: string;
 
   @IsOptional()
+  @IsString()
+  jobType?: string;
+
+  @IsOptional()
   @IsInt()
   @Type(() => Number)
   companyId?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  categoryId?: number;
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  salaryMin?: number;
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  salaryMax?: number;
 
   // Pagination
   @IsOptional()

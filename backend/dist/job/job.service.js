@@ -40,7 +40,35 @@ let JobService = JobService_1 = class JobService {
             .limitFields()
             .includeRelations();
         const options = features.getOptions();
-        const jobs = await this.prisma.job.findMany(options);
+        const jobs = await this.prisma.job.findMany({
+            ...options,
+            where: {
+                ...options.where,
+                ...(query.salaryMin && query.salaryMax
+                    ? {
+                        AND: [
+                            { salaryMin: { lte: Number(query.salaryMax) } },
+                            { salaryMax: { gte: Number(query.salaryMin) } },
+                        ],
+                    }
+                    : {}),
+            },
+            include: {
+                category: {
+                    select: {
+                        id: true,
+                        categoryName: true,
+                    },
+                },
+                company: {
+                    select: {
+                        id: true,
+                        name: true,
+                        logoUrl: true,
+                    },
+                },
+            },
+        });
         this.logger.log(`Fetched ${jobs.length} jobs`);
         return jobs;
     }
@@ -53,11 +81,7 @@ let JobService = JobService_1 = class JobService {
                         skill: true,
                     },
                 },
-                applications: {
-                    include: {
-                        user: true,
-                    },
-                },
+                company: true,
             },
         });
         if (!job) {

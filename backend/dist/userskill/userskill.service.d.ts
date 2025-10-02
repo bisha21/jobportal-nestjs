@@ -24,28 +24,28 @@ export declare class UserSkillService {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }>;
     getUserSkills(userId: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }[]>;
     updateUserSkill(skillId: number, updateUserSkillDto: UpdateUserSkillDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }>;
     deleteUserSkill(skillId: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         userId: number;
+        skill: string;
     }>;
 }
