@@ -82,6 +82,7 @@ let JobService = JobService_1 = class JobService {
                     },
                 },
                 company: true,
+                category: true,
             },
         });
         if (!job) {

@@ -9,21 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateJobSkillDto = void 0;
+exports.CreateJobSkillsDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateJobSkillDto {
-    skill;
+class CreateJobSkillsDto {
     jobId;
+    skills;
 }
-exports.CreateJobSkillDto = CreateJobSkillDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.MinLength)(2),
-    __metadata("design:type", String)
-], CreateJobSkillDto.prototype, "skill", void 0);
+exports.CreateJobSkillsDto = CreateJobSkillsDto;
 __decorate([
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
-], CreateJobSkillDto.prototype, "jobId", void 0);
+], CreateJobSkillsDto.prototype, "jobId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)({ each: true }),
+    (0, class_validator_1.IsString)({ each: true }),
+    (0, class_validator_1.MinLength)(2, { each: true }),
+    __metadata("design:type", Array)
+], CreateJobSkillsDto.prototype, "skills", void 0);
 //# sourceMappingURL=createjobskill.dto.js.map

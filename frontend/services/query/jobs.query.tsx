@@ -14,6 +14,11 @@ export interface Company {
   logoUrl: string;
 }
 
+
+export interface JobSkill {
+    skill: string;
+}
+
 export interface Job {
   id: number;
   title: string;
@@ -31,6 +36,11 @@ export interface Job {
   updatedAt: string;
   category: Category;
   company: Company;
+}
+
+export interface singleJob extends Job {
+    jobSkills: JobSkill[];
+    
 }
 
 export interface SearchJobParams {
@@ -70,7 +80,7 @@ export const useJobs = <T = Job[],>(
 };
 
 
-export const useJob=<T=Job>(id:number) => useQuery<T>({
+export const useJob=<T=singleJob>(id:number) => useQuery<T>({
   queryKey: ['job', id],
   queryFn: async () =>
     apiRequest(`job/${id}`, {

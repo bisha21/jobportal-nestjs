@@ -56,6 +56,7 @@ const applyApplication_dto_1 = require("../application/dto/applyApplication.dto"
 const role_decorator_1 = require("../common/guards/role/role.decorator");
 const role_enum_1 = require("../common/guards/role/role.enum");
 const role_guard_1 = require("../common/guards/role/role.guard");
+const updateJob_1 = require("./dto/updateJob");
 let JobController = class JobController {
     jobService;
     applicationService;
@@ -110,11 +111,11 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
-    (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE),
+    (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE, role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, createJob_1.CreateJobDto]),
+    __metadata("design:paramtypes", [Number, updateJob_1.updateJobDto]),
     __metadata("design:returntype", Promise)
 ], JobController.prototype, "updateJob", null);
 __decorate([

@@ -83,6 +83,7 @@ export class JobService {
           },
         },
         company: true,
+        category: true,
       },
     });
     if (!job) {

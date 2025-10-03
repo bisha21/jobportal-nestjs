@@ -10,7 +10,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { JobskillService } from './jobskill.service';
-import { CreateJobSkillDto } from './dto/createjobskill.dto';
 import { UpdateJobSkillDto } from './dto/updatejobskill.dto';
 import {
   ApiTags,
@@ -19,6 +18,7 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
+import { CreateJobSkillsDto } from './dto/createjobskill.dto';
 
 @ApiTags('Job Skills')
 @Controller('jobskills')
@@ -27,13 +27,12 @@ export class JobskillController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new job skill' })
-  @ApiBody({ type: CreateJobSkillDto })
+  @ApiBody({ type: CreateJobSkillsDto })
   @ApiResponse({ status: 201, description: 'Job skill created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request body' })
-  async createJobSkill(@Body() createJobSkillDto: CreateJobSkillDto) {
-    return this.jobskillService.createJobSkills(createJobSkillDto);
+  async createJobSkill(@Body() dto: CreateJobSkillsDto) {
+    return await this.jobskillService.createJobSkills(dto);
   }
-
   @Get(':jobId')
   @ApiOperation({ summary: 'Get all skills for a specific job' })
   @ApiParam({ name: 'jobId', type: Number, description: 'ID of the job' })

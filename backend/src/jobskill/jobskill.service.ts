@@ -1,22 +1,35 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateJobSkillDto } from './dto/createjobskill.dto';
 import { UpdateJobSkillDto } from './dto/updatejobskill.dto';
+import { CreateJobSkillsDto } from './dto/createjobskill.dto';
 
 @Injectable()
 export class JobskillService {
   constructor(private prisma: DatabaseService) {}
 
-  async createJobSkills(createJobSkillDto: CreateJobSkillDto) {
+  async createJobSkills(dto: CreateJobSkillsDto) {
     const job = await this.prisma.job.findUnique({
-      where: { id: createJobSkillDto.jobId },
+      where: { id: dto.jobId },
     });
+
     if (!job) {
       throw new NotFoundException('Job not found');
     }
-    return this.prisma.jobSkill.create({
-      data: createJobSkillDto,
+
+    const skillData = dto.skills.map((skill) => ({
+      jobId: dto.jobId,
+      skill,
+    }));
+
+    await this.prisma.jobSkill.createMany({
+      data: skillData,
+      skipDuplicates: true,
+    });
+
+    return this.prisma.job.findUnique({
+      where: { id: dto.jobId },
+      include: { jobSkills: true },
     });
   }
 

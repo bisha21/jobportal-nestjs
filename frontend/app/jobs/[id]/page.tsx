@@ -1,10 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import {
   Calendar,
   Briefcase,
@@ -18,98 +13,34 @@ import {
   Twitter,
   Linkedin,
 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { JobCard } from '@/components/jobs/job-card';
-
-const mockJobDetails = {
-  2: {
-    id: 2,
-    title: 'Senior Frontend Developer',
-    description:
-      'We are looking for a skilled frontend developer with strong React and TypeScript experience. You will be responsible for building modern, responsive web applications and working closely with our design and backend teams. The ideal candidate has a passion for creating exceptional user experiences and writing clean, maintainable code.',
-    position: 'Frontend Developer',
-    location: 'Kathmandu, Nepal',
-    experience: '3+ years',
-    salaryMin: 60000,
-    salaryMax: 90000,
-    type: 'FULLTIME',
-    deadline: '2025-12-31T23:59:59.000Z',
-    createdAt: '2025-10-01T03:04:09.798Z',
-    company: {
-      id: 1,
-      name: 'Tech Solutions Pvt. Ltd.',
-      description:
-        'A leading IT services and consulting company specializing in cloud solutions and enterprise software.',
-      location: 'Kathmandu, Nepal',
-      website: 'https://techsolutions.com',
-      industry: 'Information Technology',
-      companySize: '200-500 employees',
-      logo: '🏢',
-    },
-    category: {
-      id: 1,
-      name: 'Design',
-    },
-    responsibilities: [
-      'Develop and maintain high-quality React applications using modern best practices',
-      'Collaborate with designers to implement pixel-perfect UI components',
-      'Write clean, maintainable, and well-documented code',
-      'Participate in code reviews and contribute to team knowledge sharing',
-      'Optimize application performance and ensure cross-browser compatibility',
-    ],
-    skills: [
-      'Expert knowledge of React, TypeScript, and modern JavaScript',
-      'Strong understanding of HTML5, CSS3, and responsive design principles',
-      'Experience with state management libraries (Redux, Zustand, etc.)',
-      'Familiarity with testing frameworks (Jest, React Testing Library)',
-      'Excellent problem-solving and communication skills',
-    ],
-    tags: ['JavaScript', 'Commerce', 'React', 'Design', 'Location'],
-  },
-};
-
-// Mock related jobs
-const relatedJobs = [
-  {
-    id: 3,
-    title: 'Internal Creative Coordinator',
-    company: { name: 'Green Group', logo: '🌿' },
-    category: { name: 'Marketing' },
-    type: 'PERMANENT',
-    location: 'New York, USA',
-    salaryMin: 44000,
-    salaryMax: 54000,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
-  },
-  {
-    id: 4,
-    title: 'District Intranet Director',
-    company: { name: 'VanDelay - Adobe Co', logo: '🎨' },
-    category: { name: 'Design' },
-    type: 'PERMANENT',
-    location: 'New York, USA',
-    salaryMin: 44000,
-    salaryMax: 54000,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5),
-  },
-  {
-    id: 5,
-    title: 'Corporate Tactics Facilitator',
-    company: { name: 'Dietrich, Turner and Fritsch Inc', logo: '💼' },
-    category: { name: 'Business' },
-    type: 'PERMANENT',
-    location: 'New York, USA',
-    salaryMin: 44000,
-    salaryMax: 54000,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-  },
-];
+import { useJob, useJobs, Job, singleJob } from '@/services/query/jobs.query';
+import { use } from 'react';
 
 export default function JobDetailsPage({ params }: { params: { id: string } }) {
-  const job = mockJobDetails[2];
+  const { id } = use(params);
+  const jobId = Number(id);
 
-  if (!job) {
-    return <div className="container mx-auto px-4 py-8">Job not found</div>;
-  }
+  // Fetch current job
+  const {
+    data: job,
+    isLoading: jobLoading,
+    error: jobError,
+  } = useJob<singleJob>(jobId);
+
+  // Fetch related jobs (same category, exclude current job)
+  const { data: relatedJobs, isLoading: relatedLoading } = useJobs<Job[]>({
+    categoryId: job?.categoryId,
+    limit: 3,
+  });
+
+  if (jobLoading) return <div className="p-8">Loading job...</div>;
+  if (jobError || !job) return <div className="p-8">Job not found</div>;
 
   const postedDate = new Date(job.createdAt).toLocaleDateString('en-US', {
     month: 'short',
@@ -119,22 +50,21 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with dark background */}
+      {/* Hero Section */}
       <section className="bg-primary py-12 text-primary-foreground">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-center">Job Details</h1>
         </div>
       </section>
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
+          {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Job Description */}
             <Card>
               <CardHeader>
-                <CardTitle>Job Description</CardTitle>
+                <CardTitle>{job.title}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
@@ -143,41 +73,24 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
               </CardContent>
             </Card>
 
-            {/* Key Responsibilities */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Key Responsibilities</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {job.responsibilities.map((responsibility, index) => (
-                    <li key={index} className="flex gap-3">
-                      <Check className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">
-                        {responsibility}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Professional Skills */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Professional Skills</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {job.skills.map((skill, index) => (
-                    <li key={index} className="flex gap-3">
-                      <Check className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">{skill}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+            {/* Responsibilities */}
+            {job.jobSkills?.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Key Responsibilities</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {job.jobSkills.map((res, index: number) => (
+                      <li key={index} className="flex gap-3">
+                        <Check className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{res.skill}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Tags */}
             <Card>
@@ -186,20 +99,23 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {job.tags.map((tag, index) => (
-                    <Badge
-                      key={index}
-                      variant="secondary"
-                      className="px-4 py-2 text-sm bg-secondary hover:bg-secondary/80"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 text-sm bg-secondary hover:bg-secondary/80"
+                  >
+                    {job.category.categoryName}
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 text-sm bg-secondary hover:bg-secondary/80"
+                  >
+                    {job.company.name}
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Share Job */}
+            {/* Share */}
             <Card>
               <CardHeader>
                 <CardTitle>Share Job</CardTitle>
@@ -232,9 +148,8 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
             </Card>
           </div>
 
-          {/* Right Column - Sidebar */}
+          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Job Overview */}
             <Card>
               <CardHeader>
                 <CardTitle>Job Overview</CardTitle>
@@ -266,7 +181,7 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                   <div>
                     <p className="text-sm font-medium">Category</p>
                     <p className="text-sm text-muted-foreground">
-                      {job.category.name}
+                      {job.category.categoryName}
                     </p>
                   </div>
                 </div>
@@ -285,7 +200,9 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                   <GraduationCap className="h-5 w-5 text-teal-600 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium">Degree</p>
-                    <p className="text-sm text-muted-foreground">Bachelor's</p>
+                    <p className="text-sm text-muted-foreground">
+                      Bachelor&apos;s
+                    </p>
                   </div>
                 </div>
 
@@ -309,15 +226,10 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                     </p>
                   </div>
                 </div>
-
-                {/* Map placeholder */}
-                <div className="w-full h-32 bg-muted rounded-lg flex items-center justify-center">
-                  <MapPin className="h-8 w-8 text-muted-foreground" />
-                </div>
               </CardContent>
             </Card>
 
-            {/* Send Us Message */}
+            {/* Send Message */}
             <Card>
               <CardHeader>
                 <CardTitle>Send Us Message</CardTitle>
@@ -334,15 +246,12 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* Related Jobs Section */}
+        {/* Related Jobs */}
         <div className="mt-16">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-3xl font-bold mb-2">Related Jobs</h2>
-              <p className="text-muted-foreground">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                blanditiis
-              </p>
+              <p className="text-muted-foreground">Jobs you may also like</p>
             </div>
             <Button className="bg-teal-600 hover:bg-teal-700 text-white">
               Post Resume
@@ -350,9 +259,13 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
           </div>
 
           <div className="space-y-4">
-            {relatedJobs.map((relatedJob) => (
-              <JobCard key={relatedJob.id} job={relatedJob} />
-            ))}
+            {!relatedLoading &&
+              relatedJobs &&
+              relatedJobs
+                .filter((r) => r.id !== job.id)
+                .map((relatedJob) => (
+                  <JobCard key={relatedJob.id} job={relatedJob} />
+                ))}
           </div>
         </div>
       </div>

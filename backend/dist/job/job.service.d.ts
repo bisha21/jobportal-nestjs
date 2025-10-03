@@ -62,6 +62,13 @@ export declare class JobService {
             logoUrl: string | null;
             ownerId: number;
         };
+        category: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            categoryName: string;
+            userId: number;
+        };
         jobSkills: {
             skill: string;
         }[];
