@@ -15,16 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobskillController = void 0;
 const common_1 = require("@nestjs/common");
 const jobskill_service_1 = require("./jobskill.service");
-const createjobskill_dto_1 = require("./dto/createjobskill.dto");
 const updatejobskill_dto_1 = require("./dto/updatejobskill.dto");
 const swagger_1 = require("@nestjs/swagger");
+const createjobskill_dto_1 = require("./dto/createjobskill.dto");
 let JobskillController = class JobskillController {
     jobskillService;
     constructor(jobskillService) {
         this.jobskillService = jobskillService;
     }
-    async createJobSkill(createJobSkillDto) {
-        return this.jobskillService.createJobSkills(createJobSkillDto);
+    async createJobSkill(dto) {
+        return await this.jobskillService.createJobSkills(dto);
     }
     async getJobSkills(jobId) {
         return this.jobskillService.getJobSkills(jobId);
@@ -40,12 +40,12 @@ exports.JobskillController = JobskillController;
 __decorate([
     (0, common_1.Post)(),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new job skill' }),
-    (0, swagger_1.ApiBody)({ type: createjobskill_dto_1.CreateJobSkillDto }),
+    (0, swagger_1.ApiBody)({ type: createjobskill_dto_1.CreateJobSkillsDto }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Job skill created successfully' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Invalid request body' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [createjobskill_dto_1.CreateJobSkillDto]),
+    __metadata("design:paramtypes", [createjobskill_dto_1.CreateJobSkillsDto]),
     __metadata("design:returntype", Promise)
 ], JobskillController.prototype, "createJobSkill", null);
 __decorate([

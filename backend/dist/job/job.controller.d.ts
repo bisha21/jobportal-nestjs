@@ -4,6 +4,7 @@ import * as authGuard from 'src/common/guards/auth/auth.guard';
 import { SearchJobDto } from './dto/searchJob.dto';
 import { ApplicationService } from 'src/application/application.service';
 import { CreateApplicationDto } from 'src/application/dto/applyApplication.dto';
+import { updateJobDto } from './dto/updateJob';
 export declare class JobController {
     private readonly jobService;
     private readonly applicationService;
@@ -64,6 +65,13 @@ export declare class JobController {
             logoUrl: string | null;
             ownerId: number;
         };
+        category: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            categoryName: string;
+            userId: number;
+        };
         jobSkills: {
             skill: string;
         }[];
@@ -83,7 +91,7 @@ export declare class JobController {
         companyId: number;
         categoryId: number;
     }>;
-    updateJob(id: number, updateJob: CreateJobDto): Promise<{
+    updateJob(id: number, updateJob: updateJobDto): Promise<{
         title: string;
         description: string;
         position: string;

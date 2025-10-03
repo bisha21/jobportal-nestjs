@@ -21,6 +21,7 @@ import { CreateApplicationDto } from 'src/application/dto/applyApplication.dto';
 import { Role as Roles } from 'src/common/guards/role/role.decorator';
 import { Role } from 'src/common/guards/role/role.enum';
 import { RoleGuard } from 'src/common/guards/role/role.guard';
+import { updateJobDto } from './dto/updateJob';
 @Controller('job')
 export class JobController {
   constructor(
@@ -46,10 +47,10 @@ export class JobController {
 
   @Patch(':id')
   @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
-  @Roles(Role.EMPLOYEE)
+  @Roles(Role.EMPLOYEE,Role.ADMIN)
   async updateJob(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateJob: CreateJobDto,
+    @Body() updateJob: updateJobDto,
   ) {
     return await this.jobService.updateJob(id, updateJob);
   }
