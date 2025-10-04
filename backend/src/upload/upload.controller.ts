@@ -9,7 +9,7 @@ import {
   BadRequestException,
   ParseIntPipe,
   Param,
-  Patch
+  Patch,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import multer from 'multer';
@@ -55,6 +55,42 @@ export class UploadController {
     const imageUrl = await this.cloudinaryService.uploadFile(file);
     await this.authService.updateProfilePicture(req.user.id, imageUrl);
     return { message: 'Profile picture uploaded', url: imageUrl };
+  }
+
+  @Post('resume')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileInterceptor('resume', {
+      storage,
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+      fileFilter: (req, file, cb) => {
+        const allowedMimeTypes = [
+          'application/pdf',
+          'application/msword', // .doc
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+          'image/jpeg',
+          'image/png',
+        ];
+
+        if (!allowedMimeTypes.includes(file.mimetype)) {
+          return cb(
+            new BadRequestException(
+              'Only PDF, DOC, DOCX, JPG, JPEG, and PNG files are allowed!',
+            ),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  async uploadResume(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: RequestWithUser,
+  ) {
+    const resumeUrl = await this.cloudinaryService.uploadFile(file);
+    await this.authService.updateResume(req.user.id, resumeUrl);
+    return { message: 'Resume uploaded successfully', url: resumeUrl };
   }
 
   @Patch('logo/:companyId')

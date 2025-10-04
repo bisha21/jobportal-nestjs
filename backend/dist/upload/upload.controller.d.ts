@@ -11,6 +11,10 @@ export declare class UploadController {
         message: string;
         url: string;
     }>;
+    uploadResume(file: Express.Multer.File, req: RequestWithUser): Promise<{
+        message: string;
+        url: string;
+    }>;
     uploadCompanyLogo(file: Express.Multer.File, req: RequestWithUser, companyId: number): Promise<{
         message: string;
         url: string;

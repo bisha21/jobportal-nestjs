@@ -14,6 +14,13 @@ import { Button } from './ui/button';
 import { useTheme } from 'next-themes';
 import useModalContext from '@/hooks/usemodal';
 import { useAuth } from '@/context/auth-context';
+// navLinks.ts
+export const PUBLIC_NAV_LINKS = [
+  { href: '/', label: 'Home' },
+  { href: '/jobs', label: 'Browse Jobs' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact Us' },
+];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -21,54 +28,47 @@ export default function Navbar() {
   const { openModal } = useModalContext();
   const { isAuthenticated, user, logout } = useAuth();
 
+  const showProtectedLinks = !isAuthenticated || user?.role === 'JOBSEEKER';
+
   return (
     <nav className="bg-background text-foreground shadow-md border-b border-border fixed top-0 w-full z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between items-center">
-          {/* Left: Logo */}
+          {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-lg font-bold">JobPortal</span>
             </Link>
           </div>
 
-          {/* Center: Navigation */}
-          <div className="hidden md:flex space-x-8">
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-            <Link href="/jobs" className="hover:text-primary transition-colors">
-              Browse Jobs
-            </Link>
-            <Link
-              href="/about"
-              className="hover:text-primary transition-colors"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-primary transition-colors"
-            >
-              Contact Us
-            </Link>
-          </div>
+          {/* Navigation Links */}
+          {showProtectedLinks && (
+            <div className="hidden md:flex space-x-8">
+              {PUBLIC_NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-primary transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
 
-          {/* Right: Auth / User */}
+          {/* Auth / User Menu */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                {/* Notification Icon */}
                 <Button variant="ghost" size="icon">
                   <Bell size={20} />
                 </Button>
 
-                {/* Profile Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="icon">
                       <Image
-                        src={user?.profile||''}
+                        src={user?.profile || ''}
                         alt="Profile"
                         width={32}
                         height={32}
@@ -93,7 +93,6 @@ export default function Navbar() {
                       key: 'LOGIN_MODAL',
                     })
                   }
-                  className="flex-1 text-center px-3 py-2 rounded-md border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   Login
                 </Button>
@@ -103,7 +102,6 @@ export default function Navbar() {
                       key: 'SIGNUP_MODAL',
                     })
                   }
-                  className="flex-1 text-center px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   Sign Up
                 </Button>
@@ -114,8 +112,8 @@ export default function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
-                  <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-                  <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                  <Sun className="h-[1.2rem] w-[1.2rem]" />
+                  <Moon className="absolute h-[1.2rem] w-[1.2rem]" />
                   <span className="sr-only">Toggle theme</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -133,7 +131,7 @@ export default function Navbar() {
             </DropdownMenu>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu */}
           <div className="md:hidden">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -145,59 +143,18 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
+      {/* Mobile Menu Links */}
+      {mobileOpen && showProtectedLinks && (
         <div className="md:hidden bg-card border-t border-border px-2 pt-2 pb-3 space-y-2">
-          <Link
-            href="/"
-            className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="/jobs"
-            className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
-          >
-            Browse Jobs
-          </Link>
-          <Link
-            href="/about"
-            className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
-          >
-            About Us
-          </Link>
-
-          {isAuthenticated ? (
-            <>
-              <Link
-                href="/profile"
-                className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
-              >
-                Profile
-              </Link>
-              <button
-                onClick={logout}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-muted transition-colors"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="block rounded-md px-3 py-2 hover:bg-muted transition-colors"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+          {PUBLIC_NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="block px-3 py-2 hover:bg-muted"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       )}
     </nav>

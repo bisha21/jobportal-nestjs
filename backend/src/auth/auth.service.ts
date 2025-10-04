@@ -16,6 +16,7 @@ import { ForgetPasswordDto } from './dto/forgetPassword.dto';
 import { VerifyOtpDto } from './dto/verifyotp.dto';
 import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { CreateOAuthUserDto } from './dto/createoauth.dto';
+import { UpdateUserDto } from './dto/updateUserDto';
 
 @Injectable()
 export class AuthService {
@@ -201,10 +202,10 @@ export class AuthService {
           include: {
             job: {
               select: {
-                title: true, 
+                title: true,
                 company: {
                   select: {
-                    name: true, 
+                    name: true,
                   },
                 },
               },
@@ -227,10 +228,25 @@ export class AuthService {
       data: { profile: imageUrl },
     });
   }
+
+  async updateResume(userId: number, resumeUrl: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { resume: resumeUrl },
+    });
+  }
   async findUserByEmail(email: string) {
     // ✅ Correct way:
     return await this.prisma.user.findFirst({
       where: { email }, // you need to wrap email in `where`
+    });
+  }
+
+
+  async updateProfile(userId: number, updateUserDto: UpdateUserDto) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: updateUserDto,
     });
   }
 }

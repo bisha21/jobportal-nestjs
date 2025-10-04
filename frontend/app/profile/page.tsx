@@ -1,23 +1,24 @@
 'use client';
 
-import type React from 'react';
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
-  Mail,
-  Phone,
-  Edit2,
-  Save,
   Briefcase,
-  Heart,
-  Building2,
   Calendar,
   ExternalLink,
+  Mail,
+  Phone,
+  Save,
+  Edit2,
+  Upload,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { useProfile, type UserProfile } from '@/services/query/profile';
+import { useForm } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
+import FormInput from '@/components/reusable/form-input';
 import {
   Table,
   TableBody,
@@ -26,34 +27,35 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useProfile, type UserProfile } from '@/services/query/profile';
+import useModalContext from '@/hooks/usemodal';
 
 export default function UserProfile() {
   const { data, isLoading, isError } = useProfile();
-
-  // always call hooks first
   const [isEditing, setIsEditing] = useState(false);
+  const { openModal } = useModalContext();
 
-  const [userData, setUserData] = useState<UserProfile>({
-    fullName: '',
-    email: '',
-    phoneNumber: '',
-    bio: '',
-    profile: '',
-    role: '',
-    resume: '',
-    applications: [],
+  const form = useForm<UserProfile>({
+    defaultValues: {
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      bio: '',
+      profile: '',
+      role: '',
+      resume: '',
+      applications: [],
+    },
   });
 
   useEffect(() => {
-    if (data) {
-      setUserData(data);
-    }
-  }, [data]);
+    if (data) form.reset(data);
+  }, [data, form]);
 
+  // Applications
   const applications = useMemo(() => {
+    const apps = form.getValues('applications') || [];
     return (
-      userData?.applications.map((app) => ({
+      apps.map((app) => ({
         id: app.id,
         jobTitle: app.job.title,
         company: app.job.company.name,
@@ -61,196 +63,211 @@ export default function UserProfile() {
         status: app.status.toLowerCase(),
       })) || []
     );
-  }, [userData]);
+  }, [form.watch('applications')]);
 
-  const stats = {
-    applications: applications.length,
-    favorites: 0, // Replace with real favorites count later
-    companies: new Set(applications.map((a) => a.company)).size,
+  const onSubmit = (values: UserProfile) => {
+    console.log('Form Submitted:', values);
+    setIsEditing(false); // exit edit mode after save
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      pending: {
-        variant: 'secondary' as const,
-        label: 'Pending',
-        className: 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20',
-      },
-      interview: {
-        variant: 'default' as const,
-        label: 'Interview',
-        className: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
-      },
-      accepted: {
-        variant: 'default' as const,
-        label: 'Accepted',
-        className: 'bg-green-500/10 text-green-500 hover:bg-green-500/20',
-      },
-      rejected: {
-        variant: 'destructive' as const,
-        label: 'Rejected',
-        className: 'bg-red-500/10 text-red-500 hover:bg-red-500/20',
-      },
-    };
-    return (
-      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
-    );
+  const handleProfileUpload = () => {
+    openModal({
+      key: 'UPLOAD_PROFILE_MODAL',
+    });
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+  const handleResumeUpload = () => {
+    openModal({
+      key: 'UPLOAD_RESUME_MODAL',
+    });
   };
 
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
-  };
-
-  // Early returns after hooks
-  if (isLoading) {
+  if (isLoading)
     return <div className="text-center py-20">Loading profile...</div>;
-  }
-
-  if (isError || !data) {
+  if (isError || !data)
     return (
       <div className="text-center py-20 text-red-500">
         Failed to load profile
       </div>
     );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
       <div className="max-w-5xl mx-auto">
-        {/* Header Card */}
-        <Card className="overflow-hidden mb-6 shadow-lg">
-          <div className="h-32 bg-gradient-to-r from-chart-1 via-chart-4 to-chart-2"></div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <Card className="overflow-hidden mb-6 shadow-lg">
+              <div className="h-32 bg-gradient-to-r from-chart-1 via-chart-4 to-chart-2"></div>
+              <CardContent className="px-6 pb-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-16 mb-4">
+                  <Avatar className="w-32 h-32 border-4 border-card shadow-lg">
+                    <AvatarImage
+                      src={
+                        typeof data.profile === 'string'
+                          ? data.profile
+                          : '/placeholder.svg'
+                      }
+                      alt={data.fullName}
+                    />
+                    <AvatarFallback className="text-2xl">
+                      {data.fullName
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')}
+                    </AvatarFallback>
+                  </Avatar>
 
-          <CardContent className="px-6 pb-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-16 mb-4">
-              <div className="relative group">
-                <Avatar className="w-32 h-32 border-4 border-card shadow-lg">
-                  <AvatarImage
-                    src={userData.profile || '/placeholder.svg'}
-                    alt={userData.fullName}
-                  />
-                  <AvatarFallback className="text-2xl">
-                    {userData.fullName
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-              <div className="flex-1">
-                {isEditing ? (
-                  <Input
-                    type="text"
-                    name="fullName"
-                    value={userData.fullName}
-                    onChange={handleInputChange}
-                    className="text-3xl font-bold h-auto py-2 px-3"
-                  />
-                ) : (
-                  <h1 className="text-3xl font-bold">{userData.fullName}</h1>
-                )}
-                <Badge variant="secondary" className="mt-2 capitalize">
-                  {userData.role.toLowerCase()}
-                </Badge>
-              </div>
-              <Button onClick={toggleEdit} size="lg">
-                {isEditing ? (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Save
-                  </>
-                ) : (
-                  <>
-                    <Edit2 className="mr-2 h-4 w-4" />
-                    Edit Profile
-                  </>
-                )}
-              </Button>
-            </div>
+                  <div className="flex-1">
+                    {isEditing ? (
+                      <FormInput
+                        form={form}
+                        name="fullName"
+                        label="Full Name"
+                        type="text"
+                      />
+                    ) : (
+                      <h2 className="text-2xl font-semibold">
+                        {data.fullName}
+                      </h2>
+                    )}
+                    <Badge variant="secondary" className="mt-2 capitalize">
+                      {data.role.toLowerCase()}
+                    </Badge>
+                  </div>
 
-            {/* Contact Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-              <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-primary" />
-                {isEditing ? (
-                  <Input
-                    type="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleInputChange}
-                    className="flex-1"
-                  />
-                ) : (
-                  <span className="text-muted-foreground">
-                    {userData.email}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-primary" />
-                {isEditing ? (
-                  <Input
-                    type="tel"
-                    name="phoneNumber"
-                    value={userData.phoneNumber}
-                    onChange={handleInputChange}
-                    className="flex-1"
-                  />
-                ) : (
-                  <span className="text-muted-foreground">
-                    {userData.phoneNumber}
-                  </span>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <Card className="shadow">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Briefcase className="h-5 w-5 text-chart-1" />
-                <div className="text-3xl font-bold text-chart-1">
-                  {stats.applications}
+                  {isEditing ? (
+                    <Button type="submit" size="lg">
+                      <Save className="mr-2 h-4 w-4" /> Save
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button" // important so it doesn’t submit
+                      variant="outline"
+                      onClick={() =>
+                        openModal({
+                          key: 'UPDATE_PROFILE_MODAL',
+                        })
+                      }
+                    >
+                      <Edit2 className="mr-2 h-4 w-4" /> Edit
+                    </Button>
+                  )}
                 </div>
-              </div>
-              <div className="text-sm text-muted-foreground">Applications</div>
-            </CardContent>
-          </Card>
-          <Card className="shadow">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Heart className="h-5 w-5 text-chart-4" />
-                <div className="text-3xl font-bold text-chart-4">
-                  {stats.favorites}
-                </div>
-              </div>
-              <div className="text-sm text-muted-foreground">Saved Jobs</div>
-            </CardContent>
-          </Card>
-          <Card className="shadow">
-            <CardContent className="p-6 text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Building2 className="h-5 w-5 text-chart-2" />
-                <div className="text-3xl font-bold text-chart-2">
-                  {stats.companies}
-                </div>
-              </div>
-              <div className="text-sm text-muted-foreground">Companies</div>
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* Applications Table */}
+                {/* Contact Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-primary" />
+                    {isEditing ? (
+                      <FormInput
+                        form={form}
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                      />
+                    ) : (
+                      <span>{data.email}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Phone className="h-5 w-5 text-primary" />
+                    {isEditing ? (
+                      <FormInput
+                        form={form}
+                        name="phoneNumber"
+                        type="tel"
+                        placeholder="Phone"
+                      />
+                    ) : (
+                      <span>{data.phoneNumber}</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bio */}
+                <div className="mt-6">
+                  <div className="font-medium mb-2">Bio</div>
+                  {isEditing ? (
+                    <FormInput
+                      form={form}
+                      name="bio"
+                      type="text"
+                      placeholder="Tell us about yourself"
+                    />
+                  ) : (
+                    <p className="text-muted-foreground">
+                      {data.bio || 'No bio provided'}
+                    </p>
+                  )}
+                </div>
+
+                {/* Profile & Resume - Separate Uploads */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                  <div>
+                    <div className="font-medium mb-2">Profile Picture</div>
+                    {data.profile ? (
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          Uploaded ✅
+                        </p>
+                        <a
+                          href={data.profile}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Profile Picture
+                        </a>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No file uploaded
+                      </p>
+                    )}
+                    <Button
+                      type="button"
+                      onClick={handleProfileUpload}
+                      size="sm"
+                      className="mt-2"
+                    >
+                      <Upload className="mr-2 h-4 w-4" /> Upload New
+                    </Button>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-2">Resume</div>
+                    {data.resume ? (
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          Uploaded ✅
+                        </p>
+                        <a
+                          href={data.resume}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Resume
+                        </a>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No file uploaded
+                      </p>
+                    )}
+                    <Button
+                      type="button"
+                      onClick={handleResumeUpload}
+                      size="sm"
+                      className="mt-2"
+                    >
+                      <Upload className="mr-2 h-4 w-4" /> Upload New
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </form>
+        </Form>
+
+        {/* Stats + Applications remain same ... */}
         <Card className="shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -294,12 +311,7 @@ export default function UserProfile() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={getStatusBadge(app.status).variant}
-                          className={getStatusBadge(app.status).className}
-                        >
-                          {getStatusBadge(app.status).label}
-                        </Badge>
+                        <Badge variant="secondary">{app.status}</Badge>
                       </TableCell>
                       <TableCell>
                         <Button variant="ghost" size="icon" className="h-8 w-8">

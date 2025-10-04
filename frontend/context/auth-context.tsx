@@ -11,7 +11,7 @@ export interface UserType {
   phoneNumber: string;
   skills: string;
   bio: string;
-  role: 'ADMIN' | 'EMPLOYEE' | 'JOB_SEEKER';
+  role: 'ADMIN' | 'EMPLOYEE' | 'JOBSEEKER';
 }
 
 type AuthContextType = {

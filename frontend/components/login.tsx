@@ -10,8 +10,6 @@ import { Form } from './ui/form';
 import { useLoginMutation } from '@/services/mutations/auth';
 
 export default function LoginForm() {
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log('jajajaj', url);
   const { mutate: login, isPending } = useLoginMutation();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -34,8 +32,7 @@ export default function LoginForm() {
   };
 
   const handleGoogleLogin = () => {
-    console.log('Continue with Google clicked');
-    // 🔥 implement Google OAuth logic
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}auth/google/login`;
   };
 
   return (
@@ -86,10 +83,11 @@ export default function LoginForm() {
           type="button"
           variant="outline"
           onClick={handleGoogleLogin}
+          // disabled={isLoading}
           className="w-full flex items-center justify-center gap-2 border-border"
         >
           <GoalIcon className="h-5 w-5" />
-          Continue with Google
+          {'Continue with Google'}
         </Button>
       </form>
     </Form>

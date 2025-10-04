@@ -47,7 +47,7 @@ export class JobController {
 
   @Patch(':id')
   @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
-  @Roles(Role.EMPLOYEE,Role.ADMIN)
+  @Roles(Role.EMPLOYEE, Role.ADMIN)
   async updateJob(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateJob: updateJobDto,
@@ -62,7 +62,7 @@ export class JobController {
   }
   @Post('apply/:jobId')
   @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
-  @Roles(Role.JOBSEEKER)
+  @Roles(Role.JOBSEEKER, Role.ADMIN)
   async applyJob(
     @Param('jobId', ParseIntPipe) jobId: number,
     @Body() createApplicationDto: CreateApplicationDto,
