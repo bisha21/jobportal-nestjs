@@ -21,10 +21,12 @@ import { Badge } from '@/components/ui/badge';
 import { JobCard } from '@/components/jobs/job-card';
 import { useJob, useJobs, Job, singleJob } from '@/services/query/jobs.query';
 import { use } from 'react';
+import { useApplyApplication } from '@/services/mutations/apply.mutation';
 
 export default function JobDetailsPage({ params }: { params: { id: string } }) {
   const { id } = use(params);
   const jobId = Number(id);
+  const { mutate, isLoading, error } = useApplyApplication();
 
   // Fetch current job
   const {
@@ -48,6 +50,19 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
     year: 'numeric',
   });
 
+  const handleSubmit = () => {
+    mutate(
+      { jobId },
+      {
+        onSuccess: (data) => {
+          console.log('Application submitted successfully:', data);
+        },
+        onError: (error) => {
+          console.error('Error applying for job:', error);
+        },
+      }
+    );
+  };
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -84,7 +99,9 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                     {job.jobSkills.map((res, index: number) => (
                       <li key={index} className="flex gap-3">
                         <Check className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-muted-foreground">{res.skill}</span>
+                        <span className="text-muted-foreground">
+                          {res.skill}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -227,6 +244,12 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
               </CardContent>
+              <Button
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                onClick={handleSubmit}
+              >
+                {isLoading ? 'Applying...' : 'Apply Now'}
+              </Button>
             </Card>
 
             {/* Send Message */}

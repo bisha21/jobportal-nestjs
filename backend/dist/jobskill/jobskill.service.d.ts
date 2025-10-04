@@ -6,14 +6,16 @@ export declare class JobskillService {
     constructor(prisma: DatabaseService);
     createJobSkills(dto: CreateJobSkillsDto): Promise<({
         jobSkills: {
-            jobId: number;
             id: number;
             createdAt: Date;
             updatedAt: Date;
             skill: string;
+            jobId: number;
         }[];
     } & {
         id: number;
+        createdAt: Date;
+        updatedAt: Date;
         title: string;
         description: string;
         position: string;
@@ -25,28 +27,26 @@ export declare class JobskillService {
         deadline: Date | null;
         companyId: number;
         categoryId: number;
-        createdAt: Date;
-        updatedAt: Date;
     }) | null>;
     getJobSkills(jobId: number): Promise<{
-        jobId: number;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         skill: string;
+        jobId: number;
     }[]>;
     updateJobSkills(skillId: number, updateJobSkillDto: UpdateJobSkillDto): Promise<{
-        jobId: number;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         skill: string;
+        jobId: number;
     }>;
     deleteJobSkills(skillId: number): Promise<{
-        jobId: number;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         skill: string;
+        jobId: number;
     }>;
 }

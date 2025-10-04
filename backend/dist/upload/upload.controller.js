@@ -38,6 +38,11 @@ let UploadController = class UploadController {
         await this.authService.updateProfilePicture(req.user.id, imageUrl);
         return { message: 'Profile picture uploaded', url: imageUrl };
     }
+    async uploadResume(file, req) {
+        const resumeUrl = await this.cloudinaryService.uploadFile(file);
+        await this.authService.updateResume(req.user.id, resumeUrl);
+        return { message: 'Resume uploaded successfully', url: resumeUrl };
+    }
     async uploadCompanyLogo(file, req, companyId) {
         const logoUrl = await this.cloudinaryService.uploadFile(file);
         await this.companyService.updateCompanyLogo(companyId, logoUrl);
@@ -64,6 +69,32 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UploadController.prototype, "uploadProfilePicture", null);
+__decorate([
+    (0, common_1.Post)('resume'),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('resume', {
+        storage,
+        limits: { fileSize: 5 * 1024 * 1024 },
+        fileFilter: (req, file, cb) => {
+            const allowedMimeTypes = [
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'image/jpeg',
+                'image/png',
+            ];
+            if (!allowedMimeTypes.includes(file.mimetype)) {
+                return cb(new common_1.BadRequestException('Only PDF, DOC, DOCX, JPG, JPEG, and PNG files are allowed!'), false);
+            }
+            cb(null, true);
+        },
+    })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UploadController.prototype, "uploadResume", null);
 __decorate([
     (0, common_1.Patch)('logo/:companyId'),
     (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),

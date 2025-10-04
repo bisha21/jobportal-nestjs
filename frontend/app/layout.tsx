@@ -3,11 +3,12 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import ModalX from '@/modals/modal';
 import { ModalProvider } from '@/context/modal-context';
-import Navbar from '@/components/navbar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/components/footer';
 import { Providers } from './provider';
 import { AuthProvider } from '@/context/auth-context';
+import { ToastContainer } from 'react-toastify';
+import RoleNavigatorWithProtection from './role-navigator';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,9 +27,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
@@ -42,10 +43,12 @@ export default function RootLayout({
         >
           <Providers>
             <AuthProvider>
+              <ToastContainer />
               <ModalProvider>
                 <ModalX />
-                <Navbar />
-                {children}
+                <RoleNavigatorWithProtection>
+                  {children}
+                </RoleNavigatorWithProtection>
                 <Footer />
               </ModalProvider>
             </AuthProvider>

@@ -1,5 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/register.dto';
 import { CreateLoginDto } from './dto/login.dto';
@@ -18,6 +27,8 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { GoogleAuthGuard } from 'src/common/guards/google/google.guard';
+import { type Response } from 'express';
+import { UpdateUserDto } from './dto/updateUserDto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -85,11 +96,28 @@ export class AuthController {
     return await this.authService.getProfile(Number(userId));
   }
 
+  @Patch('profile')
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: RequestWithUser,
+  ) {
+    const userId = req.user.id;
+    return await this.authService.updateProfile(Number(userId), updateUserDto);
+  }
+
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
   async googleLogin() {}
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleCallback() {}
+  googleCallback(@Req() req: RequestWithUser, @Res() res: Response) {
+    const userData = req.user;
+    const jwtToken = userData?.token;
+
+    const frontendUrl = `${process.env.FRONTEND_URL}/google/success?token=${jwtToken}&user=${encodeURIComponent(JSON.stringify(userData))}`;
+
+    return res.redirect(frontendUrl);
+  }
 }

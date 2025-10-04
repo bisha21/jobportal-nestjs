@@ -11,8 +11,13 @@ import { Request } from 'express';
 import { User } from 'generated/prisma';
 import { TokenPayload } from 'src/utils/generateAuthToken';
 
+interface IUser extends User {
+  token?: string;
+}
+
 export interface RequestWithUser extends Request {
-  user: User; // define the type of user
+  user: IUser; // define the type of user
+  token?: string;
 }
 
 @Injectable()

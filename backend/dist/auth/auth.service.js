@@ -188,9 +188,21 @@ let AuthService = class AuthService {
             data: { profile: imageUrl },
         });
     }
+    async updateResume(userId, resumeUrl) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: { resume: resumeUrl },
+        });
+    }
     async findUserByEmail(email) {
         return await this.prisma.user.findFirst({
             where: { email },
+        });
+    }
+    async updateProfile(userId, updateUserDto) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: updateUserDto,
         });
     }
 };

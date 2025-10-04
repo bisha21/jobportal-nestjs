@@ -23,6 +23,7 @@ const resetpassword_dto_1 = require("./dto/resetpassword.dto");
 const auth_guard_1 = require("../common/guards/auth/auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const google_guard_1 = require("../common/guards/google/google.guard");
+const updateUserDto_1 = require("./dto/updateUserDto");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -47,8 +48,17 @@ let AuthController = class AuthController {
         const userId = req.user.id;
         return await this.authService.getProfile(Number(userId));
     }
+    async updateProfile(updateUserDto, req) {
+        const userId = req.user.id;
+        return await this.authService.updateProfile(Number(userId), updateUserDto);
+    }
     async googleLogin() { }
-    async googleCallback() { }
+    googleCallback(req, res) {
+        const userData = req.user;
+        const jwtToken = userData?.token;
+        const frontendUrl = `${process.env.FRONTEND_URL}/google/success?token=${jwtToken}&user=${encodeURIComponent(JSON.stringify(userData))}`;
+        return res.redirect(frontendUrl);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -124,6 +134,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getProfile", null);
 __decorate([
+    (0, common_1.Patch)('profile'),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [updateUserDto_1.UpdateUserDto, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "updateProfile", null);
+__decorate([
     (0, common_1.Get)('google/login'),
     (0, common_1.UseGuards)(google_guard_1.GoogleAuthGuard),
     __metadata("design:type", Function),
@@ -133,9 +152,11 @@ __decorate([
 __decorate([
     (0, common_1.Get)('google/callback'),
     (0, common_1.UseGuards)(google_guard_1.GoogleAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
 ], AuthController.prototype, "googleCallback", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Authentication'),

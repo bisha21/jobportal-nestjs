@@ -5,16 +5,15 @@ import HeroSection from '@/components/home/hero';
 import TopCompanies from '@/components/home/topcompany';
 import JobCategories from '@/components/home/jobcategory';
 import Testimonials from '@/components/home/testnimonial';
-import ProtectedRoute from '@/components/protectedRoute';
 
 function Home() {
   return (
-    <ProtectedRoute allowedRoles={['PUBLIC']}>
+    <>
       <HeroSection />
       <TopCompanies />
       <JobCategories />
       <Testimonials />
-    </ProtectedRoute>
+    </>
   );
 }
 

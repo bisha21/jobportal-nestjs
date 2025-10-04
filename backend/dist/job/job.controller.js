@@ -130,7 +130,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('apply/:jobId'),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
-    (0, role_decorator_1.Role)(role_enum_1.Role.JOBSEEKER),
+    (0, role_decorator_1.Role)(role_enum_1.Role.JOBSEEKER, role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('jobId', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Req)()),

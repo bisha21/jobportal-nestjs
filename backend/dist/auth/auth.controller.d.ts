@@ -5,6 +5,8 @@ import { ForgetPasswordDto } from './dto/forgetPassword.dto';
 import { VerifyOtpDto } from './dto/verifyotp.dto';
 import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { type RequestWithUser } from 'src/common/guards/auth/auth.guard';
+import { type Response } from 'express';
+import { UpdateUserDto } from './dto/updateUserDto';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
@@ -83,6 +85,21 @@ export declare class AuthController {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    updateProfile(updateUserDto: UpdateUserDto, req: RequestWithUser): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     googleLogin(): Promise<void>;
-    googleCallback(): Promise<void>;
+    googleCallback(req: RequestWithUser, res: Response): void;
 }

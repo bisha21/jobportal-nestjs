@@ -7,6 +7,7 @@ import { ForgetPasswordDto } from './dto/forgetPassword.dto';
 import { VerifyOtpDto } from './dto/verifyotp.dto';
 import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { CreateOAuthUserDto } from './dto/createoauth.dto';
+import { UpdateUserDto } from './dto/updateUserDto';
 export declare class AuthService {
     private prisma;
     private jwtService;
@@ -117,6 +118,21 @@ export declare class AuthService {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    updateResume(userId: number, resumeUrl: string): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     findUserByEmail(email: string): Promise<{
         fullName: string;
         email: string;
@@ -132,4 +148,19 @@ export declare class AuthService {
         createdAt: Date;
         updatedAt: Date;
     } | null>;
+    updateProfile(userId: number, updateUserDto: UpdateUserDto): Promise<{
+        fullName: string;
+        email: string;
+        password: string;
+        resume: string | null;
+        profile: string | null;
+        phoneNumber: string;
+        bio: string | null;
+        otp: number | null;
+        id: number;
+        role: import("generated/prisma").$Enums.Role;
+        otpExpiry: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }
