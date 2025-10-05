@@ -1,6 +1,6 @@
-// import { TDeleteItem } from '../api/mutations/delete.mutation';
+import { TDeleteItem } from '@/services/mutations/delete-mutatuin';
 import { TModalKeys } from '../modals/data';
-// import { TBookingsResponse, TRoomResponse } from './response.types';
+import { CompanyResponse } from '@/services/query/usecompany.query';
 
 export type ModalType<K extends TModalKeys> = {
   initiatorName?: string;
@@ -8,8 +8,8 @@ export type ModalType<K extends TModalKeys> = {
 };
 
 export interface TModalDataMap {
-//   DELETE_ITEM: {};
-
-
-
+  DELETE_ITEM: {
+    type: TDeleteItem['type'];
+  };
+  EDIT_COMPANY: CompanyResponse
 }

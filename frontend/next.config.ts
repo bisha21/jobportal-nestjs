@@ -8,6 +8,7 @@ const nextConfig = {
       'res.cloudinary.com',
       'www.google.com',
       'lh3.googleusercontent.com',
+      'www.vecteezy.com',
     ],
   },
 };
