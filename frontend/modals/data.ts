@@ -5,6 +5,9 @@ import LoginForm from '@/components/login';
 import RegistrationForm from '@/components/register';
 import { ModalType } from '@/types/modal.types';
 import ProfileUpdateForm from './profile/editprofile';
+import CreateCompanyForm from './company/add-company';
+import DeleteModal from './delete-modal';
+import EditCompany from './company/edit-company';
 
 type TModalData = {
   [key in TModalKeys]: {
@@ -14,15 +17,22 @@ type TModalData = {
 };
 
 export type TModalKeys =
+  | 'DELETE_ITEM'
   | 'SIGNUP_MODAL'
   | 'LOGIN_MODAL'
   | 'FORGOT_PASSWORD_MODAL'
   | 'RESET_PASSWORD_MODAL'
   | 'UPLOAD_RESUME_MODAL'
   | 'UPLOAD_PROFILE_MODAL'
-  | 'UPDATE_PROFILE_MODAL';
+  | 'UPDATE_PROFILE_MODAL'
+  | 'ADD_COMPANY'
+  |'EDIT_COMPANY';
 
 export const ModalData: TModalData = {
+  DELETE_ITEM: {
+    title: 'Delete',
+    component: DeleteModal,
+  },
   SIGNUP_MODAL: {
     title: 'SIGN_UP',
     component: RegistrationForm,
@@ -43,4 +53,13 @@ export const ModalData: TModalData = {
     title: 'UPDATE_PROFILE_MODAL',
     component: ProfileUpdateForm,
   },
+  ADD_COMPANY: {
+    title: 'ADD_COMPANY',
+    component: CreateCompanyForm,
+  },
+  EDIT_COMPANY: {
+    title: 'EDIT_COMPANY',
+    component: EditCompany,
+  },
+
 };

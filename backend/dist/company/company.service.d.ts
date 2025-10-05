@@ -6,9 +6,6 @@ export declare class CompanyService {
     constructor(prisma: DatabaseService);
     private validateOwnership;
     createCompany(createCompanyDto: CreateCompanyDto, ownerId: number): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -16,12 +13,12 @@ export declare class CompanyService {
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
     getAllCompanies(): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -29,12 +26,12 @@ export declare class CompanyService {
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }[]>;
     getCompanyById(companyId: number): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -42,12 +39,12 @@ export declare class CompanyService {
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
     deleteComapnyId(companyId: number, ownerId: number): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -55,12 +52,12 @@ export declare class CompanyService {
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
     updateCompany(companyId: number, updateCompanyDto: UpdateCompanyDto, ownerId: number): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -68,12 +65,12 @@ export declare class CompanyService {
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
     updateCompanyLogo(companyId: number, logoUrl: string): Promise<{
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -81,6 +78,9 @@ export declare class CompanyService {
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
 }

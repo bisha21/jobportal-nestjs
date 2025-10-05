@@ -1,11 +1,11 @@
-"use client"
+'use client';
 import { createContext, useState } from 'react';
 import { TModalKeys } from '../modals/data';
 
 type TModalState = {
   [key in TModalKeys]: {
     open: boolean;
-    initiatorName?: string;
+    initiatorName?: number;
     data?: any;
   };
 };
@@ -17,7 +17,7 @@ type TModalContext = {
     data,
   }: {
     key: TModalKeys;
-    initiatorName?: string;
+    initiatorName?: number;
     data?: any;
   }) => void;
   closeModal: (key: TModalKeys) => void;
@@ -34,7 +34,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     data,
   }: {
     key: TModalKeys;
-    initiatorName?: string;
+    initiatorName?: number;
     data?: any;
   }) => {
     setModals((prev) => ({

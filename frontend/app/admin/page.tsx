@@ -40,10 +40,8 @@ export default function AdminDashboardPage() {
     .slice(0, 5);
 
   return (
-    <DashboardLayout
-      userRole="ADMIN"
-      userName={user.name}
-      userEmail={user.email}
+    <div
+      className="flex-1 flex flex-col gap-4 bg-card p-8 rounded-md"
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -272,6 +270,6 @@ export default function AdminDashboardPage() {
           </Card>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

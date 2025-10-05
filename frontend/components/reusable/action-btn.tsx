@@ -1,10 +1,17 @@
-"use client"
-import { Pencil, Trash } from 'lucide-react';
+'use client';
+
+import { Pencil, Trash, MoreHorizontal, MoreVertical } from 'lucide-react';
 import { Button } from '../ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+} from '../ui/dropdown-menu';
 import { TModalKeys } from '../../modals/data';
 import useModalContext from '@/hooks/usemodal';
-import { useRouter } from 'next/router';
-
+import { useRouter } from 'next/navigation';
 
 type TActionButton<T> = {
   row: T;
@@ -13,100 +20,63 @@ type TActionButton<T> = {
     onPageUrl?: string;
   };
   delete?: {
-    type?: TDeleteItem['type'];
+    type?: string;
   };
 };
 
-// export function ActionButton<T extends { id: string }>({
-//   row,
-//   edit,
-//   delete: deleteProps,
-// }: TActionButton<T>) {
-//   const { openModal } = useModalContext();
-//   const navigate = useNavigate();
-//   return (
-//     <div className="flex gap-2">
-//       <Button
-//         size="sm"
-//         variant="secondary"
-//         className="text-white"
-//         onClick={() => {
-//           if (edit.onPageUrl) {
-//             navigate(`${edit.onPageUrl}/${row.id}`);
-//           } else {
-//             openModal({
-//               key: edit.key,
-//               initiatorName: row.id,
-//               data: row,
-//             });
-//           }
-//         }}
-//       >
-//         <Pencil />
-//       </Button>
-//       <Button
-//         size="sm"
-//         variant="destructive"
-//         onClick={() =>
-//           openModal({
-//             key: "DELETE_ITEM",
-//             initiatorName: row.id,
-//             data: { type: deleteProps.type },
-//           })
-//         }
-//       >
-//         <Trash />
-//       </Button>
-//     </div>
-//   );
-// }
-export function ActionButton<T extends { id: string }>({
+export function ActionButton<T extends { id: number }>({
   row,
   edit,
   delete: deleteProps,
 }: TActionButton<T>) {
   const { openModal } = useModalContext();
-  const router= useRouter();
+  const router = useRouter();
 
   return (
-    <div className="flex gap-2">
-      {edit && (
-        <Button
-          size="sm"
-          variant="secondary"
-          className="text-white"
-          onClick={() => {
-            if (edit.onPageUrl) {
-              router.push(`${edit.onPageUrl}/${row.id}`);
-            } else {
-              openModal({
-                key: edit.key,
-                initiatorName: row.id,
-                data: row,
-              });
-            }
-          }}
-        >
-          <Pencil />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <MoreVertical />
         </Button>
-      )}
+      </DropdownMenuTrigger>
 
-      {/* ✅ Render Delete button only if deleteProps exists */}
-      {deleteProps && (
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={() =>
-            openModal({
-              key: 'DELETE_ITEM',
-              initiatorName: row.id,
-              data: { type: deleteProps.type },
-            })
-          }
-        >
-          <Trash />
-        </Button>
-      )}
-    </div>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+        {edit && (
+          <DropdownMenuItem
+            onClick={() => {
+              if (edit.onPageUrl) {
+                router.push(`${edit.onPageUrl}/${row.id}`);
+              } else {
+                openModal({
+                  key: edit.key,
+                  initiatorName: row.id,
+                  data: row,
+                });
+              }
+            }}
+          >
+            <Pencil className="mr-2 h-4 w-4" />
+            Edit
+          </DropdownMenuItem>
+        )}
+
+        {deleteProps && (
+          <DropdownMenuItem
+            onClick={() =>
+              openModal({
+                key: 'DELETE_ITEM',
+                initiatorName: row.id,
+                data: { type: deleteProps.type },
+              })
+            }
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            Delete
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
