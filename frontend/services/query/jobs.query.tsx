@@ -70,7 +70,7 @@ export const useJobs = <T = Job[],>(
   );
 
   return useQuery<T>({
-    queryKey: ['jobs', cleanedParams],
+    queryKey: ['job', cleanedParams],
     queryFn: async () =>
       apiRequest('job', {
         method: 'GET',

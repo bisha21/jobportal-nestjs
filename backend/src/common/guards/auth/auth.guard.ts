@@ -48,7 +48,6 @@ export class JwtAuthGuard implements CanActivate {
       if (!user) {
         throw new UnauthorizedException('Unauthorized: User not found');
       }
-      console.log(user);
 
       // Attach user to request object
       request['user'] = user;

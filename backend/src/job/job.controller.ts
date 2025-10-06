@@ -52,11 +52,12 @@ export class JobController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateJob: updateJobDto,
   ) {
+    console.log("huhu",updateJob);
     return await this.jobService.updateJob(id, updateJob);
   }
   @Delete(':id')
   @UseGuards(authGuard.JwtAuthGuard, RoleGuard)
-  @Roles(Role.EMPLOYEE)
+  @Roles(Role.EMPLOYEE, Role.ADMIN)
   async deleteJob(@Param('id', ParseIntPipe) id: number) {
     return await this.jobService.deleteJob(id);
   }

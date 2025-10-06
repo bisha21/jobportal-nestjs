@@ -94,6 +94,7 @@ export class CompanyController {
     @Req() req: RequestWithUser,
   ) {
     const userId = req.user.id;
+    console.log("request body", updateCompanyDto);
     return await this.companyService.updateCompany(
       companyId,
       updateCompanyDto,

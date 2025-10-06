@@ -74,6 +74,7 @@ let JobController = class JobController {
         return await this.jobService.getSingleJob(id);
     }
     async updateJob(id, updateJob) {
+        console.log("huhu", updateJob);
         return await this.jobService.updateJob(id, updateJob);
     }
     async deleteJob(id) {
@@ -121,7 +122,7 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
-    (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE),
+    (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE, role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

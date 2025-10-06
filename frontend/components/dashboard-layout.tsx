@@ -55,7 +55,7 @@ export function DashboardLayout({
   const navItems: NavItem[] = [
     {
       title: 'Dashboard',
-      href: `${basePath}/dashboard`,
+      href: `${basePath}`,
       icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {

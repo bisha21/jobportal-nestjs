@@ -11,11 +11,11 @@ import {
   getFilteredRowModel,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { CardItem } from './CardItem';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { JobCard } from './job-card';
 
-interface DataCardGridProps<TData, TValue> {
+interface JobCardGridProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   functions?: {
@@ -27,18 +27,15 @@ interface DataCardGridProps<TData, TValue> {
       node: React.ReactNode;
     };
   };
-  renderCard?: (row: TData) => React.ReactNode;
 }
 
-export function DataCardGrid<TData, TValue>({
+export function JobCardGrid<TData, TValue>({
   columns,
   data,
   functions,
-  renderCard,
-}: DataCardGridProps<TData, TValue>) {
+}: JobCardGridProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -49,51 +46,41 @@ export function DataCardGrid<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
-      rowSelection,
     },
   });
 
   const filteredRows = table.getRowModel().rows;
 
   return (
-    <div className="grid">
-      {/* Search + Add */}
-      <div className="flex justify-between items-center mb-4">
-        {functions?.search && (
-          <Input
-            placeholder={functions.search.placeholder}
-            value={
-              (table
-                .getColumn(`${functions.search.name}`)
-                ?.getFilterValue() as string) ?? ''
-            }
-            onChange={(event) =>
-              table
-                .getColumn(`${functions.search.name || ''}`)
-                ?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        )}
-        {functions?.add?.node}
-      </div>
+    <div className="space-y-6  max-h-[70vh] overflow-y-scroll">
+      {/* Search Bar */}
+      {functions?.search && (
+        <Input
+          placeholder={functions.search.placeholder}
+          value={
+            (table
+              .getColumn(`${functions.search.name}`)
+              ?.getFilterValue() as string) ?? ''
+          }
+          onChange={(event) =>
+            table
+              .getColumn(`${functions.search.name || ''}`)
+              ?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm mb-4"
+        />
+      )}
 
-      {/* Cards Grid */}
+      {/* Card Grid */}
       <div className="grid gap-6 ">
         {filteredRows.length ? (
-          filteredRows.map((row) => (
-            <div key={row.id}>
-              {renderCard ? (
-                renderCard(row.original)
-              ) : (
-                <CardItem row={row.original} columns={columns} />
-              )}
-            </div>
-          ))
+          filteredRows.map((row) => {
+            const job = row.original;
+            return <JobCard key={row.id} job={job} />;
+          })
         ) : (
           <p className="text-center text-muted-foreground py-10">
             No results found.

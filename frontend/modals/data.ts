@@ -8,6 +8,8 @@ import ProfileUpdateForm from './profile/editprofile';
 import CreateCompanyForm from './company/add-company';
 import DeleteModal from './delete-modal';
 import EditCompany from './company/edit-company';
+import CreateJobForm from './jobs/add-job';
+import EditJob from './jobs/edit-job';
 
 type TModalData = {
   [key in TModalKeys]: {
@@ -26,7 +28,9 @@ export type TModalKeys =
   | 'UPLOAD_PROFILE_MODAL'
   | 'UPDATE_PROFILE_MODAL'
   | 'ADD_COMPANY'
-  |'EDIT_COMPANY';
+  | 'EDIT_COMPANY'
+  | 'ADD_JOB'
+  | 'EDIT_JOB';
 
 export const ModalData: TModalData = {
   DELETE_ITEM: {
@@ -61,5 +65,12 @@ export const ModalData: TModalData = {
     title: 'EDIT_COMPANY',
     component: EditCompany,
   },
-
+  ADD_JOB: {
+    title: 'ADD_JOB',
+    component: CreateJobForm,
+  },
+  EDIT_JOB: {
+    title: 'EDIT_JOB',
+    component: EditJob,
+  },
 };

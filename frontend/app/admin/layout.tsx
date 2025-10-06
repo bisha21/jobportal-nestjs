@@ -12,7 +12,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const userEmail = user?.email;
 
   return (
-    <div>
+    <div >
       <DashboardLayout
         userRole={userRole}
         userName={userName}
@@ -20,7 +20,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       >
         <Navbar userName={userName} userEmail={userEmail} userAvatar="" />
 
-        {children}
+        <main className='overflow-y-scroll'>
+            {children}
+        </main>
       </DashboardLayout>
     </div>
   );
