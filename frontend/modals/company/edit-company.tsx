@@ -12,18 +12,15 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import FormInput from '@/components/reusable/form-input';
 import { useUpdateCompanyMutation } from '@/services/mutations/company.mutation';
-import { QueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 import useModalContext from '@/hooks/usemodal';
 
 export default function EditCompany({
   initiatorName,
   data,
 }: ModalType<'EDIT_COMPANY'>) {
-    console.log("my actual data",data)
+  console.log('my actual data', data);
   const { closeModal } = useModalContext();
   const { mutate: updateCompany, isPending } = useUpdateCompanyMutation();
-  const queryClient = new QueryClient();
 
   // Default form values from modal data
   const form = useForm<CreateCompanyInput>({
@@ -40,17 +37,12 @@ export default function EditCompany({
 
   const onSubmit = async (formData: CreateCompanyInput) => {
     await updateCompany(
-      { id: initiatorName, ...formData },
+      { id: initiatorName, data: formData },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['company'] });
-          toast.success('Company updated successfully');
-          closeModal('EDIT_COMPANY');
-        },
-        onError: (error: any) => {
-          toast.error(
-            error?.response?.data?.message || 'Failed to update company'
-          );
+          closeModal('ADD_COMPANY');
+
+          form.reset();
         },
       }
     );

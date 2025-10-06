@@ -39,6 +39,7 @@ let CompanyController = class CompanyController {
     }
     async updateCompany(companyId, updateCompanyDto, req) {
         const userId = req.user.id;
+        console.log("request body", updateCompanyDto);
         return await this.companyService.updateCompany(companyId, updateCompanyDto, userId);
     }
     async deleteCompany(companyId, req) {

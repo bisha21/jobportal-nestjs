@@ -10,10 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import FormInput from '@/components/reusable/form-input';
 import { useCreateCompanyMutation } from '@/services/mutations/company.mutation';
-import { QueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-
+import useModalContext from '@/hooks/usemodal';
 export default function CreateCompanyForm() {
+  const { closeModal } = useModalContext();
   const { mutate: AddCompany, isPaused } = useCreateCompanyMutation();
   const form = useForm<CreateCompanyInput>({
     resolver: zodResolver(createCompanySchema),
@@ -28,17 +27,11 @@ export default function CreateCompanyForm() {
   });
 
   const onSubmit = async (data: CreateCompanyInput) => {
-    const queryClient = new QueryClient();
     await AddCompany(data, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['company'] });
-        toast.success('Company created successfully');
+        closeModal('ADD_COMPANY');
+
         form.reset();
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.message || 'Failed to create company'
-        );
       },
     });
   };

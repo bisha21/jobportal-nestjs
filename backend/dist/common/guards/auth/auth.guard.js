@@ -35,7 +35,6 @@ let JwtAuthGuard = class JwtAuthGuard {
             if (!user) {
                 throw new common_1.UnauthorizedException('Unauthorized: User not found');
             }
-            console.log(user);
             request['user'] = user;
             return true;
         }

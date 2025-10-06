@@ -38,8 +38,8 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
   };
 
   return (
-    <nav className="border-b bg-card">
-      <div className="flex h-16 items-center justify-between px-6">
+    <nav className="border-b bg-card -mt-6 -ml-7">
+      <div className="flex h-24 items-center justify-between px-6">
         {/* Left side - can add logo or title here if needed */}
         <div className="flex-1" />
 

@@ -1,26 +1,35 @@
-"use client"
-import { useMutation } from '@tanstack/react-query';
-import { ApiError, apiRequest } from '../api';
-import { CreateCompanyInput } from '@/schemas/company';
+'use client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '../api';
+import { CreateCompanyInput } from '@/schemas/create-company';
+import { toast } from 'react-toastify';
 
+// ✅ Create Company
 export const useCreateCompanyMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: CreateCompanyInput) => {
-      try {
-        const response = await apiRequest('company', {
-          method: 'POST',
-          data,
-        });
-        return response;
-      } catch (error: unknown) {
-        // Ensure error is shaped as ApiError
-        throw error as ApiError;
-      }
+      const response = await apiRequest('company', {
+        method: 'POST',
+        data,
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['company'] });
+      toast.success('Company created successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to create company');
     },
   });
 };
 
+// ✅ Update Company
 export const useUpdateCompanyMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({
       id,
@@ -29,30 +38,39 @@ export const useUpdateCompanyMutation = () => {
       id: number;
       data: CreateCompanyInput;
     }) => {
-      try {
-        const response = await apiRequest(`company/${id}`, {
-          method: 'PATCH',
-          data,
-        });
-        return response;
-      } catch (error: unknown) {
-        throw error as ApiError;
-      }
+      const response = await apiRequest(`company/${id}`, {
+        method: 'PATCH',
+        data,
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['company'] });
+      toast.success('Company updated successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to update company');
     },
   });
 };
 
+// ✅ Delete Company
 export const useDeleteCompanyMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (id: number) => {
-      try {
-        const response = await apiRequest(`company/${id}`, {
-          method: 'DELETE',
-        });
-        return response;
-      } catch (error: unknown) {
-        throw error as ApiError;
-      }
+      const response = await apiRequest(`company/${id}`, {
+        method: 'DELETE',
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['company'] });
+      toast.success('Company deleted successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to delete company');
     },
   });
 };
