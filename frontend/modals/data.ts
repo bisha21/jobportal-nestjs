@@ -10,6 +10,8 @@ import DeleteModal from './delete-modal';
 import EditCompany from './company/edit-company';
 import CreateJobForm from './jobs/add-job';
 import EditJob from './jobs/edit-job';
+import CreateCategoryForm from './category/add-category';
+import EditCategory from './category/edit-category';
 
 type TModalData = {
   [key in TModalKeys]: {
@@ -30,7 +32,9 @@ export type TModalKeys =
   | 'ADD_COMPANY'
   | 'EDIT_COMPANY'
   | 'ADD_JOB'
-  | 'EDIT_JOB';
+  | 'EDIT_JOB'
+  | 'ADD_CATEGORY'
+  | 'EDIT_CATEGORY';
 
 export const ModalData: TModalData = {
   DELETE_ITEM: {
@@ -72,5 +76,13 @@ export const ModalData: TModalData = {
   EDIT_JOB: {
     title: 'EDIT_JOB',
     component: EditJob,
+  },
+  ADD_CATEGORY: {
+    title: 'ADD_CATEGORY',
+    component: CreateCategoryForm,
+  },
+  EDIT_CATEGORY: {
+    title: 'EDIT_CATEGORY',
+    component: EditCategory,
   },
 };

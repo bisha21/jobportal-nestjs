@@ -1,12 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiRequest } from '../api';
-
-interface Category {
-  categoryName: string;
-}
+import { CategoryResponse } from '@/components/category/column';
 
 export const useCategoryQuery = () => {
-  return useQuery<Category>({
+  return useQuery<CategoryResponse[]>({
     queryKey: ['category'],
     queryFn: async () => apiRequest('category', { method: 'GET' }),
   });

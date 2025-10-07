@@ -6,10 +6,10 @@ export declare class CompanyController {
     private readonly companyService;
     constructor(companyService: CompanyService);
     createCompany(createCompanyDto: CreateCompanyDto, req: RequestWithUser): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         location: string;
         website: string | null;
@@ -19,10 +19,10 @@ export declare class CompanyController {
         ownerId: number;
     }>;
     getAllCompanies(): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         location: string;
         website: string | null;
@@ -32,10 +32,10 @@ export declare class CompanyController {
         ownerId: number;
     }[]>;
     getCompanyById(companyId: number): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         location: string;
         website: string | null;
@@ -45,10 +45,10 @@ export declare class CompanyController {
         ownerId: number;
     }>;
     updateCompany(companyId: number, updateCompanyDto: UpdateCompanyDto, req: RequestWithUser): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         location: string;
         website: string | null;
@@ -58,10 +58,10 @@ export declare class CompanyController {
         ownerId: number;
     }>;
     deleteCompany(companyId: number, req: RequestWithUser): Promise<{
-        name: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string;
         location: string;
         website: string | null;

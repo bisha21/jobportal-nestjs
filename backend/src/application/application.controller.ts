@@ -47,7 +47,7 @@ export class ApplicationController {
   @ApiResponse({ status: 200, description: 'Application retrieved' })
   @ApiResponse({ status: 404, description: 'Application not found' })
   async getApplicationById(@Param('id', ParseIntPipe) id: number) {
-    return await this.applicationService.getApplicationById(id);
+    return await this.applicationService.getApplicationsById(id);
   }
 
   @Patch(':id')

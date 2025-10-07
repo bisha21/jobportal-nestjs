@@ -67,19 +67,32 @@ let ApplicationService = class ApplicationService {
     async getAllApplications() {
         return await this.prisma.application.findMany({
             include: {
-                user: true,
-                job: true,
+                user: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        email: true,
+                        resume: true,
+                    },
+                },
+                job: {
+                    select: {
+                        id: true,
+                        title: true,
+                        location: true,
+                        type: true,
+                        company: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
             },
         });
-    }
-    async getApplicationById(applicationId) {
-        const application = await this.prisma.application.findUnique({
-            where: { id: applicationId },
-            include: { user: true, job: true },
-        });
-        if (!application)
-            throw new common_1.NotFoundException('Application not found');
-        return application;
     }
     async updateApplication(applicationId, updateApplicationDto) {
         const app = await this.prisma.application.findUnique({
@@ -131,6 +144,20 @@ let ApplicationService = class ApplicationService {
         return await this.prisma.application.findMany({
             where: { jobId },
             include: { user: true },
+        });
+    }
+    async getApplicationsById(id) {
+        const application = await this.prisma.application.findUnique({
+            where: { id },
+        });
+        if (!application)
+            throw new common_1.NotFoundException('Application not found');
+        return await this.prisma.application.findUnique({
+            where: { id },
+            include: {
+                user: true,
+                job: true
+            },
         });
     }
 };
