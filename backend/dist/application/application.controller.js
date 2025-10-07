@@ -27,7 +27,7 @@ let ApplicationController = class ApplicationController {
         return await this.applicationService.getAllApplications();
     }
     async getApplicationById(id) {
-        return await this.applicationService.getApplicationById(id);
+        return await this.applicationService.getApplicationsById(id);
     }
     async updateApplication(id, updateApplicationDto) {
         return await this.applicationService.updateApplication(id, updateApplicationDto);

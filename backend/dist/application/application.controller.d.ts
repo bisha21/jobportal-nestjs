@@ -8,33 +8,17 @@ export declare class ApplicationController {
         user: {
             fullName: string;
             email: string;
-            password: string;
             resume: string | null;
-            profile: string | null;
-            phoneNumber: string;
-            bio: string | null;
-            otp: number | null;
             id: number;
-            role: import("generated/prisma").$Enums.Role;
-            otpExpiry: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         job: {
+            company: {
+                name: string;
+            };
             id: number;
-            createdAt: Date;
-            updatedAt: Date;
             title: string;
-            description: string;
-            position: string;
             location: string | null;
-            experience: string;
-            salaryMin: number;
-            salaryMax: number;
             type: import("generated/prisma").$Enums.JobType;
-            deadline: Date | null;
-            companyId: number;
-            categoryId: number;
         };
     } & {
         id: number;
@@ -45,7 +29,7 @@ export declare class ApplicationController {
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
     })[]>;
-    getApplicationById(id: number): Promise<{
+    getApplicationById(id: number): Promise<({
         user: {
             fullName: string;
             email: string;
@@ -85,7 +69,7 @@ export declare class ApplicationController {
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-    }>;
+    }) | null>;
     updateApplication(id: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         createdAt: Date;

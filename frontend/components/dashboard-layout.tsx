@@ -27,6 +27,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Image from 'next/image';
+import logof from '@/public/logoo.jpg';
 
 interface NavItem {
   title: string;
@@ -74,8 +76,8 @@ export function DashboardLayout({
       icon: <FileText className="h-5 w-5" />,
     },
     {
-      title: 'Categories',
-      href: `${basePath}/categories`,
+      title: 'Category',
+      href: `${basePath}/category`,
       icon: <FolderTree className="h-5 w-5" />,
     },
     {
@@ -122,11 +124,20 @@ export function DashboardLayout({
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
       <aside className="w-64 border-r bg-card flex flex-col">
-        <div className="p-6 border-b">
-          <h1 className="text-xl font-bold text-foreground">
+        <div className="px-6 py-1 border-b">
+          <div className='flex items-center justify-center'>
+            <Image
+            src={logof}
+            alt="Logo"
+            width={600}
+            height={600}
+            className="w-24 h-24 rounded-full border-2"
+          />
+          </div>
+          <h1 className="text-md font-semibold text-foreground text-center">
             {isAdmin ? 'Admin Portal' : 'Employee Portal'}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-muted-foreground mt-1 text-center">
             Job Portal System
           </p>
         </div>
