@@ -23,7 +23,7 @@ export const jobColumns: ColumnDef<Job>[] = [
   },
   {
     id: 'deadline',
-    header: 'Deadline',
+header: 'Deadline',
     accessorFn: (row) => new Date(row.deadline).toLocaleDateString(),
   },
   {
@@ -32,6 +32,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     cell: ({ row }) => (
       <ActionButton<Job>
         row={row.original}
+        view={{ onPageUrl: '/admin/jobs' }}
         edit={{ key: 'EDIT_JOB' }}
         delete={{ type: 'job' }}
       />

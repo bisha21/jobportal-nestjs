@@ -14,8 +14,6 @@ export declare class JobskillService {
         }[];
     } & {
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string;
         position: string;
@@ -27,6 +25,8 @@ export declare class JobskillService {
         deadline: Date | null;
         companyId: number;
         categoryId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }) | null>;
     getJobSkills(jobId: number): Promise<{
         id: number;
@@ -49,4 +49,9 @@ export declare class JobskillService {
         skill: string;
         jobId: number;
     }>;
+    topSkills(): Promise<{
+        skill: string;
+        demand: number;
+        jobs: number;
+    }[]>;
 }

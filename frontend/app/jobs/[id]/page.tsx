@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import {
   Calendar,
   Briefcase,
@@ -9,9 +10,8 @@ import {
   DollarSign,
   MapPin,
   Check,
-  Facebook,
-  Twitter,
-  Linkedin,
+  MoveLeft,
+  ArrowLeft,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,22 +20,26 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { JobCard } from '@/components/jobs/job-card';
 import { useJob, useJobs, Job, singleJob } from '@/services/query/jobs.query';
-import { use } from 'react';
 import { useApplyApplication } from '@/services/mutations/apply.mutation';
+import Link from 'next/link';
 
-export default function JobDetailsPage({ params }: { params: { id: string } }) {
-  const { id } = use(params);
+export default function JobDetailsPage({
+  params,
+  adminView = false, // 👈 default = user view
+}: {
+  params: { id: string };
+  adminView?: boolean;
+}) {
+  const { id } = params;
   const jobId = Number(id);
-  const { mutate, isLoading, error } = useApplyApplication();
+  const { mutate, isLoading } = useApplyApplication();
 
-  // Fetch current job
   const {
     data: job,
     isLoading: jobLoading,
     error: jobError,
   } = useJob<singleJob>(jobId);
 
-  // Fetch related jobs (same category, exclude current job)
   const { data: relatedJobs, isLoading: relatedLoading } = useJobs<Job[]>({
     categoryId: job?.categoryId,
     limit: 3,
@@ -51,23 +55,27 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
   });
 
   const handleSubmit = () => {
-    mutate(
-      { jobId },
-      {
-        onSuccess: (data) => {
-          console.log('Application submitted successfully:', data);
-        },
-        onError: (error) => {
-          console.error('Error applying for job:', error);
-        },
-      }
-    );
+    mutate({ jobId });
   };
+
   return (
-    <div className="min-h-screen">
+    <div
+      className={`${
+        adminView
+          ? 'max-h-[80vh] overflow-y-auto' // 👈 Admin view
+          : 'min-h-screen overflow-y-scroll' // 👈 User default
+      }`}
+    >
       {/* Hero Section */}
-      <section className="bg-primary py-12 text-primary-foreground">
-        <div className="container mx-auto px-4">
+      <section className="bg-primary text-primary-foreground">
+        {adminView && 
+        <Button variant="outline" size="icon" asChild>
+            <Link href="/admin/jobs">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>}
+        
+        <div className="container mx-auto px-4 py-12">
           <h1 className="text-4xl font-bold text-center">Job Details</h1>
         </div>
       </section>
@@ -76,7 +84,6 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Job Description */}
             <Card>
               <CardHeader>
                 <CardTitle>{job.title}</CardTitle>
@@ -88,7 +95,6 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
               </CardContent>
             </Card>
 
-            {/* Responsibilities */}
             {job.jobSkills?.length > 0 && (
               <Card>
                 <CardHeader>
@@ -96,7 +102,7 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {job.jobSkills.map((res, index: number) => (
+                    {job.jobSkills.map((res, index) => (
                       <li key={index} className="flex gap-3">
                         <Check className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
                         <span className="text-muted-foreground">
@@ -109,57 +115,14 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
               </Card>
             )}
 
-            {/* Tags */}
             <Card>
               <CardHeader>
                 <CardTitle>Tags</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="px-4 py-2 text-sm bg-secondary hover:bg-secondary/80"
-                  >
-                    {job.category.categoryName}
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="px-4 py-2 text-sm bg-secondary hover:bg-secondary/80"
-                  >
-                    {job.company.name}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Share */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Share Job</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full bg-transparent"
-                  >
-                    <Facebook className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full bg-transparent"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full bg-transparent"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                  </Button>
+                  <Badge variant="secondary">{job.category.categoryName}</Badge>
+                  <Badge variant="secondary">{job.company.name}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -187,9 +150,7 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                   <Briefcase className="h-5 w-5 text-teal-600 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium">Job Type</p>
-                    <p className="text-sm text-muted-foreground">
-                      {job.type === 'FULLTIME' ? 'Full Time' : job.type}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{job.type}</p>
                   </div>
                 </div>
 
@@ -226,7 +187,7 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                 <div className="flex items-start gap-3">
                   <DollarSign className="h-5 w-5 text-teal-600 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium">Offered Salary</p>
+                    <p className="text-sm font-medium">Salary</p>
                     <p className="text-sm text-muted-foreground">
                       ${job.salaryMin.toLocaleString()} - $
                       {job.salaryMax.toLocaleString()}
@@ -244,53 +205,41 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
               </CardContent>
-              <Button
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-                onClick={handleSubmit}
-              >
-                {isLoading ? 'Applying...' : 'Apply Now'}
-              </Button>
-            </Card>
-
-            {/* Send Message */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Send Us Message</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Input placeholder="Email Address" type="email" />
-                <Input placeholder="Phone Number" type="tel" />
-                <Textarea placeholder="Text Message" rows={4} />
-                <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white">
-                  Send Message
+              {!adminView && ( // 👈 Hide "Apply Now" in admin
+                <Button
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                  onClick={handleSubmit}
+                >
+                  {isLoading ? 'Applying...' : 'Apply Now'}
                 </Button>
-              </CardContent>
+              )}
             </Card>
           </div>
         </div>
 
-        {/* Related Jobs */}
-        <div className="mt-16">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">Related Jobs</h2>
-              <p className="text-muted-foreground">Jobs you may also like</p>
+        {!adminView && ( // 👈 Hide "Related Jobs" for admin
+          <div className="mt-16">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">Related Jobs</h2>
+                <p className="text-muted-foreground">Jobs you may also like</p>
+              </div>
+              <Button className="bg-teal-600 hover:bg-teal-700 text-white">
+                Post Resume
+              </Button>
             </div>
-            <Button className="bg-teal-600 hover:bg-teal-700 text-white">
-              Post Resume
-            </Button>
-          </div>
 
-          <div className="space-y-4">
-            {!relatedLoading &&
-              relatedJobs &&
-              relatedJobs
-                .filter((r) => r.id !== job.id)
-                .map((relatedJob) => (
-                  <JobCard key={relatedJob.id} job={relatedJob} />
-                ))}
+            <div className="space-y-4">
+              {!relatedLoading &&
+                relatedJobs &&
+                relatedJobs
+                  .filter((r) => r.id !== job.id)
+                  .map((relatedJob) => (
+                    <JobCard key={relatedJob.id} job={relatedJob} />
+                  ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
