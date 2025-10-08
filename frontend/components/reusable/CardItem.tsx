@@ -1,93 +1,64 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import Image from 'next/image';
-import { Briefcase, Clock, DollarSign, MapPin, Bookmark } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { LucideIcon } from 'lucide-react';
 
-interface CardItemProps<T> {
-  row: T;
-  columns: any[];
-}
+type QuickAction = {
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  textColor: string;
+  href?: string;
+};
 
-export function CardItem<T>({ row, columns }: CardItemProps<T>) {
+export default function QuickActions({
+  quickActions,
+}: {
+  quickActions: QuickAction[];
+}) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between gap-4">
-          {/* Company Logo */}
-          {row.company?.logoUrl && (
-            <div className="relative w-20 h-20 flex-shrink-0">
-              <Image
-                src={row.company.logoUrl}
-                alt={row.company.name}
-                fill
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
-          )}
+    <div className="mb-8">
+      <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4">
+        Quick Actions
+      </h2>
 
-          {/* Card Details */}
-          <div className="flex-1 space-y-3">
-            <div>
-              <h3 className="text-xl font-semibold mb-1">{row.title}</h3>
-              <p className="text-sm text-muted-foreground">
-                {row.company?.name}
-              </p>
-            </div>
-
-            {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {row.category?.categoryName && (
-                <div className="flex items-center gap-1.5">
-                  <Briefcase className="h-4 w-4 text-teal-600" />
-                  <span>{row.category.categoryName}</span>
-                </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {quickActions.map((action, index) => {
+          const Icon = action.icon;
+          return (
+            <Card
+              key={index}
+              className={cn(
+                'cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
+                action.color
               )}
-              {row.type && (
-                <div className="flex items-center gap-1.5">
-                  <Clock className="h-4 w-4 text-teal-600" />
-                  <span>
-                    {row.type === 'FULLTIME'
-                      ? 'Full time'
-                      : row.type === 'PARTTIME'
-                      ? 'Part time'
-                      : row.type}
-                  </span>
-                </div>
-              )}
-              {row.salaryMin && row.salaryMax && (
-                <div className="flex items-center gap-1.5">
-                  <DollarSign className="h-4 w-4 text-teal-600" />
-                  <span>
-                    ${row.salaryMin}-{row.salaryMax}
-                  </span>
-                </div>
-              )}
-              {row.location && (
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-teal-600" />
-                  <span>{row.location}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex flex-col items-end gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground"
             >
-              <Bookmark className="h-5 w-5" />
-            </Button>
-            <Button className="bg-teal-600 hover:bg-teal-700 text-white">
-              Job Details
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+              <Link href={action.href || '#'}>
+                <CardHeader>
+                  <CardTitle
+                    className={cn(action.textColor, 'flex items-center gap-3')}
+                  >
+                    <div
+                      className="p-2 rounded-lg"
+                      style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    {action.label}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Click to explore
+                  </p>
+                </CardContent>
+              </Link>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
   );
 }

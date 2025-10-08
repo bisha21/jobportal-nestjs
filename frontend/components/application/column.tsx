@@ -94,6 +94,7 @@ export const applicationColumns: ColumnDef<Application>[] = [
         row={row.original}
         edit={{ key: 'EDIT_APPLICATION' }}
         delete={{ type: 'application' }}
+        view={{ onPageUrl: '/admin/applications' }}
       />
     ),
   },

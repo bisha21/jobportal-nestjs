@@ -20,6 +20,7 @@ import {
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { Input } from '../ui/input';
+import { Skeleton } from '../ui/skeleton';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -126,7 +127,12 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  <div className="p-6 space-y-4">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-10 w-3/4" />
+                  </div>
+                  ;
                 </TableCell>
               </TableRow>
             )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Pencil, Trash, MoreHorizontal, MoreVertical } from 'lucide-react';
+import { Pencil, Trash, Eye, MoreVertical } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -15,6 +15,9 @@ import { useRouter } from 'next/navigation';
 
 type TActionButton<T> = {
   row: T;
+  view?: {
+    onPageUrl?: string; // if given, will redirect
+  };
   edit?: {
     key: TModalKeys;
     onPageUrl?: string;
@@ -26,6 +29,7 @@ type TActionButton<T> = {
 
 export function ActionButton<T extends { id: number }>({
   row,
+  view,
   edit,
   delete: deleteProps,
 }: TActionButton<T>) {
@@ -42,6 +46,15 @@ export function ActionButton<T extends { id: number }>({
 
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+        {view?.onPageUrl && (
+          <DropdownMenuItem
+            onClick={() => router.push(`${view.onPageUrl}/${row.id}`)}
+          >
+            <Eye className="mr-2 h-4 w-4" />
+            View
+          </DropdownMenuItem>
+        )}
 
         {edit && (
           <DropdownMenuItem

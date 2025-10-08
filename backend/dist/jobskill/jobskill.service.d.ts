@@ -49,4 +49,9 @@ export declare class JobskillService {
         skill: string;
         jobId: number;
     }>;
+    topSkills(): Promise<{
+        skill: string;
+        demand: number;
+        jobs: number;
+    }[]>;
 }

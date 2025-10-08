@@ -65,6 +65,25 @@ let JobskillService = class JobskillService {
             throw new common_1.NotFoundException('Skill not found');
         return this.prisma.jobSkill.delete({ where: { id: skillId } });
     }
+    async topSkills() {
+        const skills = await this.prisma.jobSkill.groupBy({
+            by: ["skill"],
+            _count: {
+                jobId: true,
+            },
+            orderBy: {
+                _count: {
+                    jobId: "desc",
+                },
+            },
+            take: 10,
+        });
+        return skills.map((s) => ({
+            skill: s.skill,
+            demand: s._count.jobId,
+            jobs: s._count.jobId,
+        }));
+    }
 };
 exports.JobskillService = JobskillService;
 exports.JobskillService = JobskillService = __decorate([

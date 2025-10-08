@@ -63,4 +63,25 @@ export class JobskillService {
 
     return this.prisma.jobSkill.delete({ where: { id: skillId } });
   }
+
+   async topSkills (){
+    const skills = await this.prisma.jobSkill.groupBy({
+    by: ["skill"],
+    _count: {
+      jobId: true,
+    },
+    orderBy: {
+      _count: {
+        jobId: "desc",
+      },
+    },
+    take: 10, // top 10 skills
+  });
+
+  return skills.map((s) => ({
+    skill: s.skill,
+    demand: s._count.jobId, // how many jobs require this skill
+    jobs: s._count.jobId,
+  }));
+  }
 }

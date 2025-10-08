@@ -11,8 +11,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, Sun, Moon, LogOut } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { useState } from 'react';
 
 interface NavbarProps {
   userName: string;
@@ -21,7 +21,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { setTheme } = useTheme();
 
   const getInitials = (name: string) => {
     return name
@@ -29,12 +29,6 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
       .map((n) => n[0])
       .join('')
       .toUpperCase();
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.classList.toggle('dark');
   };
 
   return (
@@ -48,7 +42,7 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
           {/* User Avatar and Name */}
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={userAvatar|| '/placeholder.svg'} />
+              <AvatarImage src={userAvatar || '/placeholder.svg'} />
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {getInitials(userName)}
               </AvatarFallback>
@@ -84,19 +78,30 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Theme Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9"
-            onClick={toggleTheme}
-          >
-            {theme === 'light' ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9 relative"
+              >
+                <Sun className="h-5 w-5" />
+                <Moon className="absolute h-5 w-5" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTheme('light')}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('dark')}>
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('system')}>
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Logout */}
           <Button variant="ghost" size="icon" className="h-9 w-9">

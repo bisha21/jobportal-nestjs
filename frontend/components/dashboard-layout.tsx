@@ -125,14 +125,14 @@ export function DashboardLayout({
       {/* Sidebar */}
       <aside className="w-64 border-r bg-card flex flex-col">
         <div className="px-6 py-1 border-b">
-          <div className='flex items-center justify-center'>
+          <div className="flex items-center justify-center">
             <Image
-            src={logof}
-            alt="Logo"
-            width={600}
-            height={600}
-            className="w-24 h-24 rounded-full border-2"
-          />
+              src={logof}
+              alt="Logo"
+              width={600}
+              height={600}
+              className="w-24 h-24 rounded-full border-2"
+            />
           </div>
           <h1 className="text-md font-semibold text-foreground text-center">
             {isAdmin ? 'Admin Portal' : 'Employee Portal'}

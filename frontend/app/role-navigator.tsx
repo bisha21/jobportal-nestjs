@@ -5,6 +5,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
 import Navbar from '@/components/navbar';
 import ProtectedRoute from '@/components/protectedRoute';
+import { Socket } from 'socket.io-client';
+import { SocketProvider } from '@/context/socket-context';
 
 type RoleNavigatorProps = {
   children: ReactNode;
@@ -43,11 +45,14 @@ export default function RoleNavigatorWithProtection({
       {(!user || user.role === 'JOBSEEKER') && <Navbar />}
 
       {/* Make home page public */}
-      {pathname === '/'|| pathname === '/about'|| pathname === '/contact' || pathname === '/jobs' ? (
+      {pathname === '/' ||
+      pathname === '/about' ||
+      pathname === '/contact' ||
+      pathname === '/jobs' ? (
         <>{children}</>
       ) : (
         <ProtectedRoute allowedRoles={['ADMIN', 'EMPLOYEE', 'JOBSEEKER']}>
-          {children}
+          <SocketProvider>{children}</SocketProvider>
         </ProtectedRoute>
       )}
     </>

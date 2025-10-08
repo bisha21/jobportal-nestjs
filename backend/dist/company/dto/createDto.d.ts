@@ -6,4 +6,5 @@ export declare class CreateCompanyDto {
     industry: string;
     companySize: string;
     logoUrl?: string;
+    createdAt?: string;
 }

@@ -9,6 +9,9 @@ import { CreateMessageDto } from './dto/createMessage.dto';
 export class MessageService {
   constructor(private readonly prisma: DatabaseService) {}
 
+  /**
+   * Create a conversation for a job with participants
+   */
   async createConversation(
     createConversationDto: CreateConversationDto,
     userId: number,
@@ -19,10 +22,11 @@ export class MessageService {
       where: { id: jobId },
       include: { company: true },
     });
-    if (!job) throw new NotFoundException('Job is not found');
+    if (!job) throw new NotFoundException('Job not found');
 
     const employeeId = job.company.ownerId;
 
+    // Check if conversation already exists
     let conversation = await this.prisma.conversation.findFirst({
       where: {
         jobId,
@@ -101,8 +105,24 @@ export class MessageService {
     return conversation;
   }
 
+  /**
+   * Send a message in an existing conversation
+   */
   async sendMessage(createMessageDto: CreateMessageDto, userId: number) {
     const { receiverId, conversationId, content } = createMessageDto;
+
+    if (!receiverId || !conversationId) {
+      throw new NotFoundException('receiverId or conversationId missing');
+    }
+
+    const conversationExists = await this.prisma.conversation.findUnique({
+      where: { id: conversationId },
+    });
+
+    if (!conversationExists) {
+      throw new NotFoundException('Conversation not found');
+    }
+
     const message = await this.prisma.message.create({
       data: {
         senderId: userId,
@@ -111,12 +131,21 @@ export class MessageService {
         content,
       },
     });
+
     return message;
   }
 
+  /**
+   * Get all messages of a conversation
+   */
+  async getAllMessageByConversation(conversationId: number) {
+    const conversation = await this.prisma.conversation.findUnique({
+      where: { id: conversationId },
+    });
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
 
-  async getAllMessageByConversation(conversationId:number)
-  {
     const messages = await this.prisma.message.findMany({
       where: { conversationId },
       select: {
@@ -128,7 +157,9 @@ export class MessageService {
         createdAt: true,
         updatedAt: true,
       },
+      orderBy: { createdAt: 'asc' }, // chronological order
     });
-    return messages
+
+    return messages;
   }
 }

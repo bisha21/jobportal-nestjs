@@ -17,6 +17,7 @@ import { NotificationModule } from './notification/notification.module';
 import { MessageModule } from './message/message.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { CategoryModule } from './category/category.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CategoryModule } from './category/category.module';
     MessageModule,
     FavoriteModule,
     CategoryModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],
