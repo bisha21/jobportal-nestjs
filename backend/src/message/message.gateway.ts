@@ -15,15 +15,12 @@ import { CreateMessageDto } from './dto/createMessage.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 
-// Extend Socket to include our user
 interface AuthenticatedSocket extends Socket {
-  user?: { id: number; email: string }; // you can add more fields if needed
+  user?: { id: number; email: string };
 }
 
 @WebSocketGateway({
-  cors: {
-    origin: '*', // allow all origins for dev
-  },
+  cors: { origin: '*' },
 })
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -36,19 +33,28 @@ export class MessageGateway
     private readonly jwtService: JwtService,
   ) {}
 
-   handleConnection(client: AuthenticatedSocket) {
+  handleConnection(client: AuthenticatedSocket) {
+    console.log('🔹 New connection attempt:', {
+      // clientId: client,
+      handshakeAuth: client.handshake,
+      handshakeQuery: client.handshake.query,
+      handshakeHeaders: client.handshake.headers,
+    });
+
     try {
-      const token =
-         (client.handshake.query?.token as string) ||
-        client.handshake.auth?.token ||
+      const tokenRaw =
+        (client.handshake.auth?.token as string) ||
+        client.handshake.query?.token ||
         client.handshake.headers.authorization;
 
-      if (!token) throw new UnauthorizedException('No token provided');
+      if (!tokenRaw) throw new UnauthorizedException('No token provided');
 
-      const jwt =  token.replace('Bearer ', '');
-      const payload = this.jwtService.verify(jwt as string);
+      const tokenString = Array.isArray(tokenRaw) ? tokenRaw[0] : tokenRaw;
+      const token = tokenString.replace(/^Bearer\s/, '');
 
-      client.user = { id: payload.sub, email: payload.email };
+      const payload = this.jwtService.verify(token);
+
+      client.user = { id: payload.userId, email: payload.email }; // <-- FIXED
       console.log(
         `✅ User ${client.user.id} connected via socket ${client.id}`,
       );
@@ -59,9 +65,7 @@ export class MessageGateway
   }
 
   handleDisconnect(client: AuthenticatedSocket) {
-    console.log(
-      `❌ User ${client.user?.id || 'Unknown'} disconnected: ${client.id}`,
-    );
+    console.log('hahahaha', client);
   }
 
   @SubscribeMessage('sendMessage')
@@ -69,6 +73,9 @@ export class MessageGateway
     @MessageBody() createMessageDto: CreateMessageDto,
     @ConnectedSocket() client: AuthenticatedSocket,
   ) {
+    console.log('🔹 sendMessage called with payload:', createMessageDto);
+    console.log('🔹 User sending message:', client.user);
+
     try {
       if (!client.user)
         throw new UnauthorizedException('User not authenticated');
@@ -78,10 +85,15 @@ export class MessageGateway
         client.user.id,
       );
 
-      // Emit only to the conversation room
+      console.log('✅ Message created:', message);
+
       this.server
         .to(`conversation_${createMessageDto.conversationId}`)
         .emit('newMessage', message);
+
+      console.log(
+        `📤 Message emitted to conversation_${createMessageDto.conversationId}`,
+      );
 
       return { status: 'ok', message };
     } catch (err) {
@@ -95,6 +107,9 @@ export class MessageGateway
     @MessageBody() conversationId: number,
     @ConnectedSocket() client: AuthenticatedSocket,
   ) {
+    console.log('🔹 joinConversationRoom called with:', conversationId);
+    console.log('🔹 User joining room:', client.user);
+
     try {
       if (!client.user)
         throw new UnauthorizedException('User not authenticated');

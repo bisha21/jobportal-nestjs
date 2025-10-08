@@ -19,6 +19,7 @@ class CreateCompanyDto {
     industry;
     companySize;
     logoUrl;
+    createdAt = new Date().toISOString();
 }
 exports.CreateCompanyDto = CreateCompanyDto;
 __decorate([
@@ -56,4 +57,9 @@ __decorate([
     (0, class_validator_1.IsUrl)(),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "logoUrl", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "createdAt", void 0);
 //# sourceMappingURL=createDto.js.map
