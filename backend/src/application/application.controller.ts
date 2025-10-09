@@ -86,4 +86,17 @@ export class ApplicationController {
     const userId = req.user.id;
     return await this.applicationService.getApplicationsByUser(userId);
   }
+  @UseGuards(JwtAuthGuard)
+  @Get('check/:jobId')
+  async checkIfApplied(
+    @Param('jobId', ParseIntPipe) jobId: number,
+    @Req() req: RequestWithUser,
+  ) {
+    const userId = req.user.id;
+    const isApplied = await this.applicationService.checkIfApplied(
+      userId,
+      jobId,
+    );
+    return { isApplied };
+  }
 }

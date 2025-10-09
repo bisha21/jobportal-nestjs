@@ -1,19 +1,30 @@
 'use client';
 
 import { connectSocket, getSocket } from '@/lib/scoket';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 
 type Message = {
   id?: number;
   content: string;
   sender?: { id: number; email: string };
+  conversationId?: number;
 };
 
 type TSocketContext = {
   socket: ReturnType<typeof getSocket> | null;
   isConnected: boolean;
   joinRoom: (conversationId: number) => void;
-  sendMessage: (conversationId: number, content: string) => void;
+  sendMessage: (
+    conversationId: number,
+    content: string,
+    receiverId: number
+  ) => void;
   messages: Message[];
 };
 
@@ -21,7 +32,10 @@ const SocketContext = createContext<TSocketContext | null>(null);
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messagesMap, setMessagesMap] = useState<Record<number, Message[]>>({});
+  const [currentConversationId, setCurrentConversationId] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     const socket = connectSocket();
@@ -38,22 +52,40 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     });
 
     socket.on('newMessage', (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
+      if (!msg.conversationId) return;
+
+      setMessagesMap((prev) => ({
+        ...prev,
+        [msg.conversationId]: [...(prev[msg.conversationId] || []), msg],
+      }));
     });
 
     return () => {
       socket.disconnect();
       socket.removeAllListeners();
     };
-  }, []);
+  }, []); // <-- Run only once
 
-  const joinRoom = (conversationId: number) => {
-    getSocket()?.emit('joinConversationRoom', conversationId);
-  };
+  const joinRoom = useCallback(
+    (conversationId: number) => {
+      setCurrentConversationId(conversationId);
+      if (!messagesMap[conversationId]) {
+        setMessagesMap((prev) => ({
+          ...prev,
+          [conversationId]: [],
+        }));
+      }
+      getSocket()?.emit('joinConversationRoom', conversationId);
+    },
+    [messagesMap]
+  );
 
-  const sendMessage = (conversationId: number, content: string) => {
-    getSocket()?.emit('sendMessage', { conversationId, content });
-  };
+  const sendMessage = useCallback(
+    (conversationId: number, content: string, receiverId: number) => {
+      getSocket()?.emit('sendMessage', { conversationId, content, receiverId });
+    },
+    []
+  );
 
   return (
     <SocketContext.Provider
@@ -62,7 +94,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         isConnected,
         joinRoom,
         sendMessage,
-        messages,
+        messages: currentConversationId
+          ? messagesMap[currentConversationId] || []
+          : [],
       }}
     >
       {children}

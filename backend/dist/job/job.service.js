@@ -65,6 +65,7 @@ let JobService = JobService_1 = class JobService {
                         id: true,
                         name: true,
                         logoUrl: true,
+                        ownerId: true,
                     },
                 },
             },

@@ -27,6 +27,7 @@ export declare class JobService {
             id: number;
             name: string;
             logoUrl: string | null;
+            ownerId: number;
         };
         category: {
             id: number;
