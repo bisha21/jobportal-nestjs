@@ -34,13 +34,6 @@ export class MessageGateway
   ) {}
 
   handleConnection(client: AuthenticatedSocket) {
-    console.log('🔹 New connection attempt:', {
-      // clientId: client,
-      handshakeAuth: client.handshake,
-      handshakeQuery: client.handshake.query,
-      handshakeHeaders: client.handshake.headers,
-    });
-
     try {
       const tokenRaw =
         (client.handshake.auth?.token as string) ||
@@ -73,9 +66,6 @@ export class MessageGateway
     @MessageBody() createMessageDto: CreateMessageDto,
     @ConnectedSocket() client: AuthenticatedSocket,
   ) {
-    console.log('🔹 sendMessage called with payload:', createMessageDto);
-    console.log('🔹 User sending message:', client.user);
-
     try {
       if (!client.user)
         throw new UnauthorizedException('User not authenticated');
@@ -84,8 +74,6 @@ export class MessageGateway
         createMessageDto,
         client.user.id,
       );
-
-      console.log('✅ Message created:', message);
 
       this.server
         .to(`conversation_${createMessageDto.conversationId}`)
@@ -104,25 +92,33 @@ export class MessageGateway
 
   @SubscribeMessage('joinConversationRoom')
   async joinConversationRoom(
-    @MessageBody() conversationId: number,
+    @MessageBody() conversationId: number | null,
     @ConnectedSocket() client: AuthenticatedSocket,
   ) {
     console.log('🔹 joinConversationRoom called with:', conversationId);
-    console.log('🔹 User joining room:', client.user);
 
-    try {
-      if (!client.user)
-        throw new UnauthorizedException('User not authenticated');
+    if (!client.user) throw new UnauthorizedException('User not authenticated');
 
-      await client.join(`conversation_${conversationId}`);
-      console.log(
-        `✅ User ${client.user.id} joined conversation_${conversationId}`,
+    let convId = conversationId;
+
+    if (!convId) {
+      console.log('📌 No conversation exists — creating new conversation');
+
+      const newConversation = await this.messageService.createConversation(
+        {
+          jobId: 0,
+          participants: [client.user.id], // will add other participant inside service
+        },
+        client.user.id,
       );
 
-      client.emit('joinedRoom', { conversationId });
-    } catch (err) {
-      console.error('❌ Error joining room:', err.message);
-      client.emit('errorMessage', { error: err.message });
+      convId = newConversation.id;
+      console.log(`✅ Created new conversation with id ${convId}`);
     }
+
+    await client.join(`conversation_${convId}`);
+    console.log(`✅ User ${client.user.id} joined conversation_${convId}`);
+
+    client.emit('joinedRoom', { conversationId: convId });
   }
 }

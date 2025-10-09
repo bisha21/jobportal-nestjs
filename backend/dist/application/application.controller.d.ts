@@ -114,4 +114,7 @@ export declare class ApplicationController {
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
     })[]>;
+    checkIfApplied(jobId: number, req: RequestWithUser): Promise<{
+        isApplied: boolean;
+    }>;
 }

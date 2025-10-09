@@ -160,6 +160,12 @@ let ApplicationService = class ApplicationService {
             },
         });
     }
+    async checkIfApplied(userId, jobId) {
+        const existing = await this.prisma.application.findFirst({
+            where: { userId, jobId },
+        });
+        return !!existing;
+    }
 };
 exports.ApplicationService = ApplicationService;
 exports.ApplicationService = ApplicationService = __decorate([

@@ -12,6 +12,7 @@ import CreateJobForm from './jobs/add-job';
 import EditJob from './jobs/edit-job';
 import CreateCategoryForm from './category/add-category';
 import EditCategory from './category/edit-category';
+import JobSeekerChatPage from '@/components/chat/jobseeker';
 
 type TModalData = {
   [key in TModalKeys]: {
@@ -34,7 +35,8 @@ export type TModalKeys =
   | 'ADD_JOB'
   | 'EDIT_JOB'
   | 'ADD_CATEGORY'
-  | 'EDIT_CATEGORY';
+  | 'EDIT_CATEGORY'
+  |'MESSAGE_MODAL';
 
 export const ModalData: TModalData = {
   DELETE_ITEM: {
@@ -84,5 +86,9 @@ export const ModalData: TModalData = {
   EDIT_CATEGORY: {
     title: 'EDIT_CATEGORY',
     component: EditCategory,
+  },
+  MESSAGE_MODAL: {
+    title: 'MESSAGE_MODAL',
+    component: JobSeekerChatPage,
   },
 };

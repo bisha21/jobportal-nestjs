@@ -193,4 +193,11 @@ export class ApplicationService {
       },
     });
   }
+  async checkIfApplied(userId: number, jobId: number): Promise<boolean> {
+    const existing = await this.prisma.application.findFirst({
+      where: { userId, jobId },
+    });
+
+    return !!existing;
+  }
 }

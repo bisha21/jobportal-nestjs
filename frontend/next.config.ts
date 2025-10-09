@@ -9,6 +9,7 @@ const nextConfig = {
       'www.google.com',
       'lh3.googleusercontent.com',
       'www.vecteezy.com',
+      'upload.wikimedia.org',
     ],
   },
 };

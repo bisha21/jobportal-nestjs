@@ -74,9 +74,20 @@ export const useApplicationQuery = () => {
 
 export const useSingleApplicationQuery = (id: number) => {
   return useQuery({
-    queryKey: ['applications', id], 
-    queryFn: async () =>
-      apiRequest(`applications/${id}`, { method: 'GET' }),
+    queryKey: ['applications', id],
+    queryFn: async () => apiRequest(`applications/${id}`, { method: 'GET' }),
   });
 };
 
+export function useCheckApplication(jobId: number) {
+  return useQuery({
+    queryKey: ['checkApplication', jobId],
+    queryFn: async () => {
+      const res = await apiRequest(`/applications/check/${jobId}`, {
+        method: 'GET',
+      });
+      return res; 
+    },
+    enabled: !!jobId,
+  });
+}

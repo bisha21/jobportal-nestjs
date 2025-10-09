@@ -30,6 +30,7 @@ export declare class JobController {
             id: number;
             name: string;
             logoUrl: string | null;
+            ownerId: number;
         };
         category: {
             id: number;

@@ -39,6 +39,11 @@ let ApplicationController = class ApplicationController {
         const userId = req.user.id;
         return await this.applicationService.getApplicationsByUser(userId);
     }
+    async checkIfApplied(jobId, req) {
+        const userId = req.user.id;
+        const isApplied = await this.applicationService.checkIfApplied(userId, jobId);
+        return { isApplied };
+    }
 };
 exports.ApplicationController = ApplicationController;
 __decorate([
@@ -101,6 +106,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ApplicationController.prototype, "getMyApplications", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('check/:jobId'),
+    __param(0, (0, common_1.Param)('jobId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], ApplicationController.prototype, "checkIfApplied", null);
 exports.ApplicationController = ApplicationController = __decorate([
     (0, swagger_1.ApiTags)('Applications'),
     (0, common_1.Controller)('applications'),

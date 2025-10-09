@@ -144,4 +144,5 @@ export declare class ApplicationService {
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
     }) | null>;
+    checkIfApplied(userId: number, jobId: number): Promise<boolean>;
 }

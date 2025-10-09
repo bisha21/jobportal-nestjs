@@ -10,18 +10,18 @@ import {
   DollarSign,
   MapPin,
   Check,
-  MoveLeft,
   ArrowLeft,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { JobCard } from '@/components/jobs/job-card';
 import { useJob, useJobs, Job, singleJob } from '@/services/query/jobs.query';
 import { useApplyApplication } from '@/services/mutations/apply.mutation';
 import Link from 'next/link';
+import { useCheckApplication } from '@/services/query/application.query';
+import { useConversation } from '@/services/query/conversation';
+import useModalContext from '@/hooks/usemodal';
 
 export default function JobDetailsPage({
   params,
@@ -33,12 +33,19 @@ export default function JobDetailsPage({
   const { id } = params;
   const jobId = Number(id);
   const { mutate, isLoading } = useApplyApplication();
+  const { data: isApplied } = useCheckApplication(jobId);
+  const {openModal}=useModalContext();
+
 
   const {
     data: job,
     isLoading: jobLoading,
     error: jobError,
   } = useJob<singleJob>(jobId);
+  const { data: conversation, refetch } = useConversation(
+    jobId,
+    job?.company.id||0
+  );
 
   const { data: relatedJobs, isLoading: relatedLoading } = useJobs<Job[]>({
     categoryId: job?.categoryId,
@@ -68,13 +75,14 @@ export default function JobDetailsPage({
     >
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground">
-        {adminView && 
-        <Button variant="outline" size="icon" asChild>
+        {adminView && (
+          <Button variant="outline" size="icon" asChild>
             <Link href="/admin/jobs">
               <ArrowLeft className="h-4 w-4" />
             </Link>
-          </Button>}
-        
+          </Button>
+        )}
+
         <div className="container mx-auto px-4 py-12">
           <h1 className="text-4xl font-bold text-center">Job Details</h1>
         </div>
@@ -209,8 +217,19 @@ export default function JobDetailsPage({
                 <Button
                   className="w-full bg-teal-600 hover:bg-teal-700 text-white"
                   onClick={handleSubmit}
+                  disabled={isApplied}
                 >
-                  {isLoading ? 'Applying...' : 'Apply Now'}
+                  {isApplied ? 'Applied' : 'Apply Now'}
+                </Button>
+              )}
+              {!adminView && isApplied && (
+                <Button
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                  onClick={() => openModal({
+                    key:'MESSAGE_MODAL',
+                  })}
+                >
+                  Chat with Employee
                 </Button>
               )}
             </Card>
@@ -240,6 +259,7 @@ export default function JobDetailsPage({
             </div>
           </div>
         )}
+        
       </div>
     </div>
   );
