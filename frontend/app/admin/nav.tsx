@@ -19,9 +19,24 @@ interface NavbarProps {
   userEmail: string;
   userAvatar?: string;
 }
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useState } from 'react';
+import { useAuth } from '@/context/auth-context';
 
 export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
   const { setTheme } = useTheme();
+  const[open,setOpen]=useState<boolean>(false);
+  const{logout}=useAuth();
 
   const getInitials = (name: string) => {
     return name
@@ -104,9 +119,32 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
           </DropdownMenu>
 
           {/* Logout */}
-          <Button variant="ghost" size="icon" className="h-9 w-9">
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-9 w-9">
+          <LogOut className="h-5 w-5" />
+        </Button>
+      </AlertDialogTrigger>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to log out from your account?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={logout()}
+            className="bg-red-500 hover:bg-red-600 text-white"
+          >
+            Logout
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
         </div>
       </div>
     </nav>

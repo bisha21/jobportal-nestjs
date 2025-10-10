@@ -6,16 +6,14 @@ export declare class JobskillController {
     constructor(jobskillService: JobskillService);
     createJobSkill(dto: CreateJobSkillsDto): Promise<({
         jobSkills: {
+            jobId: number;
+            skill: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            skill: string;
-            jobId: number;
         }[];
     } & {
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string;
         position: string;
@@ -27,26 +25,28 @@ export declare class JobskillController {
         deadline: Date | null;
         companyId: number;
         categoryId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }) | null>;
     getJobSkills(jobId: number): Promise<{
+        jobId: number;
+        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
-        jobId: number;
     }[]>;
     updateJobSkill(skillId: number, updateJobSkillDto: UpdateJobSkillDto): Promise<{
+        jobId: number;
+        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
-        jobId: number;
     }>;
     deleteJobSkill(skillId: number): Promise<{
+        jobId: number;
+        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
-        jobId: number;
     }>;
 }

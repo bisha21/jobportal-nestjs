@@ -31,7 +31,7 @@ export class JobskillController {
   @ApiResponse({ status: 201, description: 'Job skill created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request body' })
   async createJobSkill(@Body() dto: CreateJobSkillsDto) {
-    return await this.jobskillService.createJobSkills(dto);
+    return await this.jobskillService.createJobSkill(dto);
   }
   @Get(':jobId')
   @ApiOperation({ summary: 'Get all skills for a specific job' })

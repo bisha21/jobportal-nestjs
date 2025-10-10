@@ -24,7 +24,7 @@ let JobskillController = class JobskillController {
         this.jobskillService = jobskillService;
     }
     async createJobSkill(dto) {
-        return await this.jobskillService.createJobSkills(dto);
+        return await this.jobskillService.createJobSkill(dto);
     }
     async getJobSkills(jobId) {
         return this.jobskillService.getJobSkills(jobId);

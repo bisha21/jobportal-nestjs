@@ -17,20 +17,19 @@ let JobskillService = class JobskillService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async createJobSkills(dto) {
+    async createJobSkill(dto) {
         const job = await this.prisma.job.findUnique({
             where: { id: dto.jobId },
         });
         if (!job) {
             throw new common_1.NotFoundException('Job not found');
         }
-        const skillData = dto.skills.map((skill) => ({
+        const skillData = {
             jobId: dto.jobId,
-            skill,
-        }));
-        await this.prisma.jobSkill.createMany({
+            skill: dto.skill,
+        };
+        await this.prisma.jobSkill.create({
             data: skillData,
-            skipDuplicates: true,
         });
         return this.prisma.job.findUnique({
             where: { id: dto.jobId },
@@ -67,13 +66,13 @@ let JobskillService = class JobskillService {
     }
     async topSkills() {
         const skills = await this.prisma.jobSkill.groupBy({
-            by: ["skill"],
+            by: ['skill'],
             _count: {
                 jobId: true,
             },
             orderBy: {
                 _count: {
-                    jobId: "desc",
+                    jobId: 'desc',
                 },
             },
             take: 10,

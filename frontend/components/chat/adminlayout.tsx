@@ -12,9 +12,9 @@ export default function AdminChatPage() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-linear-to-r/increasing from-blue-300 to-teal-100">
       {/* Sidebar */}
-      <Card className="w-96 border-r rounded-none flex flex-col">
+      <Card className="w-96 border-r rounded-none flex flex-col bg-linear-to-r/increasing from-blue-200 to-teal-200">
         <CardHeader>
           <CardTitle>Chats</CardTitle>
         </CardHeader>
@@ -23,8 +23,8 @@ export default function AdminChatPage() {
             <div
               key={user.userId}
               onClick={() => setSelectedUser(user)}
-              className={`p-3 flex items-center cursor-pointer hover:bg-secondary ${
-                selectedUser?.userId === user.userId ? 'bg-secondary' : ''
+              className={`p-3 flex items-center cursor-pointer hover:bg-black hover:text-white ${
+                selectedUser?.userId === user.userId ? 'bg-black text-white' : ''
               }`}
             >
               <Avatar>

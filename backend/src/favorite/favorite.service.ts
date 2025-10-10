@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateFavoriteDto } from './dto/createFavoriteJob.dto';
@@ -12,7 +13,18 @@ export class FavoriteService {
   }
 
   async getFavorites(userId: number) {
-    return this.prisma.favorite.findMany({ where: { userId } });
+    return this.prisma.favorite.findMany({
+      where: { userId },
+      include: {
+        job: {
+          select: {
+            id: true,
+            title: true,
+            company: { select: { name: true } },
+          },
+        },
+      },
+    });
   }
 
   async deleteFavorite(favoriteId: number) {

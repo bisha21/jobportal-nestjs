@@ -10,8 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useLoginMutation } from '@/services/mutations/auth';
 import { Briefcase } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
   const { mutate: login, isPending } = useLoginMutation();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -26,6 +28,9 @@ export default function LoginPage() {
       onSuccess: (data) => {
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.user.roles === 'Admin') router.replace('/admin');
+        else if (data.user.roles === 'Employee') router.replace('/employee');
+        else if (data.user.roles === 'Jobseeker') router.replace('/jobseeker');
       },
       onError: (error) => {
         console.error('Login failed:', error);

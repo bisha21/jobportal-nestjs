@@ -8,5 +8,5 @@ export class CreateJobSkillsDto {
   @IsNotEmpty({ each: true })
   @IsString({ each: true })
   @MinLength(2, { each: true })
-  skills: string[];
+  skill: string;
 }

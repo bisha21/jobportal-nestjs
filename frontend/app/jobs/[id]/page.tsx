@@ -22,6 +22,9 @@ import Link from 'next/link';
 import { useCheckApplication } from '@/services/query/application.query';
 import { useConversation } from '@/services/query/conversation';
 import useModalContext from '@/hooks/usemodal';
+import { useAuth } from '@/context/auth-context';
+import { useJobSkillQuery } from '@/services/query/jobskills.query';
+import JobSkillsTable from './jobskilllist';
 
 export default function JobDetailsPage({
   params,
@@ -34,18 +37,16 @@ export default function JobDetailsPage({
   const jobId = Number(id);
   const { mutate, isLoading } = useApplyApplication();
   const { data: isApplied } = useCheckApplication(jobId);
-  const {openModal}=useModalContext();
-
+  const { openModal } = useModalContext();
+  const { user } = useAuth();
 
   const {
     data: job,
     isLoading: jobLoading,
     error: jobError,
   } = useJob<singleJob>(jobId);
-  const { data: conversation, refetch } = useConversation(
-    jobId,
-    job?.company.id||0
-  );
+  const { data: skills } = useJobSkillQuery(jobId);
+  console.log('our skills', skills);
 
   const { data: relatedJobs, isLoading: relatedLoading } = useJobs<Job[]>({
     categoryId: job?.categoryId,
@@ -103,7 +104,7 @@ export default function JobDetailsPage({
               </CardContent>
             </Card>
 
-            {job.jobSkills?.length > 0 && (
+            {user?.role === 'JOBSEEKER' && job.jobSkills?.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Key Responsibilities</CardTitle>
@@ -123,6 +124,7 @@ export default function JobDetailsPage({
               </Card>
             )}
 
+            <JobSkillsTable jobId={jobId} />
             <Card>
               <CardHeader>
                 <CardTitle>Tags</CardTitle>
@@ -225,9 +227,11 @@ export default function JobDetailsPage({
               {!adminView && isApplied && (
                 <Button
                   className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-                  onClick={() => openModal({
-                    key:'MESSAGE_MODAL',
-                  })}
+                  onClick={() =>
+                    openModal({
+                      key: 'MESSAGE_MODAL',
+                    })
+                  }
                 >
                   Chat with Employee
                 </Button>
@@ -259,7 +263,6 @@ export default function JobDetailsPage({
             </div>
           </div>
         )}
-        
       </div>
     </div>
   );
