@@ -79,7 +79,7 @@ export function ChatLayout({
       } bg-gradient-to-b from-white to-gray-100`}
     >
       {/* Header */}
-      <div className="flex items-center p-4 border-b bg-white shadow">
+      <div className="flex items-center p-4 border-b bg-linear-to-r/increasing from-blue-700 to-teal-400 shadow -mt-7">
         <Avatar className="w-10 h-10">
           <AvatarImage src={receiverProfile || '/placeholder.svg'} />
           <AvatarFallback>{receiverName.charAt(0)}</AvatarFallback>
@@ -89,7 +89,7 @@ export function ChatLayout({
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4 overflow-y-auto bg-linear-to-r/increasing from-indigo-500 to-teal-400">
+      <ScrollArea className="flex-1 p-4 overflow-y-auto bg-linear-to-r/increasing from-indigo-500 to-teal-400 -mt-7">
         {localMessages.map((msg, i) => {
           const isOwn = msg.senderId === loggedInUserId;
           return (

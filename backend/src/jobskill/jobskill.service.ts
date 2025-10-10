@@ -8,7 +8,7 @@ import { CreateJobSkillsDto } from './dto/createjobskill.dto';
 export class JobskillService {
   constructor(private prisma: DatabaseService) {}
 
-  async createJobSkills(dto: CreateJobSkillsDto) {
+  async createJobSkill(dto: CreateJobSkillsDto) {
     const job = await this.prisma.job.findUnique({
       where: { id: dto.jobId },
     });
@@ -17,14 +17,13 @@ export class JobskillService {
       throw new NotFoundException('Job not found');
     }
 
-    const skillData = dto.skills.map((skill) => ({
+    const skillData = {
       jobId: dto.jobId,
-      skill,
-    }));
+      skill: dto.skill,
+    };
 
-    await this.prisma.jobSkill.createMany({
+    await this.prisma.jobSkill.create({
       data: skillData,
-      skipDuplicates: true,
     });
 
     return this.prisma.job.findUnique({
@@ -64,24 +63,24 @@ export class JobskillService {
     return this.prisma.jobSkill.delete({ where: { id: skillId } });
   }
 
-   async topSkills (){
+  async topSkills() {
     const skills = await this.prisma.jobSkill.groupBy({
-    by: ["skill"],
-    _count: {
-      jobId: true,
-    },
-    orderBy: {
+      by: ['skill'],
       _count: {
-        jobId: "desc",
+        jobId: true,
       },
-    },
-    take: 10, // top 10 skills
-  });
+      orderBy: {
+        _count: {
+          jobId: 'desc',
+        },
+      },
+      take: 10, // top 10 skills
+    });
 
-  return skills.map((s) => ({
-    skill: s.skill,
-    demand: s._count.jobId, // how many jobs require this skill
-    jobs: s._count.jobId,
-  }));
+    return skills.map((s) => ({
+      skill: s.skill,
+      demand: s._count.jobId, // how many jobs require this skill
+      jobs: s._count.jobId,
+    }));
   }
 }

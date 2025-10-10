@@ -13,7 +13,7 @@ exports.CreateJobSkillsDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateJobSkillsDto {
     jobId;
-    skills;
+    skill;
 }
 exports.CreateJobSkillsDto = CreateJobSkillsDto;
 __decorate([
@@ -24,6 +24,6 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)({ each: true }),
     (0, class_validator_1.IsString)({ each: true }),
     (0, class_validator_1.MinLength)(2, { each: true }),
-    __metadata("design:type", Array)
-], CreateJobSkillsDto.prototype, "skills", void 0);
+    __metadata("design:type", String)
+], CreateJobSkillsDto.prototype, "skill", void 0);
 //# sourceMappingURL=createjobskill.dto.js.map

@@ -1,7 +1,7 @@
 'use client';
 
 import { DashboardLayout } from '@/components/dashboard-layout'; // your second component
-import { useAuth } from '@/context/auth-context';
+import { AuthProvider, useAuth } from '@/context/auth-context';
 import { ReactNode } from 'react';
 import { Navbar } from './nav';
 
@@ -19,13 +19,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         userName={userName}
         userEmail={userEmail}
       >
-        <Navbar
-          userName={userName}
-          userEmail={userEmail}
-          userAvatar={userAvatar}
-        />
+        <AuthProvider>
+          <Navbar
+            userName={userName}
+            userEmail={userEmail}
+            userAvatar={userAvatar}
+          />
 
-        <main className="overflow-y-scroll">{children}</main>
+          <main className="overflow-y-scroll">{children}</main>
+        </AuthProvider>
       </DashboardLayout>
     </div>
   );

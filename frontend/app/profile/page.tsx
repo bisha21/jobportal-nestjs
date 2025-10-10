@@ -28,11 +28,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import useModalContext from '@/hooks/usemodal';
+import { useUserSkillQuery } from '@/services/query/userskill.query';
+import SkillList from './skilllist';
+import FavoriteList from './favoritelist';
 
 export default function UserProfile() {
   const { data, isLoading, isError } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const { openModal } = useModalContext();
+  const { data: userSkills } = useUserSkillQuery();
 
   const form = useForm<UserProfile>({
     defaultValues: {
@@ -267,6 +271,13 @@ export default function UserProfile() {
           </form>
         </Form>
 
+        {/* Skills Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          <SkillList />
+          <div className="col-span-2">
+            <FavoriteList />
+          </div>
+        </div>
         {/* Stats + Applications remain same ... */}
         <Card className="shadow">
           <CardContent className="p-6">

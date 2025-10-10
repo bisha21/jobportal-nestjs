@@ -32,6 +32,7 @@ export class ApplicationController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  
   @ApiOperation({ summary: 'Get all job applications' })
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'List of all applications' })
