@@ -1,8 +1,14 @@
-"use client"
-import axios, { AxiosError, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+'use client';
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL||'http://localhost:3000',
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -10,9 +16,9 @@ const apiClient = axios.create({
 });
 
 // Helper function to get auth token
-const getAuthToken = async (): Promise<string | null> => {
+const getAuthToken = (): string | null => {
   try {
-    return await localStorage.getItem('authToken');
+    return localStorage.getItem('authToken');
   } catch (error) {
     console.error('Error getting auth token:', error);
     return null;
@@ -20,20 +26,14 @@ const getAuthToken = async (): Promise<string | null> => {
 };
 
 apiClient.interceptors.request.use(
-  async (config: InternalAxiosRequestConfig) => {
-    const token = await getAuthToken();
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      } as AxiosRequestHeaders;
+  (config) => {
+    const token = getAuthToken();
+    if (token && config.headers) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
-  (error: AxiosError) => {
-    
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor

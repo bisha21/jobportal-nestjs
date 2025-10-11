@@ -86,25 +86,18 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    openModal({
-                      key: 'LOGIN_MODAL',
-                    })
-                  }
+                <Link
+                  href="/login"
+                  className="hover:text-primary transition-colors"
                 >
-                  Login
-                </Button>
-                <Button
-                  onClick={() =>
-                    openModal({
-                      key: 'SIGNUP_MODAL',
-                    })
-                  }
+                  <Button variant="outline">Login</Button>
+                </Link>
+                <Link
+                  href="/register"
+                  className="hover:text-primary transition-colors"
                 >
-                  Sign Up
-                </Button>
+                  <Button variant="outline">Signup</Button>
+                </Link>
               </>
             )}
 

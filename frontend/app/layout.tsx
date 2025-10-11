@@ -9,6 +9,7 @@ import { Providers } from './provider';
 import { AuthProvider } from '@/context/auth-context';
 import { ToastContainer } from 'react-toastify';
 import RoleNavigatorWithProtection from './role-navigator';
+import { SocketProvider } from '@/context/socket-context';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -46,10 +47,12 @@ export default function RootLayout({
               <ToastContainer />
               <ModalProvider>
                 <ModalX />
-                <RoleNavigatorWithProtection>
-                  {children}
-                </RoleNavigatorWithProtection>
-                <Footer />
+                <SocketProvider>
+                  <RoleNavigatorWithProtection>
+                    {children}
+                  </RoleNavigatorWithProtection>
+                  <Footer />
+                </SocketProvider>
               </ModalProvider>
             </AuthProvider>
           </Providers>

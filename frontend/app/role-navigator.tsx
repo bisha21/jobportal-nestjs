@@ -48,6 +48,10 @@ export default function RoleNavigatorWithProtection({
     '/jobs',
     '/jobs/[id]',
     '/login',
+    '/register',
+    '/reset-password',
+    '/forget-password',
+    '/verify-otp',
   ];
   const isPublicPage = publicPages.includes(pathname);
 
@@ -66,7 +70,7 @@ export default function RoleNavigatorWithProtection({
         )
       ) : (
         <ProtectedRoute allowedRoles={['ADMIN', 'EMPLOYEE', 'JOBSEEKER']}>
-          <SocketProvider>{children}</SocketProvider>
+          {children}
         </ProtectedRoute>
       )}
     </>

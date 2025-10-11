@@ -1,16 +1,16 @@
 'use client';
 
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, Lock } from 'lucide-react';
 
 interface FormHeaderProps {
-  icon: LucideIcon; // Pass Lucide icons like Briefcase, Building2, etc.
+  icon?: LucideIcon; // Optional now
   title: string;
   subtitle?: string;
 }
 
 export default function FormHeader({
-  icon: Icon,
+  icon: Icon = Lock, // Default icon
   title,
   subtitle,
 }: FormHeaderProps) {

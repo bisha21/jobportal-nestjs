@@ -24,7 +24,7 @@ export default function ProtectedRoute({
 
     if (!user) {
       if (allowedRoles.includes('PUBLIC')) {
-        setIsAllowed(true); 
+        setIsAllowed(true);
       } else {
         router.push('/');
         setIsAllowed(false);
@@ -33,7 +33,7 @@ export default function ProtectedRoute({
     }
 
     if (!allowedRoles.includes(user.role as UserRole)) {
-      router.push('/'); 
+      router.push('/');
       setIsAllowed(false);
       return;
     }
