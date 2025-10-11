@@ -4,6 +4,21 @@ import { ApiError, apiRequest } from '../api';
 import { CreateUserInput } from '@/schemas/register';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+
+export interface ForgetPasswordDto {
+  email: string;
+}
+
+export interface VerifyOtpDto {
+  email: string;
+  otp: number;
+}
+
+export interface ResetPasswordDto extends VerifyOtpDto {
+  password: string;
+  confirmPassword: string;
+}
 
 export function useLoginMutation() {
   return useMutation({
@@ -96,7 +111,6 @@ export function useUploadResume() {
   });
 }
 
-
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
@@ -119,3 +133,60 @@ export function useUpdateProfile() {
   });
 }
 
+export function useForgetPasswordMutation() {
+  const router = useRouter();
+
+  return useMutation<void, ApiError, ForgetPasswordDto>({
+    mutationFn: async (data) => {
+      try {
+        const response = await apiRequest('auth/forget-password', {
+          method: 'POST',
+          data,
+        });
+        return response;
+      } catch (error: unknown) {
+        throw error as ApiError;
+      }
+    },
+    onSuccess: () => {
+      router.push('/verify-otp');
+    },
+  });
+}
+
+export function useVerifyOtpMutation() {
+  const router = useRouter();
+
+  return useMutation<void, ApiError, VerifyOtpDto>({
+    mutationFn: async (data) => {
+      try {
+        const response = await apiRequest('auth/verify-otp', {
+          method: 'POST',
+          data,
+        });
+        return response;
+      } catch (error: unknown) {
+        throw error as ApiError;
+      }
+    },
+    onSuccess: () => {
+      router.push('/reset-password');
+    },
+  });
+}
+
+export function useResetPasswordMutation() {
+  return useMutation<void, ApiError, ResetPasswordDto>({
+    mutationFn: async (data) => {
+      try {
+        const response = await apiRequest('auth/reset-password', {
+          method: 'POST',
+          data,
+        });
+        return response;
+      } catch (error: unknown) {
+        throw error as ApiError;
+      }
+    },
+  });
+}
