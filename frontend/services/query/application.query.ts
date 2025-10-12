@@ -65,10 +65,24 @@ export type SingleApplication = {
   };
 };
 
-export const useApplicationQuery = () => {
+export const useApplicationQuery = (filters?: {
+  ownerId?: number;
+  jobId?: number;
+}) => {
   return useQuery<Application[]>({
-    queryKey: ['applications'],
-    queryFn: async () => apiRequest('applications', { method: 'GET' }),
+    queryKey: ['applications', filters],
+    queryFn: async () => {
+      const queryParams = new URLSearchParams();
+
+      if (filters?.ownerId)
+        queryParams.append('ownerId', String(filters.ownerId));
+      if (filters?.jobId) queryParams.append('jobId', String(filters.jobId));
+
+      const queryString = queryParams.toString()
+        ? `?${queryParams.toString()}`
+        : '';
+      return await apiRequest(`applications${queryString}`, { method: 'GET' });
+    },
   });
 };
 
@@ -86,7 +100,7 @@ export function useCheckApplication(jobId: number) {
       const res = await apiRequest(`/applications/check/${jobId}`, {
         method: 'GET',
       });
-      return res; 
+      return res;
     },
     enabled: !!jobId,
   });

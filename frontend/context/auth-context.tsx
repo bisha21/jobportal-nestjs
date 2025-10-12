@@ -16,6 +16,7 @@ export interface UserType {
 type AuthContextType = {
   isAuthenticated: boolean;
   user: UserType | null;
+  token: string | null;
   login: (user: UserType, token: string) => void;
   logout: () => void;
   isLoading: boolean;
@@ -26,15 +27,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load from localStorage on app load
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const authToken = localStorage.getItem('authToken');
+    const storedToken = localStorage.getItem('authToken');
 
-    if (storedUser && authToken) {
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
+      setToken(storedToken);
       setIsAuthenticated(true);
     }
     setIsLoading(false);
@@ -42,35 +45,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Store in localStorage when state changes
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && token) {
       localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem(
-        'authToken',
-        localStorage.getItem('authToken') || ''
-      );
+      localStorage.setItem('authToken', token);
     } else {
       localStorage.removeItem('user');
       localStorage.removeItem('authToken');
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, token]);
 
   const login = (user: UserType, token: string) => {
     setUser(user);
+    setToken(token);
     setIsAuthenticated(true);
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('user', JSON.stringify(user));
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, login, logout, isLoading }}
+      value={{ isAuthenticated, user, token, login, logout, isLoading }}
     >
       {!isLoading && children}
     </AuthContext.Provider>

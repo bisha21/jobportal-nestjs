@@ -1,26 +1,11 @@
 import { ApplicationService } from './application.service';
 import { UpdateApplicationDto } from './dto/updateApplication.dto';
 import { type RequestWithUser } from 'src/common/guards/auth/auth.guard';
+import { SearchApplicationDto } from './dto/searchApplication.dto';
 export declare class ApplicationController {
     private readonly applicationService;
     constructor(applicationService: ApplicationService);
-    getAllApplications(): Promise<({
-        user: {
-            fullName: string;
-            email: string;
-            resume: string | null;
-            id: number;
-        };
-        job: {
-            company: {
-                name: string;
-            };
-            id: number;
-            title: string;
-            location: string | null;
-            type: import("generated/prisma").$Enums.JobType;
-        };
-    } & {
+    getAllApplications(query: SearchApplicationDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -28,7 +13,7 @@ export declare class ApplicationController {
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-    })[]>;
+    }[]>;
     getApplicationById(id: number): Promise<({
         user: {
             fullName: string;

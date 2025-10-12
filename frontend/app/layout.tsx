@@ -47,12 +47,10 @@ export default function RootLayout({
               <ToastContainer />
               <ModalProvider>
                 <ModalX />
-                <SocketProvider>
                   <RoleNavigatorWithProtection>
                     {children}
                   </RoleNavigatorWithProtection>
                   <Footer />
-                </SocketProvider>
               </ModalProvider>
             </AuthProvider>
           </Providers>

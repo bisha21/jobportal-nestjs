@@ -21,29 +21,37 @@ export class ApiFeaturesPrisma {
     const where: any = {};
 
     for (const key in queryObj) {
+      const value = queryObj[key];
+
+      // Special case: ownerId maps to company.ownerId
+      if (key === 'ownerId') {
+        where['company'] = { ownerId: Number(value) };
+        continue;
+      }
+
       if (key.includes('[')) {
         const [field, operatorWithBracket] = key.split('[');
         const operator = operatorWithBracket.replace(']', '');
         if (!where[field]) where[field] = {};
         switch (operator) {
           case 'contains':
-            where[field] = { contains: queryObj[key], mode: 'insensitive' };
+            where[field] = { contains: value, mode: 'insensitive' };
             break;
           case 'startsWith':
-            where[field] = { startsWith: queryObj[key], mode: 'insensitive' };
+            where[field] = { startsWith: value, mode: 'insensitive' };
             break;
           case 'endsWith':
-            where[field] = { endsWith: queryObj[key], mode: 'insensitive' };
+            where[field] = { endsWith: value, mode: 'insensitive' };
             break;
           case 'gte':
-            where[field] = { gte: Number(queryObj[key]) };
+            where[field] = { gte: Number(value) };
             break;
           case 'lte':
-            where[field] = { lte: Number(queryObj[key]) };
+            where[field] = { lte: Number(value) };
             break;
         }
       } else {
-        where[key] = queryObj[key];
+        where[key] = value;
       }
     }
 

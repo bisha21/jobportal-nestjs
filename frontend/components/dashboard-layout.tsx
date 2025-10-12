@@ -39,7 +39,7 @@ interface NavItem {
 
 interface DashboardLayoutProps {
   children: ReactNode;
-  userRole: 'EMPLOYEE' | 'ADMIN';
+  userRole: 'EMPLOYEE' | 'ADMIN'|'JOBSEEKER';
   userName: string;
   userEmail: string;
 }

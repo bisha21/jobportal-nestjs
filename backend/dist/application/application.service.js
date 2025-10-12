@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
 const notification_service_1 = require("../notification/notification.service");
 const notification_gateway_1 = require("../notification/notification.gateway");
+const apiFeatures_1 = require("../utils/apiFeatures");
 let ApplicationService = class ApplicationService {
     prisma;
     notificationService;
@@ -64,9 +65,15 @@ let ApplicationService = class ApplicationService {
         });
         return application;
     }
-    async getAllApplications() {
-        return await this.prisma.application.findMany({
-            include: {
+    async getAllApplications(query) {
+        try {
+            const features = new apiFeatures_1.ApiFeaturesPrisma(query)
+                .sort()
+                .paginate()
+                .limitFields()
+                .includeRelations();
+            const options = features.getOptions();
+            options.include = {
                 user: {
                     select: {
                         id: true,
@@ -83,16 +90,30 @@ let ApplicationService = class ApplicationService {
                         type: true,
                         company: {
                             select: {
+                                id: true,
                                 name: true,
+                                ownerId: true,
                             },
                         },
                     },
                 },
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-        });
+            };
+            options.where = {};
+            if (query.jobId) {
+                options.where.jobId = query.jobId;
+            }
+            if (query.ownerId) {
+                options.where.job = {
+                    company: { ownerId: query.ownerId },
+                };
+            }
+            const applications = await this.prisma.application.findMany(options);
+            return applications;
+        }
+        catch (error) {
+            console.error('getAllApplications error:', error);
+            throw new common_1.InternalServerErrorException('Failed to fetch applications');
+        }
     }
     async updateApplication(applicationId, updateApplicationDto) {
         const app = await this.prisma.application.findUnique({
@@ -156,7 +177,7 @@ let ApplicationService = class ApplicationService {
             where: { id },
             include: {
                 user: true,
-                job: true
+                job: true,
             },
         });
     }

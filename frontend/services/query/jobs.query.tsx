@@ -15,9 +15,8 @@ export interface Company {
   ownerId: number;
 }
 
-
 export interface JobSkill {
-    skill: string;
+  skill: string;
 }
 
 export interface Job {
@@ -39,9 +38,8 @@ export interface Job {
   company: Company;
 }
 
-export interface singleJob extends Job {
-    jobSkills: JobSkill[];
-    
+export interface SingleJob extends Job {
+  jobSkills: JobSkill[];
 }
 
 export interface SearchJobParams {
@@ -52,6 +50,7 @@ export interface SearchJobParams {
   experience?: string[];
   salaryMin?: number;
   salaryMax?: number;
+  ownerId?: number; // add ownerId here
   page?: number;
   limit?: number;
   sort?: string;
@@ -59,10 +58,11 @@ export interface SearchJobParams {
   include?: string;
 }
 
-// Make useJobs generic
-export const useJobs = <T = Job[],>(
-  params: SearchJobParams
-): UseQueryResult<T, unknown> => {
+/**
+ * Generic hook to fetch jobs with query parameters
+ */
+export const useJobs = <T = Job[]>(params: SearchJobParams): UseQueryResult<T, unknown> => {
+  // Clean out undefined, null, empty strings, or empty arrays
   const cleanedParams = Object.fromEntries(
     Object.entries(params).filter(([_, v]) => {
       if (Array.isArray(v)) return v.length > 0;
@@ -71,7 +71,7 @@ export const useJobs = <T = Job[],>(
   );
 
   return useQuery<T>({
-    queryKey: ['job', cleanedParams],
+    queryKey: ['jobs', cleanedParams],
     queryFn: async () =>
       apiRequest('job', {
         method: 'GET',
@@ -80,11 +80,14 @@ export const useJobs = <T = Job[],>(
   });
 };
 
-
-export const useJob=<T=singleJob>(id:number) => useQuery<T>({
-  queryKey: ['job', id],
-  queryFn: async () =>
-    apiRequest(`job/${id}`, {
-      method: 'GET',
-    }),
-});
+/**
+ * Hook to fetch single job by ID
+ */
+export const useJob = <T = SingleJob>(id: number): UseQueryResult<T, unknown> =>
+  useQuery<T>({
+    queryKey: ['job', id],
+    queryFn: async () =>
+      apiRequest(`job/${id}`, {
+        method: 'GET',
+      }),
+  });

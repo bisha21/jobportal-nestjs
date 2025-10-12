@@ -1,3 +1,4 @@
+"use client";
 import { LoginInput } from '@/schemas/login';
 import { useMutation } from '@tanstack/react-query';
 import { ApiError, apiRequest } from '../api';
@@ -34,6 +35,7 @@ export function useLoginMutation() {
         // Ensure error is shaped as ApiError
         throw error as ApiError;
       }
+      
     },
   });
 }

@@ -18,13 +18,14 @@ const application_service_1 = require("./application.service");
 const updateApplication_dto_1 = require("./dto/updateApplication.dto");
 const auth_guard_1 = require("../common/guards/auth/auth.guard");
 const swagger_1 = require("@nestjs/swagger");
+const searchApplication_dto_1 = require("./dto/searchApplication.dto");
 let ApplicationController = class ApplicationController {
     applicationService;
     constructor(applicationService) {
         this.applicationService = applicationService;
     }
-    async getAllApplications() {
-        return await this.applicationService.getAllApplications();
+    async getAllApplications(query) {
+        return await this.applicationService.getAllApplications(query);
     }
     async getApplicationById(id) {
         return await this.applicationService.getApplicationsById(id);
@@ -49,11 +50,12 @@ exports.ApplicationController = ApplicationController;
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all job applications' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all job applications (with optional filters)' }),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'List of all applications' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'List of filtered applications' }),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [searchApplication_dto_1.SearchApplicationDto]),
     __metadata("design:returntype", Promise)
 ], ApplicationController.prototype, "getAllApplications", null);
 __decorate([

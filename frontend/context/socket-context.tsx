@@ -1,6 +1,5 @@
 'use client';
 
-import { connectSocket, getSocket } from '@/lib/scoket';
 import React, {
   createContext,
   useContext,
@@ -8,6 +7,7 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
+import { connectSocket, getSocket } from '@/lib/scoket';
 
 type Message = {
   id?: number;
@@ -36,8 +36,12 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [currentConversationId, setCurrentConversationId] = useState<
     number | null
   >(null);
+  const [socketInitialized, setSocketInitialized] = useState(false);
 
   useEffect(() => {
+    // ✅ Only run in client
+    if (typeof window === 'undefined') return;
+
     const socket = connectSocket();
     if (!socket) return;
 
@@ -53,18 +57,19 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 
     socket.on('newMessage', (msg: Message) => {
       if (!msg.conversationId) return;
-
       setMessagesMap((prev) => ({
         ...prev,
         [msg.conversationId]: [...(prev[msg.conversationId] || []), msg],
       }));
     });
 
+    setSocketInitialized(true);
+
     return () => {
       socket.disconnect();
       socket.removeAllListeners();
     };
-  }, []); // <-- Run only once
+  }, []);
 
   const joinRoom = useCallback(
     (conversationId: number) => {
@@ -86,6 +91,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     },
     []
   );
+
+  // Show children only after socket is initialized
+  if (!socketInitialized) return <p>Connecting to socket...</p>;
 
   return (
     <SocketContext.Provider

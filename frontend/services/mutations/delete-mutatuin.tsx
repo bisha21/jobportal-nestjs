@@ -18,6 +18,7 @@ export const useDeleteItem = () => {
         method: 'DELETE',
       });
     },
+    
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: [variables.type] });
       closeModal('DELETE_ITEM');

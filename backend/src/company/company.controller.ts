@@ -10,6 +10,7 @@ import {
   UseGuards,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import {
@@ -28,7 +29,9 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { SearchCompanyDto } from './dto/search-company';
 
 @ApiTags('Company')
 @ApiBearerAuth() // JWT auth for Swagger
@@ -54,24 +57,74 @@ export class CompanyController {
 
   // Get all companies
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all companies' })
   @ApiResponse({ status: 200, description: 'List of all companies.' })
-  async getAllCompanies() {
-    return await this.companyService.getAllCompanies();
-  }
-
-  // Get company by ID
-  @Get(':companyId')
-  @ApiOperation({ summary: 'Get company by ID' })
-  @ApiParam({
-    name: 'companyId',
-    description: 'ID of the company',
-    type: Number,
+  @ApiQuery({
+    name: 'name',
+    required: false,
+    type: String,
+    description: 'Filter by company name',
   })
-  @ApiResponse({ status: 200, description: 'Company found.' })
-  @ApiResponse({ status: 404, description: 'Company not found.' })
-  async getCompanyById(@Param('companyId', ParseIntPipe) companyId: number) {
-    return await this.companyService.getCompanyById(companyId);
+  @ApiQuery({
+    name: 'location',
+    required: false,
+    type: String,
+    description: 'Filter by location',
+  })
+  @ApiQuery({
+    name: 'industry',
+    required: false,
+    type: String,
+    description: 'Filter by industry',
+  })
+  @ApiQuery({
+    name: 'companySize',
+    required: false,
+    type: String,
+    description: 'Filter by company size',
+  })
+  @ApiQuery({
+    name: 'ownerId',
+    required: false,
+    type: Number,
+    description: 'Filter by owner ID',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit per page for pagination',
+  })
+  @ApiQuery({
+    name: 'sort',
+    required: false,
+    type: String,
+    description: 'Sort order (e.g., name:asc)',
+  })
+  @ApiQuery({
+    name: 'fields',
+    required: false,
+    type: String,
+    description: 'Select specific fields',
+  })
+  @ApiQuery({
+    name: 'include',
+    required: false,
+    type: String,
+    description: 'Include related relations (e.g., jobs)',
+  })
+  async getAllCompanies(
+    @Query() query: SearchCompanyDto,
+    @Req() req: RequestWithUser,
+  ) {
+    return await this.companyService.getAllCompanies(req.user, query);
   }
 
   // Update a company
@@ -94,7 +147,7 @@ export class CompanyController {
     @Req() req: RequestWithUser,
   ) {
     const userId = req.user.id;
-    console.log("request body", updateCompanyDto);
+    console.log('request body', updateCompanyDto);
     return await this.companyService.updateCompany(
       companyId,
       updateCompanyDto,

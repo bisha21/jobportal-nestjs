@@ -47,6 +47,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const job_service_1 = require("./job.service");
 const createJob_1 = require("./dto/createJob");
 const authGuard = __importStar(require("../common/guards/auth/auth.guard"));
@@ -74,7 +75,6 @@ let JobController = class JobController {
         return await this.jobService.getSingleJob(id);
     }
     async updateJob(id, updateJob) {
-        console.log("huhu", updateJob);
         return await this.jobService.updateJob(id, updateJob);
     }
     async deleteJob(id) {
@@ -90,6 +90,16 @@ __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
     (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE, role_enum_1.Role.ADMIN),
+    (0, swagger_1.ApiOperation)({ summary: 'Create a new job' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Job created successfully' }),
+    (0, swagger_1.ApiResponse)({
+        status: 403,
+        description: 'Forbidden. You do not have permission',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Unauthorized. Invalid or missing JWT token',
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [createJob_1.CreateJobDto]),
@@ -97,6 +107,8 @@ __decorate([
 ], JobController.prototype, "createJob", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all jobs with optional filters' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Jobs retrieved successfully' }),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [searchJob_dto_1.SearchJobDto]),
@@ -104,6 +116,9 @@ __decorate([
 ], JobController.prototype, "getAllJobs", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get a single job by ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Job retrieved successfully' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Job not found' }),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -113,6 +128,17 @@ __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
     (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE, role_enum_1.Role.ADMIN),
+    (0, swagger_1.ApiOperation)({ summary: 'Update a job by ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Job updated successfully' }),
+    (0, swagger_1.ApiResponse)({
+        status: 403,
+        description: 'Forbidden. You do not have permission',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Unauthorized. Invalid or missing JWT token',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Job not found' }),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -123,6 +149,17 @@ __decorate([
     (0, common_1.Delete)(':id'),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
     (0, role_decorator_1.Role)(role_enum_1.Role.EMPLOYEE, role_enum_1.Role.ADMIN),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete a job by ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Job deleted successfully' }),
+    (0, swagger_1.ApiResponse)({
+        status: 403,
+        description: 'Forbidden. You do not have permission',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Unauthorized. Invalid or missing JWT token',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Job not found' }),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -132,6 +169,19 @@ __decorate([
     (0, common_1.Post)('apply/:jobId'),
     (0, common_1.UseGuards)(authGuard.JwtAuthGuard, role_guard_1.RoleGuard),
     (0, role_decorator_1.Role)(role_enum_1.Role.JOBSEEKER, role_enum_1.Role.ADMIN),
+    (0, swagger_1.ApiOperation)({ summary: 'Apply to a job by job ID' }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'Application submitted successfully',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 403,
+        description: 'Forbidden. You do not have permission',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 401,
+        description: 'Unauthorized. Invalid or missing JWT token',
+    }),
     __param(0, (0, common_1.Param)('jobId', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Req)()),
@@ -140,6 +190,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], JobController.prototype, "applyJob", null);
 exports.JobController = JobController = __decorate([
+    (0, swagger_1.ApiTags)('Jobs'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('job'),
     __metadata("design:paramtypes", [job_service_1.JobService,
         application_service_1.ApplicationService])

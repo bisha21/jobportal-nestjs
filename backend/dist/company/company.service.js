@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyService = void 0;
 const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
+const apiFeatures_1 = require("../utils/apiFeatures");
 let CompanyService = class CompanyService {
     prisma;
     constructor(prisma) {
@@ -44,9 +45,30 @@ let CompanyService = class CompanyService {
             throw new common_1.InternalServerErrorException('Failed to create company');
         }
     }
-    async getAllCompanies() {
+    async getAllCompanies(user, query) {
         try {
-            return await this.prisma.company.findMany();
+            const features = new apiFeatures_1.ApiFeaturesPrisma(query)
+                .filter()
+                .sort()
+                .paginate()
+                .limitFields()
+                .includeRelations();
+            const options = features.getOptions();
+            let cleanWhere = { ...options.where };
+            if (user.role === 'EMPLOYEE') {
+                cleanWhere.ownerId = user.id;
+            }
+            else if (user.role === 'ADMIN') {
+                if (query.ownerId) {
+                    cleanWhere.ownerId = Number(query.ownerId);
+                }
+            }
+            delete cleanWhere['company'];
+            const companies = await this.prisma.company.findMany({
+                ...options,
+                where: cleanWhere,
+            });
+            return companies;
         }
         catch (error) {
             console.error('getAllCompanies error:', error);

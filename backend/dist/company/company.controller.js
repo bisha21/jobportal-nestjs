@@ -22,6 +22,7 @@ const role_guard_1 = require("../common/guards/role/role.guard");
 const role_enum_1 = require("../common/guards/role/role.enum");
 const role_decorator_1 = require("../common/guards/role/role.decorator");
 const swagger_1 = require("@nestjs/swagger");
+const search_company_1 = require("./dto/search-company");
 let CompanyController = class CompanyController {
     companyService;
     constructor(companyService) {
@@ -31,15 +32,12 @@ let CompanyController = class CompanyController {
         const userId = req.user.id;
         return await this.companyService.createCompany(createCompanyDto, userId);
     }
-    async getAllCompanies() {
-        return await this.companyService.getAllCompanies();
-    }
-    async getCompanyById(companyId) {
-        return await this.companyService.getCompanyById(companyId);
+    async getAllCompanies(query, req) {
+        return await this.companyService.getAllCompanies(req.user, query);
     }
     async updateCompany(companyId, updateCompanyDto, req) {
         const userId = req.user.id;
-        console.log("request body", updateCompanyDto);
+        console.log('request body', updateCompanyDto);
         return await this.companyService.updateCompany(companyId, updateCompanyDto, userId);
     }
     async deleteCompany(companyId, req) {
@@ -64,27 +62,75 @@ __decorate([
 ], CompanyController.prototype, "createCompany", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiOperation)({ summary: 'Get all companies' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'List of all companies.' }),
+    (0, swagger_1.ApiQuery)({
+        name: 'name',
+        required: false,
+        type: String,
+        description: 'Filter by company name',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'location',
+        required: false,
+        type: String,
+        description: 'Filter by location',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'industry',
+        required: false,
+        type: String,
+        description: 'Filter by industry',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'companySize',
+        required: false,
+        type: String,
+        description: 'Filter by company size',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'ownerId',
+        required: false,
+        type: Number,
+        description: 'Filter by owner ID',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Page number for pagination',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'limit',
+        required: false,
+        type: Number,
+        description: 'Limit per page for pagination',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'sort',
+        required: false,
+        type: String,
+        description: 'Sort order (e.g., name:asc)',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'fields',
+        required: false,
+        type: String,
+        description: 'Select specific fields',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'include',
+        required: false,
+        type: String,
+        description: 'Include related relations (e.g., jobs)',
+    }),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [search_company_1.SearchCompanyDto, Object]),
     __metadata("design:returntype", Promise)
 ], CompanyController.prototype, "getAllCompanies", null);
-__decorate([
-    (0, common_1.Get)(':companyId'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get company by ID' }),
-    (0, swagger_1.ApiParam)({
-        name: 'companyId',
-        description: 'ID of the company',
-        type: Number,
-    }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Company found.' }),
-    (0, swagger_1.ApiResponse)({ status: 404, description: 'Company not found.' }),
-    __param(0, (0, common_1.Param)('companyId', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], CompanyController.prototype, "getCompanyById", null);
 __decorate([
     (0, common_1.Patch)(':companyId'),
     (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard, role_guard_1.RoleGuard),

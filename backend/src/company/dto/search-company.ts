@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUrl } from 'class-validator';
 
-export class SearchJobDto {
+export class SearchCompanyDto {
   @IsOptional()
   @IsString()
-  title?: string;
+  name?: string;
 
   @IsOptional()
   @IsString()
@@ -13,25 +13,20 @@ export class SearchJobDto {
 
   @IsOptional()
   @IsString()
-  jobType?: string;
+  industry?: string;
+
+  @IsOptional()
+  @IsString()
+  companySize?: string;
+
+  @IsOptional()
+  @IsUrl()
+  website?: string;
 
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  companyId?: number;
-
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  categoryId?: number;
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  salaryMin?: number;
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  salaryMax?: number;
+  ownerId?: number;
 
   // Pagination
   @IsOptional()
@@ -54,12 +49,8 @@ export class SearchJobDto {
   @IsString()
   fields?: string;
 
-  // Relations include
+  // Relations include (e.g., jobs, user)
   @IsOptional()
   @IsString()
   include?: string;
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  ownerId?: number;
 }

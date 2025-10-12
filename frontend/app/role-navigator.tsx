@@ -18,29 +18,6 @@ export default function RoleNavigatorWithProtection({
   const router = useRouter();
   const pathname = usePathname();
 
-  // ✅ Redirect based on role after authentication
-  useEffect(() => {
-    if (!isLoading && user) {
-      if (user.role === 'ADMIN' && !pathname.startsWith('/admin')) {
-        router.push('/admin');
-      } else if (
-        user.role === 'EMPLOYEE' &&
-        !pathname.startsWith('/employee')
-      ) {
-        router.push('/employee');
-      } else if (
-        user.role === 'JOBSEEKER' &&
-        !pathname.startsWith('/jobseeker') &&
-        pathname === '/login' // prevent access to login page
-      ) {
-        router.push('/jobseeker');
-      }
-    }
-  }, [user, isLoading, pathname, router]);
-
-  if (isLoading) return <p>Loading...</p>;
-
-  // ✅ Define public pages
   const publicPages = [
     '/',
     '/about',
@@ -53,24 +30,44 @@ export default function RoleNavigatorWithProtection({
     '/forget-password',
     '/verify-otp',
   ];
+
   const isPublicPage = publicPages.includes(pathname);
+
+  // Redirect admin/employee to their dashboards if they try to access public pages
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (user) {
+      if (user.role === 'ADMIN' && !pathname.startsWith('/admin')) {
+        router.replace('/admin');
+      } else if (
+        user.role === 'EMPLOYEE' &&
+        !pathname.startsWith('/employee')
+      ) {
+        router.replace('/employee');
+      }
+      // Jobseekers stay on public pages
+    }
+  }, [user, isLoading, pathname, router]);
+
+  if (isLoading) {
+    return <p className="text-center py-10">Loading...</p>;
+  }
+
+  // Show navbar for public pages and jobseekers
+  const showNavbar = isPublicPage || (user && user.role === 'JOBSEEKER');
 
   return (
     <>
-      {/* ✅ Navbar visible for jobseekers and unauthenticated users */}
-      {(!user || user.role === 'JOBSEEKER') && <Navbar />}
+      {showNavbar && <Navbar />}
 
-      {/* ✅ Access rules */}
       {isPublicPage ? (
-        // 🧠 Jobseeker can access all public pages except login
-        user && user.role === 'JOBSEEKER' && pathname === '/login' ? (
-          router.push('/jobseeker') // redirect to dashboard
-        ) : (
-          <>{children}</>
-        )
+        // Render the public page, either for non-logged-in users or jobseekers
+        <>{children}</>
       ) : (
-        <ProtectedRoute allowedRoles={['ADMIN', 'EMPLOYEE', 'JOBSEEKER']}>
-          {children}
+        // Protected sections for admins/employees
+        <ProtectedRoute allowedRoles={['ADMIN', 'EMPLOYEE']}>
+          <SocketProvider>{children}</SocketProvider>
         </ProtectedRoute>
       )}
     </>

@@ -13,6 +13,11 @@ class ApiFeaturesPrisma {
         excludedFields.forEach((el) => delete queryObj[el]);
         const where = {};
         for (const key in queryObj) {
+            const value = queryObj[key];
+            if (key === 'ownerId') {
+                where['company'] = { ownerId: Number(value) };
+                continue;
+            }
             if (key.includes('[')) {
                 const [field, operatorWithBracket] = key.split('[');
                 const operator = operatorWithBracket.replace(']', '');
@@ -20,24 +25,24 @@ class ApiFeaturesPrisma {
                     where[field] = {};
                 switch (operator) {
                     case 'contains':
-                        where[field] = { contains: queryObj[key], mode: 'insensitive' };
+                        where[field] = { contains: value, mode: 'insensitive' };
                         break;
                     case 'startsWith':
-                        where[field] = { startsWith: queryObj[key], mode: 'insensitive' };
+                        where[field] = { startsWith: value, mode: 'insensitive' };
                         break;
                     case 'endsWith':
-                        where[field] = { endsWith: queryObj[key], mode: 'insensitive' };
+                        where[field] = { endsWith: value, mode: 'insensitive' };
                         break;
                     case 'gte':
-                        where[field] = { gte: Number(queryObj[key]) };
+                        where[field] = { gte: Number(value) };
                         break;
                     case 'lte':
-                        where[field] = { lte: Number(queryObj[key]) };
+                        where[field] = { lte: Number(value) };
                         break;
                 }
             }
             else {
-                where[key] = queryObj[key];
+                where[key] = value;
             }
         }
         this.options.where = where;
