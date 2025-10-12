@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -7,13 +7,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DashboardService } from './dashboard.service';
-import { JwtAuthGuard } from 'src/common/guards/auth/auth.guard';
+import {
+  JwtAuthGuard,
+  type RequestWithUser,
+} from 'src/common/guards/auth/auth.guard';
 import { RoleGuard } from 'src/common/guards/role/role.guard';
 import { Role as Roles } from 'src/common/guards/role/role.decorator';
 import { Role } from 'src/common/guards/role/role.enum';
 
-@ApiTags('Dashboard') // Group in Swagger UI
-@ApiBearerAuth() // Shows Authorization header in Swagger
+@ApiTags('Dashboard')
+@ApiBearerAuth()
 @Controller('dashboard')
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
@@ -38,7 +41,13 @@ export class DashboardController {
     status: 401,
     description: 'Unauthorized. Invalid or missing JWT token',
   })
-  getDashboardData() {
+  async getDashboardData(@Req() req: RequestWithUser) {
+    const user = req.user;
+
+    if (user.role === Role.EMPLOYEE) {
+      return this.dashboardService.getDashboardData(user.id);
+    }
+
     return this.dashboardService.getDashboardData();
   }
 }

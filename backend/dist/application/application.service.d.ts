@@ -3,29 +3,14 @@ import { CreateApplicationDto } from './dto/applyApplication.dto';
 import { UpdateApplicationDto } from './dto/updateApplication.dto';
 import { NotificationService } from 'src/notification/notification.service';
 import { NotificationGateway } from 'src/notification/notification.gateway';
+import { SearchApplicationDto } from './dto/searchApplication.dto';
 export declare class ApplicationService {
     private readonly prisma;
     private readonly notificationService;
     private readonly notificationGateway;
     constructor(prisma: DatabaseService, notificationService: NotificationService, notificationGateway: NotificationGateway);
     applyJob(userId: number, jobId: number, createApplicationDto: CreateApplicationDto): Promise<any>;
-    getAllApplications(): Promise<({
-        user: {
-            fullName: string;
-            email: string;
-            resume: string | null;
-            id: number;
-        };
-        job: {
-            company: {
-                name: string;
-            };
-            id: number;
-            title: string;
-            location: string | null;
-            type: import("generated/prisma").$Enums.JobType;
-        };
-    } & {
+    getAllApplications(query: SearchApplicationDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -33,7 +18,7 @@ export declare class ApplicationService {
         jobId: number;
         resumeUrl: string | null;
         status: import("generated/prisma").$Enums.ApplicationStatus;
-    })[]>;
+    }[]>;
     updateApplication(applicationId: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         createdAt: Date;

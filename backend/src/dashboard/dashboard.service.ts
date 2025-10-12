@@ -6,116 +6,175 @@ import { DatabaseService } from 'src/database/database.service';
 export class DashboardService {
   constructor(private prisma: DatabaseService) {}
 
-  async getDashboardData() {
+  async getDashboardData(employeeId?: number) {
     const [
       totals,
       growth,
-      jobs,
-      companies,
+      topJobs,
+      topCompanies,
       applications,
-      favorites,
-      communication,
+      recentApplications,
     ] = await Promise.all([
-      this.getTotals(),
-      this.getGrowthTrends(),
-      this.getJobPerformance(),
-      this.getTopCompanies(),
-      this.getApplicationInsights(),
-      this.getFavoriteStats(),
-      this.getCommunicationStats(),
+      this.getTotals(employeeId),
+      this.getGrowthTrends(employeeId),
+      this.getTopJobs(employeeId),
+      this.getTopCompanies(employeeId),
+      this.getApplicationInsights(employeeId),
+      this.getRecentApplications(employeeId),
     ]);
 
     return {
       totals,
       growth,
-      jobs,
-      companies,
+      topJobs,
+      topCompanies,
       applications,
-      favorites,
-      communication,
+      recentApplications,
     };
   }
 
-  private async getTotals() {
-    const [
-      totalUsers,
-      totalCompanies,
-      totalJobs,
-      totalApplications,
-      totalFavorites,
-      totalMessages,
-    ] = await Promise.all([
-      this.prisma.user.count(),
-      this.prisma.company.count(),
-      this.prisma.job.count(),
-      this.prisma.application.count(),
-      this.prisma.favorite.count(),
-      this.prisma.message.count(),
-    ]);
+  private async getTotals(employeeId?: number) {
+    if (employeeId) {
+      const [totalCompanies, totalJobs, totalApplications] = await Promise.all([
+        this.prisma.company.count({ where: { ownerId: employeeId } }),
+        this.prisma.job.count({
+          where: { company: { ownerId: employeeId } },
+        }),
+        this.prisma.application.count({
+          where: { job: { company: { ownerId: employeeId } } },
+        }),
+      ]);
 
-    return {
-      totalUsers,
-      totalCompanies,
-      totalJobs,
-      totalApplications,
-      totalFavorites,
-      totalMessages,
-    };
+      return { totalCompanies, totalJobs, totalApplications };
+    } else {
+      const [totalUsers, totalCompanies, totalJobs, totalApplications] =
+        await Promise.all([
+          this.prisma.user.count(),
+          this.prisma.company.count(),
+          this.prisma.job.count(),
+          this.prisma.application.count(),
+        ]);
+
+      return { totalUsers, totalCompanies, totalJobs, totalApplications };
+    }
   }
 
-  private async getGrowthTrends() {
-    const userGrowth = await this.prisma.$queryRaw`
-      SELECT DATE_TRUNC('month', "createdAt") AS month, COUNT(*) AS count
-      FROM "User"
-      GROUP BY month
-      ORDER BY month ASC;
-    `;
-    const jobGrowth = await this.prisma.$queryRaw`
-      SELECT DATE_TRUNC('month', "createdAt") AS month, COUNT(*) AS count
-      FROM "Job"
-      GROUP BY month
-      ORDER BY month ASC;
-    `;
+  private async getGrowthTrends(employeeId?: number) {
+    const userGrowth: { month: string; count: number }[] = [];
+    let jobGrowth: { month: string; count: number }[] = [];
+
+    if (employeeId) {
+      const raw: { month: Date; count: bigint }[] = await this.prisma.$queryRaw`
+          SELECT DATE_TRUNC('month', "createdAt") AS month, COUNT(*) AS count
+          FROM "Job"
+          WHERE "companyId" IN (
+            SELECT id FROM "Company" WHERE "ownerId" = ${employeeId}
+          )
+          GROUP BY month
+          ORDER BY month ASC;
+        `;
+      jobGrowth = raw.map((r) => ({
+        month: r.month.toISOString(),
+        count: Number(r.count),
+      }));
+    } else {
+      const rawUsers: { month: Date; count: bigint }[] = await this.prisma
+        .$queryRaw`
+          SELECT DATE_TRUNC('month', "createdAt") AS month, COUNT(*) AS count
+          FROM "User"
+          GROUP BY month
+          ORDER BY month ASC;
+        `;
+
+      const rawJobs: { month: Date; count: bigint }[] = await this.prisma
+        .$queryRaw`
+          SELECT DATE_TRUNC('month', "createdAt") AS month, COUNT(*) AS count
+          FROM "Job"
+          GROUP BY month
+          ORDER BY month ASC;
+        `;
+
+      userGrowth.push(
+        ...rawUsers.map((r) => ({
+          month: r.month.toISOString(),
+          count: Number(r.count),
+        })),
+      );
+      jobGrowth.push(
+        ...rawJobs.map((r) => ({
+          month: r.month.toISOString(),
+          count: Number(r.count),
+        })),
+      );
+    }
+
     return { userGrowth, jobGrowth };
   }
 
-  private async getJobPerformance() {
+  private async getTopJobs(employeeId?: number) {
+    const whereFilter = employeeId
+      ? { job: { company: { ownerId: employeeId } } }
+      : {};
+
     const topJobs = await this.prisma.application.groupBy({
       by: ['jobId'],
       _count: { jobId: true },
       orderBy: { _count: { jobId: 'desc' } },
       take: 5,
+      where: whereFilter,
     });
 
-    const jobDetails = await this.prisma.job.findMany({
-      where: { id: { in: topJobs.map((j) => j.jobId) } },
+    if (topJobs.length === 0) return [];
+
+    const jobIds = topJobs.map((j) => j.jobId);
+    const jobs = await this.prisma.job.findMany({
+      where: { id: { in: jobIds } },
       include: { company: true },
     });
 
-    return topJobs.map((j) => ({
-      job: jobDetails.find((d) => d.id === j.jobId),
-      applications: j._count.jobId,
-    }));
+    return topJobs.map((j) => {
+      const job = jobs.find((d) => d.id === j.jobId);
+      return {
+        title: job?.title || 'Unknown',
+        company: job?.company?.name || 'Unknown',
+        applications: Number(j._count.jobId),
+      };
+    });
   }
 
-  private async getTopCompanies() {
-    return await this.prisma.company.findMany({
+  private async getTopCompanies(employeeId?: number) {
+    const whereFilter = employeeId ? { ownerId: employeeId } : undefined;
+
+    const companies = await this.prisma.company.findMany({
+      where: whereFilter,
       select: { name: true, logoUrl: true, _count: { select: { jobs: true } } },
       orderBy: { jobs: { _count: 'desc' } },
       take: 5,
     });
+
+    return companies.map((c) => ({
+      name: c.name,
+      logoUrl: c.logoUrl,
+      jobCount: Number(c._count.jobs),
+    }));
   }
 
-  private async getApplicationInsights() {
-    const total = await this.prisma.application.count();
+  private async getApplicationInsights(employeeId?: number) {
+    const whereFilter = employeeId
+      ? { job: { company: { ownerId: employeeId } } }
+      : undefined;
+
+    const total = await this.prisma.application.count({ where: whereFilter });
+
     const grouped = await this.prisma.application.groupBy({
       by: ['status'],
       _count: { id: true },
+      where: whereFilter,
     });
 
     const formatted = grouped.reduce(
       (acc, cur) => {
-        acc[cur.status] = Number(cur._count.id); // ensure number
+        acc[cur.status] = Number(cur._count.id);
         return acc;
       },
       {} as Record<string, number>,
@@ -123,24 +182,30 @@ export class DashboardService {
 
     return {
       total,
-      ...formatted,
-      approvalRate: total ? ((formatted.APPROVED || 0) / total) * 100 : 0,
+      PENDING: formatted.PENDING || 0,
+      REJECTED: formatted.REJECTED || 0,
+      APPROVED: formatted.APPROVED || 0,
     };
   }
 
-  private async getFavoriteStats() {
-    return await this.prisma.favorite.groupBy({
-      by: ['jobId'],
-      _count: { jobId: true },
-      orderBy: { _count: { jobId: 'desc' } },
+  private async getRecentApplications(employeeId?: number) {
+    const whereFilter = employeeId
+      ? { job: { company: { ownerId: employeeId } } }
+      : undefined;
+
+    const recent = await this.prisma.application.findMany({
       take: 5,
+      orderBy: { createdAt: 'desc' },
+      where: whereFilter,
+      include: { user: true, job: true },
     });
-  }
 
-  private async getCommunicationStats() {
-    const totalMessages = await this.prisma.message.count();
-    const unread = await this.prisma.message.count({ where: { read: false } });
-
-    return { totalMessages, unread };
+    return recent.map((app) => ({
+      applicant: app.user.fullName,
+      email: app.user.email,
+      jobTitle: app.job.title,
+      status: app.status,
+      appliedAt: app.createdAt.toISOString(),
+    }));
   }
 }

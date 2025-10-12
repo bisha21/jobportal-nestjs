@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -24,6 +25,7 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+import { SearchApplicationDto } from './dto/searchApplication.dto';
 
 @ApiTags('Applications')
 @Controller('applications')
@@ -32,12 +34,11 @@ export class ApplicationController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  
-  @ApiOperation({ summary: 'Get all job applications' })
+  @ApiOperation({ summary: 'Get all job applications (with optional filters)' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, description: 'List of all applications' })
-  async getAllApplications() {
-    return await this.applicationService.getAllApplications();
+  @ApiResponse({ status: 200, description: 'List of filtered applications' })
+  async getAllApplications(@Query() query: SearchApplicationDto) {
+    return await this.applicationService.getAllApplications(query);
   }
 
   @Get(':id')

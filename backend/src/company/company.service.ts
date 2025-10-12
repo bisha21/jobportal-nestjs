@@ -10,6 +10,11 @@ import { DatabaseService } from 'src/database/database.service';
 import { CreateCompanyDto } from './dto/createDto';
 import { UpdateCompanyDto } from './dto/updateDto';
 import { Company } from '@prisma/client';
+import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
+import { SearchJobDto } from 'src/job/dto/searchJob.dto';
+import { SearchCompanyDto } from './dto/search-company';
+import { Prisma, User } from 'generated/prisma';
+import { RequestWithUser } from 'src/common/guards/auth/auth.guard';
 
 @Injectable()
 export class CompanyService {
@@ -47,9 +52,40 @@ export class CompanyService {
   }
 
   // Get all companies
-  async getAllCompanies() {
+  async getAllCompanies(user: User, query: SearchCompanyDto) {
     try {
-      return await this.prisma.company.findMany();
+      // Build features (filter, sort, paginate, etc.)
+      const features = new ApiFeaturesPrisma(query)
+        .filter()
+        .sort()
+        .paginate()
+        .limitFields()
+        .includeRelations();
+
+      // Get Prisma options from features
+      const options = features.getOptions() as Prisma.CompanyFindManyArgs;
+
+      // Start with the where clause from ApiFeatures
+      let cleanWhere: Prisma.CompanyWhereInput = { ...options.where };
+
+      // Role-based filtering
+      if (user.role === 'EMPLOYEE') {
+        cleanWhere.ownerId = user.id; // only their companies
+      } else if (user.role === 'ADMIN') {
+        if (query.ownerId) {
+          cleanWhere.ownerId = Number(query.ownerId); // optional admin filter
+        }
+      }
+
+      delete cleanWhere['company'];
+
+      // Fetch companies from database
+      const companies = await this.prisma.company.findMany({
+        ...options,
+        where: cleanWhere,
+      });
+
+      return companies;
     } catch (error) {
       console.error('getAllCompanies error:', error);
       throw new InternalServerErrorException('Failed to fetch companies');

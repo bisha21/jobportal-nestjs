@@ -2,36 +2,35 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
-export class SearchJobDto {
+export class SearchApplicationDto {
+  // Filter by job title
   @IsOptional()
   @IsString()
   title?: string;
 
+  // Filter by company owner
   @IsOptional()
-  @IsString()
-  location?: string;
+  @IsInt()
+  @Type(() => Number)
+  ownerId?: number;
 
+  // Filter by user ID (applicant)
   @IsOptional()
-  @IsString()
-  jobType?: string;
+  @IsInt()
+  @Type(() => Number)
+  userId?: number;
 
+  // Filter by job ID
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  jobId?: number;
+
+  // Filter by company ID
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   companyId?: number;
-
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  categoryId?: number;
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  salaryMin?: number;
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  salaryMax?: number;
 
   // Pagination
   @IsOptional()
@@ -58,8 +57,4 @@ export class SearchJobDto {
   @IsOptional()
   @IsString()
   include?: string;
-  @IsOptional()
-  @IsInt()
-  @Type(() => Number)
-  ownerId?: number;
 }

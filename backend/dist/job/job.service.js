@@ -33,45 +33,63 @@ let JobService = JobService_1 = class JobService {
         return job;
     }
     async getAllJobs(query) {
-        const features = new apiFeatures_1.ApiFeaturesPrisma(query)
-            .filter()
-            .sort()
-            .paginate()
-            .limitFields()
-            .includeRelations();
-        const options = features.getOptions();
-        const jobs = await this.prisma.job.findMany({
-            ...options,
-            where: {
-                ...options.where,
-                ...(query.salaryMin && query.salaryMax
-                    ? {
-                        AND: [
-                            { salaryMin: { lte: Number(query.salaryMax) } },
-                            { salaryMax: { gte: Number(query.salaryMin) } },
-                        ],
-                    }
-                    : {}),
-            },
-            include: {
-                category: {
-                    select: {
-                        id: true,
-                        categoryName: true,
+        try {
+            const features = new apiFeatures_1.ApiFeaturesPrisma(query)
+                .filter()
+                .sort()
+                .paginate()
+                .limitFields()
+                .includeRelations();
+            const options = features.getOptions();
+            const where = {};
+            if (query.title)
+                where.title = { contains: query.title, mode: 'insensitive' };
+            if (query.location)
+                where.location = { contains: query.location, mode: 'insensitive' };
+            if (query.jobType)
+                where.type = query.jobType;
+            if (query.companyId)
+                where.companyId = query.companyId;
+            if (query.categoryId)
+                where.categoryId = query.categoryId;
+            if (query.salaryMin && query.salaryMax) {
+                where.AND = [
+                    { salaryMin: { lte: query.salaryMax } },
+                    { salaryMax: { gte: query.salaryMin } },
+                ];
+            }
+            if (query.ownerId) {
+                where.company = {
+                    ownerId: query.ownerId,
+                };
+            }
+            const jobs = await this.prisma.job.findMany({
+                ...options,
+                where,
+                include: {
+                    category: {
+                        select: {
+                            id: true,
+                            categoryName: true,
+                        },
+                    },
+                    company: {
+                        select: {
+                            id: true,
+                            name: true,
+                            logoUrl: true,
+                            ownerId: true,
+                        },
                     },
                 },
-                company: {
-                    select: {
-                        id: true,
-                        name: true,
-                        logoUrl: true,
-                        ownerId: true,
-                    },
-                },
-            },
-        });
-        this.logger.log(`Fetched ${jobs.length} jobs`);
-        return jobs;
+            });
+            this.logger.log(`Fetched ${jobs.length} jobs`);
+            return jobs;
+        }
+        catch (error) {
+            this.logger.error('getAllJobs error:', error);
+            throw new common_1.InternalServerErrorException('Failed to fetch jobs');
+        }
     }
     async getSingleJob(jobId) {
         const job = await this.prisma.job.findUnique({

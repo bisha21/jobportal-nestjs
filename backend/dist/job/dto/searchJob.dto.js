@@ -25,6 +25,7 @@ class SearchJobDto {
     sort;
     fields;
     include;
+    ownerId;
 }
 exports.SearchJobDto = SearchJobDto;
 __decorate([
@@ -93,4 +94,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], SearchJobDto.prototype, "include", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsInt)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], SearchJobDto.prototype, "ownerId", void 0);
 //# sourceMappingURL=searchJob.dto.js.map

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, InternalServerErrorException } from '@nestjs/common';
 import { CreateJobDto } from './dto/createJob';
 import { updateJobDto } from './dto/updateJob';
 import { DatabaseService } from 'src/database/database.service';
@@ -30,48 +30,70 @@ export class JobService {
   }
 
   async getAllJobs(query: SearchJobDto) {
-    const features = new ApiFeaturesPrisma(query)
-      .filter()
-      .sort()
-      .paginate()
-      .limitFields()
-      .includeRelations();
+    try {
+      // Apply API features: filtering, sorting, pagination, field limiting
+      const features = new ApiFeaturesPrisma(query)
+        .filter()
+        .sort()
+        .paginate()
+        .limitFields()
+        .includeRelations();
 
-    const options = features.getOptions() as Prisma.JobFindManyArgs;
+      const options = features.getOptions() as Prisma.JobFindManyArgs;
 
-    const jobs = await this.prisma.job.findMany({
-      ...options,
-      where: {
-        ...options.where,
-        ...(query.salaryMin && query.salaryMax
-          ? {
-              AND: [
-                { salaryMin: { lte: Number(query.salaryMax) } }, // min salary below max filter
-                { salaryMax: { gte: Number(query.salaryMin) } }, // max salary above min filter
-              ],
-            }
-          : {}),
-      },
-      include: {
-        category: {
-          select: {
-            id: true,
-            categoryName: true,
+      // Build where clause dynamically (skip undefined values)
+      const where: Prisma.JobWhereInput = {};
+
+      if (query.title)
+        where.title = { contains: query.title, mode: 'insensitive' };
+      if (query.location)
+        where.location = { contains: query.location, mode: 'insensitive' };
+      if (query.jobType) where.type = query.jobType as any;
+      if (query.companyId) where.companyId = query.companyId;
+      if (query.categoryId) where.categoryId = query.categoryId;
+
+      if (query.salaryMin && query.salaryMax) {
+        where.AND = [
+          { salaryMin: { lte: query.salaryMax } },
+          { salaryMax: { gte: query.salaryMin } },
+        ];
+      }
+
+      // Filter by ownerId (nested relation)
+      if (query.ownerId) {
+        where.company = {
+          ownerId: query.ownerId,
+        };
+      }
+
+      // Fetch jobs from Prisma
+      const jobs = await this.prisma.job.findMany({
+        ...options,
+        where,
+        include: {
+          category: {
+            select: {
+              id: true,
+              categoryName: true,
+            },
+          },
+          company: {
+            select: {
+              id: true,
+              name: true,
+              logoUrl: true,
+              ownerId: true,
+            },
           },
         },
-        company: {
-          select: {
-            id: true,
-            name: true,
-            logoUrl: true,
-            ownerId: true,
-          },
-        },
-      },
-    });
+      });
 
-    this.logger.log(`Fetched ${jobs.length} jobs`);
-    return jobs;
+      this.logger.log(`Fetched ${jobs.length} jobs`);
+      return jobs;
+    } catch (error) {
+      this.logger.error('getAllJobs error:', error);
+      throw new InternalServerErrorException('Failed to fetch jobs');
+    }
   }
 
   async getSingleJob(jobId: number) {

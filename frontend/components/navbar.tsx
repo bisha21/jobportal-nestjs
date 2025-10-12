@@ -80,7 +80,7 @@ export default function Navbar() {
                     <DropdownMenuItem>
                       <Link href="/profile">Profile</Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>logout()}>Logout</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>

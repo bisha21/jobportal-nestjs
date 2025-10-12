@@ -11,8 +11,10 @@ import { Form } from '@/components/ui/form';
 import FormInput from '@/components/reusable/form-input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+  const router = useRouter();
   const { mutate: login, isPending } = useLoginMutation();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -27,6 +29,9 @@ export default function LoginForm() {
       onSuccess: (data) => {
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.user.role === 'ADMIN') router.replace('/admin');
+        if (data.user.role === 'EMPLOYEE') router.replace('/employee');
+        if (data.user.role === 'JOBSEEKER') router.replace('/');
         toast.success('Login successful!');
       },
       onError: (error) => {

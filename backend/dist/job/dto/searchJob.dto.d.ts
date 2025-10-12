@@ -11,4 +11,5 @@ export declare class SearchJobDto {
     sort?: string;
     fields?: string;
     include?: string;
+    ownerId?: number;
 }

@@ -1,15 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable prettier/prettier */
 import {
   Injectable,
   NotFoundException,
   ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateApplicationDto } from './dto/applyApplication.dto';
 import { UpdateApplicationDto } from './dto/updateApplication.dto';
 import { NotificationService } from 'src/notification/notification.service';
 import { NotificationGateway } from 'src/notification/notification.gateway';
+import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
+import { SearchApplicationDto } from './dto/searchApplication.dto';
+import { Prisma } from 'generated/prisma';
 
 @Injectable()
 export class ApplicationService {
@@ -75,9 +81,17 @@ export class ApplicationService {
     return application;
   }
 
-  async getAllApplications() {
-    return await this.prisma.application.findMany({
-      include: {
+  async getAllApplications(query: SearchApplicationDto) {
+    try {
+      const features = new ApiFeaturesPrisma(query)
+        .sort()
+        .paginate()
+        .limitFields()
+        .includeRelations();
+
+      const options = features.getOptions() as Prisma.ApplicationFindManyArgs;
+
+      options.include = {
         user: {
           select: {
             id: true,
@@ -94,16 +108,36 @@ export class ApplicationService {
             type: true,
             company: {
               select: {
+                id: true,
                 name: true,
+                ownerId: true,
               },
             },
           },
         },
-      },
-      orderBy: {
-        createdAt: 'desc', // newest applications first
-      },
-    });
+      };
+
+      // Build simple filter conditions
+      options.where = {};
+
+      // Filter by jobId
+      if (query.jobId) {
+        (options.where as any).jobId = query.jobId;
+      }
+
+      // Filter by ownerId (nested relation)
+      if (query.ownerId) {
+        (options.where as any).job = {
+          company: { ownerId: query.ownerId },
+        };
+      }
+
+      const applications = await this.prisma.application.findMany(options);
+      return applications;
+    } catch (error) {
+      console.error('getAllApplications error:', error);
+      throw new InternalServerErrorException('Failed to fetch applications');
+    }
   }
 
   async updateApplication(
@@ -189,7 +223,7 @@ export class ApplicationService {
       where: { id },
       include: {
         user: true,
-        job: true
+        job: true,
       },
     });
   }

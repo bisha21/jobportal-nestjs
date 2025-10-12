@@ -16,13 +16,43 @@ export type CompanyResponse = {
   updatedAt: string;
 };
 
-export const useCompanyQuery = () => {
+interface CompanyQueryParams {
+  ownerId?: number;
+  name?: string;
+  location?: string;
+  industry?: string;
+  companySize?: string;
+  website?: string;
+  page?: number;
+  limit?: number;
+  sort?: string;
+  fields?: string;
+  include?: string;
+}
+
+export const useCompanyQuery = (queryParams?: CompanyQueryParams) => {
   return useQuery<CompanyResponse[], ApiError>({
-    queryKey: ['company'],
+    queryKey: ['company', queryParams],
     queryFn: async () => {
-      const response = await apiRequest<CompanyResponse[]>('/company', {
-        method: 'GET',
-      });
+      // Build query string
+      const queryString = queryParams
+        ? '?' +
+          Object.entries(queryParams)
+            .filter(([_, value]) => value !== undefined)
+            .map(
+              ([key, value]) =>
+                `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+            )
+            .join('&')
+        : '';
+
+      const response = await apiRequest<CompanyResponse[]>(
+        `/company${queryString}`,
+        {
+          method: 'GET',
+        }
+      );
+
       console.log('Api Response:', response);
       return response;
     },
