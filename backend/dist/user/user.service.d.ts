@@ -9,7 +9,7 @@ export declare class UserService {
         profile: string | null;
         phoneNumber: string;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
     }[]>;
     findUserById(id: number): Promise<{
         applications: ({
@@ -26,7 +26,7 @@ export declare class UserService {
             userId: number;
             jobId: number;
             resumeUrl: string | null;
-            status: import("generated/prisma").$Enums.ApplicationStatus;
+            status: import("../../generated/prisma").$Enums.ApplicationStatus;
         })[];
     } & {
         fullName: string;
@@ -38,7 +38,7 @@ export declare class UserService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;

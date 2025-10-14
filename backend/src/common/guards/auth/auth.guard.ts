@@ -8,8 +8,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/database/database.service';
 import { Request } from 'express';
-import { User } from 'generated/prisma';
 import { TokenPayload } from 'src/utils/generateAuthToken';
+import { User } from '../../../../generated/prisma';
 
 interface IUser extends User {
   token?: string;

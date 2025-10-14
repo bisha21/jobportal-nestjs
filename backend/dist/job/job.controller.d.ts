@@ -20,7 +20,7 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
@@ -47,7 +47,7 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
@@ -68,10 +68,10 @@ export declare class JobController {
         };
         category: {
             id: number;
+            userId: number;
             createdAt: Date;
             updatedAt: Date;
             categoryName: string;
-            userId: number;
         };
         jobSkills: {
             skill: string;
@@ -87,7 +87,7 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
@@ -103,7 +103,7 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
@@ -119,7 +119,7 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;

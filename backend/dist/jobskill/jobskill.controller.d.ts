@@ -23,7 +23,7 @@ export declare class JobskillController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;

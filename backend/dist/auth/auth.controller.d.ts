@@ -12,15 +12,15 @@ export declare class AuthController {
     constructor(authService: AuthService);
     registerUser(createUserDto: CreateUserDto): Promise<{
         user: {
+            id: number;
             fullName: string;
             email: string;
             resume: string | null;
             profile: string | null;
             phoneNumber: string;
             bio: string | null;
+            role: import("../../generated/prisma").$Enums.Role;
             otp: number | null;
-            id: number;
-            role: import("generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
             createdAt: Date;
             updatedAt: Date;
@@ -29,15 +29,15 @@ export declare class AuthController {
     }>;
     login(createLoginDto: CreateLoginDto): Promise<{
         user: {
+            id: number;
             fullName: string;
             email: string;
             resume: string | null;
             profile: string | null;
             phoneNumber: string;
             bio: string | null;
+            role: import("../../generated/prisma").$Enums.Role;
             otp: number | null;
-            id: number;
-            role: import("generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
             createdAt: Date;
             updatedAt: Date;
@@ -56,10 +56,10 @@ export declare class AuthController {
     getProfile(req: RequestWithUser): Promise<{
         applications: ({
             job: {
+                title: string;
                 company: {
                     name: string;
                 };
-                title: string;
             };
         } & {
             id: number;
@@ -67,10 +67,11 @@ export declare class AuthController {
             updatedAt: Date;
             userId: number;
             jobId: number;
+            status: import("../../generated/prisma").$Enums.ApplicationStatus;
             resumeUrl: string | null;
-            status: import("generated/prisma").$Enums.ApplicationStatus;
         })[];
     } & {
+        id: number;
         fullName: string;
         email: string;
         password: string;
@@ -78,14 +79,14 @@ export declare class AuthController {
         profile: string | null;
         phoneNumber: string;
         bio: string | null;
+        role: import("../../generated/prisma").$Enums.Role;
         otp: number | null;
-        id: number;
-        role: import("generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
     updateProfile(updateUserDto: UpdateUserDto, req: RequestWithUser): Promise<{
+        id: number;
         fullName: string;
         email: string;
         password: string;
@@ -93,9 +94,8 @@ export declare class AuthController {
         profile: string | null;
         phoneNumber: string;
         bio: string | null;
+        role: import("../../generated/prisma").$Enums.Role;
         otp: number | null;
-        id: number;
-        role: import("generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;

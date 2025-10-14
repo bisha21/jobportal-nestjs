@@ -7,15 +7,18 @@ export declare class ApplicationController {
     constructor(applicationService: ApplicationService);
     getAllApplications(query: SearchApplicationDto): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         userId: number;
         jobId: number;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
+        createdAt: Date;
+        updatedAt: Date;
     }[]>;
     getApplicationById(id: number): Promise<({
         user: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
             fullName: string;
             email: string;
             password: string;
@@ -23,12 +26,9 @@ export declare class ApplicationController {
             profile: string | null;
             phoneNumber: string;
             bio: string | null;
+            role: import("../../generated/prisma").$Enums.Role;
             otp: number | null;
-            id: number;
-            role: import("generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
         job: {
             id: number;
@@ -41,37 +41,37 @@ export declare class ApplicationController {
             experience: string;
             salaryMin: number;
             salaryMax: number;
-            type: import("generated/prisma").$Enums.JobType;
+            type: import("../../generated/prisma").$Enums.JobType;
             deadline: Date | null;
             companyId: number;
             categoryId: number;
         };
     } & {
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         userId: number;
         jobId: number;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
+        createdAt: Date;
+        updatedAt: Date;
     }) | null>;
     updateApplication(id: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         userId: number;
         jobId: number;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     deleteApplication(id: number): Promise<{
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         userId: number;
         jobId: number;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getMyApplications(req: RequestWithUser): Promise<({
         job: {
@@ -85,19 +85,19 @@ export declare class ApplicationController {
             experience: string;
             salaryMin: number;
             salaryMax: number;
-            type: import("generated/prisma").$Enums.JobType;
+            type: import("../../generated/prisma").$Enums.JobType;
             deadline: Date | null;
             companyId: number;
             categoryId: number;
         };
     } & {
         id: number;
-        createdAt: Date;
-        updatedAt: Date;
         userId: number;
         jobId: number;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        status: import("generated/prisma").$Enums.ApplicationStatus;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     checkIfApplied(jobId: number, req: RequestWithUser): Promise<{
         isApplied: boolean;

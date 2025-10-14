@@ -13,7 +13,7 @@ exports.UpdateApplicationDto = void 0;
 const mapped_types_1 = require("@nestjs/mapped-types");
 const applyApplication_dto_1 = require("./applyApplication.dto");
 const class_validator_1 = require("class-validator");
-const prisma_1 = require("../../../generated/prisma/index.js");
+const prisma_1 = require("../../../generated/prisma");
 class UpdateApplicationDto extends (0, mapped_types_1.PartialType)(applyApplication_dto_1.CreateApplicationDto) {
     status;
 }

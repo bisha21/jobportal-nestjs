@@ -7,6 +7,7 @@ export declare class UserSkillController {
     constructor(userSkillService: UserSkillService);
     createUserSkill(createUserSkillDto: CreateUserSkillDto, req: RequestWithUser): Promise<{
         user: {
+            id: number;
             fullName: string;
             email: string;
             password: string;
@@ -14,9 +15,8 @@ export declare class UserSkillController {
             profile: string | null;
             phoneNumber: string;
             bio: string | null;
+            role: import("../../generated/prisma").$Enums.Role;
             otp: number | null;
-            id: number;
-            role: import("generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
             createdAt: Date;
             updatedAt: Date;
