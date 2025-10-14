@@ -1,7 +1,4 @@
 /* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   ConflictException,
   Injectable,
@@ -31,15 +28,17 @@ export class CategoryService {
   }
 
   async getCategories() {
-    return await this.prisma.category.findMany(
-      { include: { user: {
-        select: {
-          id: true,
-          fullName: true,
-          email: true
+    return await this.prisma.category.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true,
+          },
         },
-      } } },
-    );
+      },
+    });
   }
 
   async getCategoryById(id: number) {

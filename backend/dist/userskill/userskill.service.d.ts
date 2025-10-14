@@ -15,7 +15,7 @@ export declare class UserSkillService {
             bio: string | null;
             otp: number | null;
             id: number;
-            role: import("generated/prisma").$Enums.Role;
+            role: import("../../generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
             createdAt: Date;
             updatedAt: Date;

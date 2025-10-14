@@ -8,54 +8,54 @@ export declare class CompanyController {
     constructor(companyService: CompanyService);
     createCompany(createCompanyDto: CreateCompanyDto, req: RequestWithUser): Promise<{
         name: string;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         description: string;
         location: string;
         website: string | null;
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
     getAllCompanies(query: SearchCompanyDto, req: RequestWithUser): Promise<{
         name: string;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         description: string;
         location: string;
         website: string | null;
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }[]>;
     updateCompany(companyId: number, updateCompanyDto: UpdateCompanyDto, req: RequestWithUser): Promise<{
         name: string;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         description: string;
         location: string;
         website: string | null;
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
     deleteCompany(companyId: number, req: RequestWithUser): Promise<{
         name: string;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         description: string;
         location: string;
         website: string | null;
         industry: string;
         companySize: string;
         logoUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
         ownerId: number;
     }>;
 }

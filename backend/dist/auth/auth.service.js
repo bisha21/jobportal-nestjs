@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const database_service_1 = require("../database/database.service");
 const hashpassword_1 = require("../utils/hashpassword");
 const generateAuthToken_1 = require("../utils/generateAuthToken");
 const jwt_1 = require("@nestjs/jwt");
 const generateOtp_1 = __importDefault(require("../utils/generateOtp"));
 const mail_service_1 = require("../mail/mail.service");
+const database_service_1 = require("../database/database.service");
 let AuthService = class AuthService {
     prisma;
     jwtService;
@@ -131,6 +131,10 @@ let AuthService = class AuthService {
         if (!userExists.otpExpiry || userExists.otpExpiry.getTime() < Date.now()) {
             throw new common_1.NotFoundException('OTP expired');
         }
+        await this.prisma.user.update({
+            where: { email },
+            data: { otp: null, otpExpiry: null },
+        });
         return { message: 'OTP verified successfully' };
     }
     async resetPassword(ressetPasswordDto) {

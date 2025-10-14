@@ -11,10 +11,8 @@ import { CreateCompanyDto } from './dto/createDto';
 import { UpdateCompanyDto } from './dto/updateDto';
 import { Company } from '@prisma/client';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
-import { SearchJobDto } from 'src/job/dto/searchJob.dto';
 import { SearchCompanyDto } from './dto/search-company';
-import { Prisma, User } from 'generated/prisma';
-import { RequestWithUser } from 'src/common/guards/auth/auth.guard';
+import { Prisma, User } from '../../generated/prisma';
 
 @Injectable()
 export class CompanyService {

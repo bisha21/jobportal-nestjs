@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/database/database.service';
 import { Request } from 'express';
-import { User } from 'generated/prisma';
+import { User } from '../../../../generated/prisma';
 interface IUser extends User {
     token?: string;
 }

@@ -1,4 +1,3 @@
-import { DatabaseService } from 'src/database/database.service';
 import { CreateUserDto } from './dto/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CreateLoginDto } from './dto/login.dto';
@@ -8,6 +7,7 @@ import { VerifyOtpDto } from './dto/verifyotp.dto';
 import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { CreateOAuthUserDto } from './dto/createoauth.dto';
 import { UpdateUserDto } from './dto/updateUserDto';
+import { DatabaseService } from 'src/database/database.service';
 export declare class AuthService {
     private prisma;
     private jwtService;
@@ -23,7 +23,7 @@ export declare class AuthService {
             bio: string | null;
             otp: number | null;
             id: number;
-            role: import("generated/prisma").$Enums.Role;
+            role: import("../../generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
             createdAt: Date;
             updatedAt: Date;
@@ -40,7 +40,7 @@ export declare class AuthService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -55,7 +55,7 @@ export declare class AuthService {
             bio: string | null;
             otp: number | null;
             id: number;
-            role: import("generated/prisma").$Enums.Role;
+            role: import("../../generated/prisma").$Enums.Role;
             otpExpiry: Date | null;
             createdAt: Date;
             updatedAt: Date;
@@ -86,7 +86,7 @@ export declare class AuthService {
             userId: number;
             jobId: number;
             resumeUrl: string | null;
-            status: import("generated/prisma").$Enums.ApplicationStatus;
+            status: import("../../generated/prisma").$Enums.ApplicationStatus;
         })[];
     } & {
         fullName: string;
@@ -98,7 +98,7 @@ export declare class AuthService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -113,7 +113,7 @@ export declare class AuthService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -128,7 +128,7 @@ export declare class AuthService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -143,7 +143,7 @@ export declare class AuthService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -158,7 +158,7 @@ export declare class AuthService {
         bio: string | null;
         otp: number | null;
         id: number;
-        role: import("generated/prisma").$Enums.Role;
+        role: import("../../generated/prisma").$Enums.Role;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;

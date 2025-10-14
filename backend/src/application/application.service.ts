@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable prettier/prettier */
+
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Injectable,
   NotFoundException,
@@ -15,7 +15,7 @@ import { NotificationService } from 'src/notification/notification.service';
 import { NotificationGateway } from 'src/notification/notification.gateway';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
 import { SearchApplicationDto } from './dto/searchApplication.dto';
-import { Prisma } from 'generated/prisma';
+import { Prisma } from '../../generated/prisma';
 
 @Injectable()
 export class ApplicationService {

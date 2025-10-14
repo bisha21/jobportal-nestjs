@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Body,
   Controller,
@@ -19,8 +18,8 @@ import {
 } from 'src/common/guards/auth/auth.guard';
 import { RoleGuard } from 'src/common/guards/role/role.guard';
 import { Role as Roles } from 'src/common/guards/role/role.decorator';
-import { Role } from 'generated/prisma';
 import { CreateCategoryDto } from './dto/createCategory.dto';
+import { Role } from '../../generated/prisma';
 
 @Controller('category')
 export class CategoryController {

@@ -14,7 +14,7 @@ export declare class JobService {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -41,7 +41,7 @@ export declare class JobService {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -81,7 +81,7 @@ export declare class JobService {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -97,7 +97,7 @@ export declare class JobService {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         createdAt: Date;
         updatedAt: Date;
@@ -113,7 +113,7 @@ export declare class JobService {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("generated/prisma").$Enums.JobType;
+        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         createdAt: Date;
         updatedAt: Date;

@@ -4,7 +4,6 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
 import { CreateUserDto } from './dto/register.dto';
 import { comparePassword, hashPassword } from 'src/utils/hashpassword';
 import { generateAuthToken } from 'src/utils/generateAuthToken';
@@ -17,6 +16,7 @@ import { VerifyOtpDto } from './dto/verifyotp.dto';
 import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { CreateOAuthUserDto } from './dto/createoauth.dto';
 import { UpdateUserDto } from './dto/updateUserDto';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class AuthService {
@@ -156,10 +156,14 @@ export class AuthService {
       throw new NotFoundException('Invalid OTP');
     }
 
-    // If otpExpiry is stored as a number
     if (!userExists.otpExpiry || userExists.otpExpiry.getTime() < Date.now()) {
       throw new NotFoundException('OTP expired');
     }
+
+    await this.prisma.user.update({
+      where: { email },
+      data: { otp: null, otpExpiry: null },
+    });
 
     return { message: 'OTP verified successfully' };
   }
@@ -241,7 +245,6 @@ export class AuthService {
       where: { email }, // you need to wrap email in `where`
     });
   }
-
 
   async updateProfile(userId: number, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({

@@ -4,8 +4,8 @@ import { CreateJobDto } from './dto/createJob';
 import { updateJobDto } from './dto/updateJob';
 import { DatabaseService } from 'src/database/database.service';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
-import { Prisma } from 'generated/prisma';
 import { SearchJobDto } from './dto/searchJob.dto';
+import { Prisma } from '../../generated/prisma';
 
 @Injectable()
 export class JobService {

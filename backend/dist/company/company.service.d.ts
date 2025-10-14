@@ -2,7 +2,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { CreateCompanyDto } from './dto/createDto';
 import { UpdateCompanyDto } from './dto/updateDto';
 import { SearchCompanyDto } from './dto/search-company';
-import { User } from 'generated/prisma';
+import { User } from '../../generated/prisma';
 export declare class CompanyService {
     private prisma;
     constructor(prisma: DatabaseService);
