@@ -31,7 +31,6 @@ export class JobService {
 
   async getAllJobs(query: SearchJobDto) {
     try {
-      // Apply API features: filtering, sorting, pagination, field limiting
       const features = new ApiFeaturesPrisma(query)
         .filter()
         .sort()

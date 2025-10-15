@@ -16,7 +16,7 @@ interface IUser extends User {
 }
 
 export interface RequestWithUser extends Request {
-  user: IUser; // define the type of user
+  user: IUser; 
   token?: string;
 }
 

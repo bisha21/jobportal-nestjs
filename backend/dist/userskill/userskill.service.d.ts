@@ -6,6 +6,9 @@ export declare class UserSkillService {
     constructor(prisma: DatabaseService);
     createUserSkill(userId: number, createUserSkillDto: CreateUserSkillDto): Promise<{
         user: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
             fullName: string;
             email: string;
             password: string;
@@ -13,39 +16,36 @@ export declare class UserSkillService {
             profile: string | null;
             phoneNumber: string;
             bio: string | null;
-            otp: number | null;
-            id: number;
             role: import("../../generated/prisma").$Enums.Role;
+            otp: number | null;
             otpExpiry: Date | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
     } & {
-        id: number;
+        skill: string;
         createdAt: Date;
         updatedAt: Date;
+        id: number;
         userId: number;
-        skill: string;
     }>;
     getUserSkills(userId: number): Promise<{
-        id: number;
+        skill: string;
         createdAt: Date;
         updatedAt: Date;
+        id: number;
         userId: number;
-        skill: string;
     }[]>;
     updateUserSkill(skillId: number, updateUserSkillDto: UpdateUserSkillDto): Promise<{
-        id: number;
+        skill: string;
         createdAt: Date;
         updatedAt: Date;
+        id: number;
         userId: number;
-        skill: string;
     }>;
     deleteUserSkill(skillId: number): Promise<{
-        id: number;
+        skill: string;
         createdAt: Date;
         updatedAt: Date;
+        id: number;
         userId: number;
-        skill: string;
     }>;
 }

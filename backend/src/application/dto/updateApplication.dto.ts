@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateApplicationDto } from './applyApplication.dto';
 import { IsEnum, IsOptional } from 'class-validator';
