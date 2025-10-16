@@ -1,34 +1,20 @@
 import { DatabaseService } from 'src/database/database.service';
+import { RedisService } from 'src/redis/redis.service';
 export declare class UserService {
     private readonly prisma;
-    constructor(prisma: DatabaseService);
+    private readonly redis;
+    constructor(prisma: DatabaseService, redis: RedisService);
     findAllUsers(): Promise<{
+        id: number;
         fullName: string;
         email: string;
         resume: string | null;
         profile: string | null;
         phoneNumber: string;
-        id: number;
         role: import("../../generated/prisma").$Enums.Role;
     }[]>;
     findUserById(id: number): Promise<{
-        applications: ({
-            job: {
-                company: {
-                    name: string;
-                };
-                title: string;
-            };
-        } & {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: number;
-            jobId: number;
-            resumeUrl: string | null;
-            status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        })[];
-    } & {
+        id: number;
         fullName: string;
         email: string;
         password: string;
@@ -36,11 +22,10 @@ export declare class UserService {
         profile: string | null;
         phoneNumber: string;
         bio: string | null;
-        otp: number | null;
-        id: number;
         role: import("../../generated/prisma").$Enums.Role;
+        otp: number | null;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
-    }>;
+    } | null>;
 }

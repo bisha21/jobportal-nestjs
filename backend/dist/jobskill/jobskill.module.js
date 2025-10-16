@@ -17,6 +17,7 @@ const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = __importDefault(require("../config/jwt.config"));
 const database_module_1 = require("../database/database.module");
 const job_module_1 = require("../job/job.module");
+const redis_module_1 = require("../redis/redis.module");
 let JobskillModule = class JobskillModule {
 };
 exports.JobskillModule = JobskillModule;
@@ -25,6 +26,7 @@ exports.JobskillModule = JobskillModule = __decorate([
         imports: [
             database_module_1.DatabaseModule,
             job_module_1.JobModule,
+            redis_module_1.RedisModule,
             jwt_1.JwtModule.register({
                 secret: jwt_config_1.default.secret,
                 signOptions: { expiresIn: jwt_config_1.default.expiresIn },

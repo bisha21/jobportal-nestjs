@@ -5,26 +5,26 @@ export declare class NotificationService {
     constructor(prisma: DatabaseService);
     createNotification(createNotificationDto: CreateNotificationDto): Promise<{
         message: string;
+        type: string | null;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        type: string | null;
         userId: number;
     }>;
     findAll(userId: number): Promise<{
         message: string;
+        type: string | null;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        type: string | null;
         userId: number;
     }[]>;
     delete(id: number): Promise<{
         message: string;
+        type: string | null;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        type: string | null;
         userId: number;
     }>;
 }

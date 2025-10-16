@@ -7,6 +7,9 @@ export declare class CompanyController {
     private readonly companyService;
     constructor(companyService: CompanyService);
     createCompany(createCompanyDto: CreateCompanyDto, req: RequestWithUser): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -14,12 +17,12 @@ export declare class CompanyController {
         industry: string;
         companySize: string;
         logoUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
         ownerId: number;
     }>;
     getAllCompanies(query: SearchCompanyDto, req: RequestWithUser): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -27,12 +30,12 @@ export declare class CompanyController {
         industry: string;
         companySize: string;
         logoUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
         ownerId: number;
     }[]>;
     updateCompany(companyId: number, updateCompanyDto: UpdateCompanyDto, req: RequestWithUser): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -40,12 +43,12 @@ export declare class CompanyController {
         industry: string;
         companySize: string;
         logoUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
         ownerId: number;
     }>;
     deleteCompany(companyId: number, req: RequestWithUser): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
         description: string;
         location: string;
@@ -53,9 +56,6 @@ export declare class CompanyController {
         industry: string;
         companySize: string;
         logoUrl: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
         ownerId: number;
     }>;
 }

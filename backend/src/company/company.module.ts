@@ -5,6 +5,7 @@ import { CompanyController } from './company.controller';
 import { JwtModule } from '@nestjs/jwt';
 import JwtConstants from 'src/config/jwt.config';
 import { DatabaseModule } from 'src/database/database.module';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { DatabaseModule } from 'src/database/database.module';
       secret: JwtConstants.secret,
       signOptions: { expiresIn: JwtConstants.expiresIn },
     }),
+    RedisModule,
   ],
   providers: [CompanyService],
   controllers: [CompanyController],

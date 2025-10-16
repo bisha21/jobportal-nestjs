@@ -16,6 +16,7 @@ const user_controller_1 = require("./user.controller");
 const database_module_1 = require("../database/database.module");
 const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = __importDefault(require("../config/jwt.config"));
+const redis_module_1 = require("../redis/redis.module");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
@@ -23,6 +24,7 @@ exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
             database_module_1.DatabaseModule,
+            redis_module_1.RedisModule,
             jwt_1.JwtModule.register({
                 secret: jwt_config_1.default.secret,
                 signOptions: { expiresIn: jwt_config_1.default.expiresIn },

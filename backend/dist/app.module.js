@@ -26,6 +26,7 @@ const message_module_1 = require("./message/message.module");
 const favorite_module_1 = require("./favorite/favorite.module");
 const category_module_1 = require("./category/category.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
+const redis_module_1 = require("./redis/redis.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -47,6 +48,7 @@ exports.AppModule = AppModule = __decorate([
             favorite_module_1.FavoriteModule,
             category_module_1.CategoryModule,
             dashboard_module_1.DashboardModule,
+            redis_module_1.RedisModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, cloudinary_service_1.CloudinaryService],

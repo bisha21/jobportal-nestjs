@@ -20,6 +20,7 @@ const mail_module_1 = require("../mail/mail.module");
 const google_strategy_1 = require("./strategies/google.strategy");
 const google_auth_config_1 = __importDefault(require("../config/google-auth.config"));
 const config_1 = require("@nestjs/config");
+const redis_module_1 = require("../redis/redis.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -28,6 +29,7 @@ exports.AuthModule = AuthModule = __decorate([
         imports: [
             database_module_1.DatabaseModule,
             mail_module_1.MailModule,
+            redis_module_1.RedisModule,
             jwt_1.JwtModule.register({
                 secret: jwt_config_1.default.secret,
                 signOptions: { expiresIn: jwt_config_1.default.expiresIn },

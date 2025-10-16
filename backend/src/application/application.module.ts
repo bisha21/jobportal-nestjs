@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { forwardRef, Module } from '@nestjs/common';
 import { ApplicationService } from './application.service';
 import { ApplicationController } from './application.controller';
@@ -14,6 +15,7 @@ import { NotificationModule } from 'src/notification/notification.module';
     DatabaseModule,
     CompanyModule,
     NotificationModule,
+
     JwtModule.register({
       secret: JwtConstants.secret,
       signOptions: { expiresIn: JwtConstants.expiresIn },

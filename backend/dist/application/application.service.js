@@ -15,14 +15,17 @@ const database_service_1 = require("../database/database.service");
 const notification_service_1 = require("../notification/notification.service");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const apiFeatures_1 = require("../utils/apiFeatures");
+const redis_service_1 = require("../redis/redis.service");
 let ApplicationService = class ApplicationService {
     prisma;
     notificationService;
     notificationGateway;
-    constructor(prisma, notificationService, notificationGateway) {
+    redis;
+    constructor(prisma, notificationService, notificationGateway, redis) {
         this.prisma = prisma;
         this.notificationService = notificationService;
         this.notificationGateway = notificationGateway;
+        this.redis = redis;
     }
     async applyJob(userId, jobId, createApplicationDto) {
         const job = await this.prisma.job.findUnique({
@@ -66,6 +69,11 @@ let ApplicationService = class ApplicationService {
         return application;
     }
     async getAllApplications(query) {
+        const cacheKey = `applications:${JSON.stringify(query)}`;
+        const cachedData = await this.redis.get(cacheKey);
+        if (cachedData) {
+            return JSON.parse(cachedData);
+        }
         try {
             const features = new apiFeatures_1.ApiFeaturesPrisma(query)
                 .sort()
@@ -108,6 +116,7 @@ let ApplicationService = class ApplicationService {
                 };
             }
             const applications = await this.prisma.application.findMany(options);
+            await this.redis.set(cacheKey, JSON.stringify(applications));
             return applications;
         }
         catch (error) {
@@ -151,35 +160,55 @@ let ApplicationService = class ApplicationService {
         });
         if (!app)
             throw new common_1.NotFoundException('Application not found');
+        await this.redis.del(`applications:${applicationId}`);
         return await this.prisma.application.delete({
             where: { id: applicationId },
         });
     }
     async getApplicationsByUser(userId) {
-        return await this.prisma.application.findMany({
+        const cached = await this.redis.get(`applications:user:${userId}`);
+        if (cached)
+            return JSON.parse(cached);
+        if (!userId)
+            throw new common_1.NotFoundException('User not found');
+        const user = await this.prisma.application.findMany({
             where: { userId },
             include: { job: true },
         });
+        await this.redis.set(`applications:user:${userId}`, JSON.stringify(user), 600);
+        return user;
     }
     async getApplicationsByJob(jobId) {
-        return await this.prisma.application.findMany({
+        if (!jobId)
+            throw new common_1.NotFoundException('Job not found');
+        const cache = await this.redis.get(`applications:job:${jobId}`);
+        if (cache)
+            return JSON.parse(cache);
+        const applications = await this.prisma.application.findMany({
             where: { jobId },
             include: { user: true },
         });
+        await this.redis.set(`applications:job:${jobId}`, JSON.stringify(applications), 600);
+        return applications;
     }
     async getApplicationsById(id) {
+        const cache = await this.redis.get(`application:${id}`);
+        if (cache)
+            return JSON.parse(cache);
         const application = await this.prisma.application.findUnique({
             where: { id },
         });
         if (!application)
             throw new common_1.NotFoundException('Application not found');
-        return await this.prisma.application.findUnique({
+        const applications = await this.prisma.application.findUnique({
             where: { id },
             include: {
                 user: true,
                 job: true,
             },
         });
+        await this.redis.set(`application:${id}`, JSON.stringify(applications), 600);
+        return applications;
     }
     async checkIfApplied(userId, jobId) {
         const existing = await this.prisma.application.findFirst({
@@ -193,6 +222,7 @@ exports.ApplicationService = ApplicationService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [database_service_1.DatabaseService,
         notification_service_1.NotificationService,
-        notification_gateway_1.NotificationGateway])
+        notification_gateway_1.NotificationGateway,
+        redis_service_1.RedisService])
 ], ApplicationService);
 //# sourceMappingURL=application.service.js.map

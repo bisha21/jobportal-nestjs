@@ -9,11 +9,13 @@ import { MailModule } from 'src/mail/mail.module';
 import { GoogleStrategy } from './strategies/google.strategy';
 import googleAuthConfig from 'src/config/google-auth.config';
 import { ConfigModule } from '@nestjs/config';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
     DatabaseModule,
     MailModule,
+    RedisModule,
     JwtModule.register({
       secret: JwtConstants.secret,
       signOptions: { expiresIn: JwtConstants.expiresIn },

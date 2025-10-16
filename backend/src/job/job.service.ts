@@ -1,17 +1,25 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException, Logger, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateJobDto } from './dto/createJob';
 import { updateJobDto } from './dto/updateJob';
 import { DatabaseService } from 'src/database/database.service';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
 import { SearchJobDto } from './dto/searchJob.dto';
 import { Prisma } from '../../generated/prisma';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class JobService {
   private readonly logger = new Logger(JobService.name);
 
-  constructor(private prisma: DatabaseService) {}
+  constructor(private prisma: DatabaseService,
+    private redis: RedisService
+  ) {}
 
   async createJob(createJobDto: CreateJobDto) {
     const company = await this.prisma.company.findUnique({
@@ -31,6 +39,18 @@ export class JobService {
 
   async getAllJobs(query: SearchJobDto) {
     try {
+      // Generate a unique cache key based on the query
+      const cacheKey = `jobs:${JSON.stringify(query)}`;
+
+      // Check Redis cache first
+      const cachedJobs = await this.redis.get(cacheKey);
+      if (cachedJobs) {
+        return JSON.parse(cachedJobs) as Awaited<
+          ReturnType<typeof this.prisma.job.findMany>
+        >;
+      }
+
+      // Build Prisma options using ApiFeatures
       const features = new ApiFeaturesPrisma(query)
         .filter()
         .sort()
@@ -40,9 +60,8 @@ export class JobService {
 
       const options = features.getOptions() as Prisma.JobFindManyArgs;
 
-      // Build where clause dynamically (skip undefined values)
+      // Build dynamic where clause
       const where: Prisma.JobWhereInput = {};
-
       if (query.title)
         where.title = { contains: query.title, mode: 'insensitive' };
       if (query.location)
@@ -50,19 +69,14 @@ export class JobService {
       if (query.jobType) where.type = query.jobType as any;
       if (query.companyId) where.companyId = query.companyId;
       if (query.categoryId) where.categoryId = query.categoryId;
-
       if (query.salaryMin && query.salaryMax) {
         where.AND = [
           { salaryMin: { lte: query.salaryMax } },
           { salaryMax: { gte: query.salaryMin } },
         ];
       }
-
-      // Filter by ownerId (nested relation)
       if (query.ownerId) {
-        where.company = {
-          ownerId: query.ownerId,
-        };
+        where.company = { ownerId: query.ownerId };
       }
 
       // Fetch jobs from Prisma
@@ -70,22 +84,15 @@ export class JobService {
         ...options,
         where,
         include: {
-          category: {
-            select: {
-              id: true,
-              categoryName: true,
-            },
-          },
+          category: { select: { id: true, categoryName: true } },
           company: {
-            select: {
-              id: true,
-              name: true,
-              logoUrl: true,
-              ownerId: true,
-            },
+            select: { id: true, name: true, logoUrl: true, ownerId: true },
           },
         },
       });
+
+      // Save jobs to Redis cache for 10 minutes (600 seconds)
+      await this.redis.set(cacheKey, JSON.stringify(jobs), 600);
 
       this.logger.log(`Fetched ${jobs.length} jobs`);
       return jobs;
@@ -96,6 +103,13 @@ export class JobService {
   }
 
   async getSingleJob(jobId: number) {
+    const cachedJob = await this.redis.get(`job:${jobId}`);
+    if (cachedJob) {
+      console.log('Cache hit! hahahahahahahah');
+      return JSON.parse(cachedJob) as Awaited<
+        ReturnType<typeof this.prisma.job.findUnique>
+      >;
+    }
     const job = await this.prisma.job.findUnique({
       where: { id: jobId },
       include: {
@@ -113,6 +127,7 @@ export class JobService {
       throw new NotFoundException(`Job with ID ${jobId} not found`);
     }
     this.logger.log(`Fetched job with ID ${jobId}`);
+    await this.redis.set(`job:${jobId}`, JSON.stringify(job), 600);
     return job;
   }
 

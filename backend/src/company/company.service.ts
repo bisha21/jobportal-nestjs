@@ -13,10 +13,13 @@ import { Company } from '@prisma/client';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
 import { SearchCompanyDto } from './dto/search-company';
 import { Prisma, User } from '../../generated/prisma';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class CompanyService {
-  constructor(private prisma: DatabaseService) {}
+  constructor(private prisma: DatabaseService,
+    private redis: RedisService
+  ) {}
   private validateOwnership(company: Company, ownerId: number) {
     if (company.ownerId !== ownerId) {
       throw new ForbiddenException('You do not own this company');
@@ -52,6 +55,17 @@ export class CompanyService {
   // Get all companies
   async getAllCompanies(user: User, query: SearchCompanyDto) {
     try {
+      const cacheKey = `companies:${user.id}:${JSON.stringify(query)}`;
+
+      // Check Redis cache first
+      const cachedData = await this.redis.get(cacheKey);
+      if (cachedData) {
+        console.log('Cache hit! hahahahahahahah');
+        return JSON.parse(cachedData) as Awaited<
+          ReturnType<typeof this.prisma.company.findMany>
+        >;
+      }
+
       // Build features (filter, sort, paginate, etc.)
       const features = new ApiFeaturesPrisma(query)
         .filter()
@@ -82,6 +96,9 @@ export class CompanyService {
         ...options,
         where: cleanWhere,
       });
+
+      // Save result to Redis for 10 minutes (600 seconds)
+      await this.redis.set(cacheKey, JSON.stringify(companies), 600);
 
       return companies;
     } catch (error) {

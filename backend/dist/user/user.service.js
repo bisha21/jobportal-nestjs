@@ -12,13 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
+const redis_service_1 = require("../redis/redis.service");
 let UserService = class UserService {
     prisma;
-    constructor(prisma) {
+    redis;
+    constructor(prisma, redis) {
         this.prisma = prisma;
+        this.redis = redis;
     }
     async findAllUsers() {
-        return await this.prisma.user.findMany({
+        const cached = await this.redis.get('users:all');
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const users = await this.prisma.user.findMany({
             select: {
                 id: true,
                 fullName: true,
@@ -29,8 +36,14 @@ let UserService = class UserService {
                 phoneNumber: true,
             },
         });
+        await this.redis.set('users:all', JSON.stringify(users), 600);
+        return users;
     }
     async findUserById(id) {
+        const cache = await this.redis.get(`user:${id}`);
+        if (cache) {
+            return JSON.parse(cache);
+        }
         const user = await this.prisma.user.findUnique({
             where: { id: id },
             include: {
@@ -53,12 +66,14 @@ let UserService = class UserService {
         if (!user) {
             throw new common_1.NotFoundException('User not found');
         }
+        await this.redis.set(`user:${id}`, JSON.stringify(user), 600);
         return user;
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+    __metadata("design:paramtypes", [database_service_1.DatabaseService,
+        redis_service_1.RedisService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map
