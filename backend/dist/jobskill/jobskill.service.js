@@ -12,10 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobskillService = void 0;
 const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
+const redis_service_1 = require("../redis/redis.service");
 let JobskillService = class JobskillService {
     prisma;
-    constructor(prisma) {
+    redis;
+    constructor(prisma, redis) {
         this.prisma = prisma;
+        this.redis = redis;
     }
     async createJobSkill(dto) {
         const job = await this.prisma.job.findUnique({
@@ -37,13 +40,19 @@ let JobskillService = class JobskillService {
         });
     }
     async getJobSkills(jobId) {
+        const cachedData = await this.redis.get(`jobskills:${jobId}`);
+        if (cachedData) {
+            return JSON.parse(cachedData);
+        }
         const job = await this.prisma.job.findUnique({ where: { id: jobId } });
         if (!job) {
             throw new common_1.NotFoundException('Job not found');
         }
-        return this.prisma.jobSkill.findMany({
+        const skills = await this.prisma.jobSkill.findMany({
             where: { jobId },
         });
+        await this.redis.set(`jobskills:${jobId}`, JSON.stringify(skills), 600);
+        return skills;
     }
     async updateJobSkills(skillId, updateJobSkillDto) {
         const skill = await this.prisma.jobSkill.findUnique({
@@ -65,28 +74,29 @@ let JobskillService = class JobskillService {
         return this.prisma.jobSkill.delete({ where: { id: skillId } });
     }
     async topSkills() {
+        const cached = await this.redis.get('topSkills');
+        if (cached) {
+            return JSON.parse(cached);
+        }
         const skills = await this.prisma.jobSkill.groupBy({
             by: ['skill'],
-            _count: {
-                jobId: true,
-            },
-            orderBy: {
-                _count: {
-                    jobId: 'desc',
-                },
-            },
+            _count: { jobId: true },
+            orderBy: { _count: { jobId: 'desc' } },
             take: 10,
         });
-        return skills.map((s) => ({
+        const result = skills.map((s) => ({
             skill: s.skill,
             demand: s._count.jobId,
             jobs: s._count.jobId,
         }));
+        await this.redis.set('topSkills', JSON.stringify(result), 600);
+        return result;
     }
 };
 exports.JobskillService = JobskillService;
 exports.JobskillService = JobskillService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+    __metadata("design:paramtypes", [database_service_1.DatabaseService,
+        redis_service_1.RedisService])
 ], JobskillService);
 //# sourceMappingURL=jobskill.service.js.map

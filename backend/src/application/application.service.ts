@@ -16,6 +16,7 @@ import { NotificationGateway } from 'src/notification/notification.gateway';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
 import { SearchApplicationDto } from './dto/searchApplication.dto';
 import { Prisma } from '../../generated/prisma';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class ApplicationService {
@@ -23,6 +24,7 @@ export class ApplicationService {
     private readonly prisma: DatabaseService,
     private readonly notificationService: NotificationService,
     private readonly notificationGateway: NotificationGateway,
+    private readonly redis: RedisService,
   ) {}
 
   async applyJob(
@@ -82,6 +84,15 @@ export class ApplicationService {
   }
 
   async getAllApplications(query: SearchApplicationDto) {
+    const cacheKey = `applications:${JSON.stringify(query)}`;
+
+    // 1️⃣ Check cache first
+    const cachedData = await this.redis.get(cacheKey);
+    if (cachedData) {
+      return JSON.parse(cachedData) as Awaited<
+        ReturnType<typeof this.prisma.application.findMany>
+      >;
+    }
     try {
       const features = new ApiFeaturesPrisma(query)
         .sort()
@@ -133,6 +144,7 @@ export class ApplicationService {
       }
 
       const applications = await this.prisma.application.findMany(options);
+      await this.redis.set(cacheKey, JSON.stringify(applications));
       return applications;
     } catch (error) {
       console.error('getAllApplications error:', error);
@@ -193,39 +205,67 @@ export class ApplicationService {
     });
     if (!app) throw new NotFoundException('Application not found');
 
+    await this.redis.del(`applications:${applicationId}`);
+
     return await this.prisma.application.delete({
       where: { id: applicationId },
     });
   }
 
-  /** Get all applications by a specific user */
   async getApplicationsByUser(userId: number) {
-    return await this.prisma.application.findMany({
+    const cached = await this.redis.get(`applications:user:${userId}`);
+    if (cached) return JSON.parse(cached);
+    if (!userId) throw new NotFoundException('User not found');
+    const user = await this.prisma.application.findMany({
       where: { userId },
       include: { job: true },
     });
+    await this.redis.set(
+      `applications:user:${userId}`,
+      JSON.stringify(user),
+      600,
+    );
+    return user;
   }
 
   /** Get all applications for a specific job */
   async getApplicationsByJob(jobId: number) {
-    return await this.prisma.application.findMany({
+    if (!jobId) throw new NotFoundException('Job not found');
+    const cache = await this.redis.get(`applications:job:${jobId}`);
+    if (cache) return JSON.parse(cache);
+    const applications = await this.prisma.application.findMany({
       where: { jobId },
       include: { user: true },
     });
+    await this.redis.set(
+      `applications:job:${jobId}`,
+      JSON.stringify(applications),
+      600,
+    );
+    return applications;
   }
 
   async getApplicationsById(id: number) {
+    const cache = await this.redis.get(`application:${id}`);
+    if (cache) return JSON.parse(cache);
+
     const application = await this.prisma.application.findUnique({
       where: { id },
     });
     if (!application) throw new NotFoundException('Application not found');
-    return await this.prisma.application.findUnique({
+    const applications = await this.prisma.application.findUnique({
       where: { id },
       include: {
         user: true,
         job: true,
       },
     });
+    await this.redis.set(
+      `application:${id}`,
+      JSON.stringify(applications),
+      600,
+    );
+    return applications;
   }
   async checkIfApplied(userId: number, jobId: number): Promise<boolean> {
     const existing = await this.prisma.application.findFirst({

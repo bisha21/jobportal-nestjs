@@ -9,21 +9,21 @@ export declare class JobskillController {
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            skill: string;
             jobId: number;
+            skill: string;
         }[];
     } & {
+        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        title: string;
         description: string;
-        position: string;
         location: string | null;
+        title: string;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
@@ -32,21 +32,21 @@ export declare class JobskillController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         jobId: number;
+        skill: string;
     }[]>;
     updateJobSkill(skillId: number, updateJobSkillDto: UpdateJobSkillDto): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         jobId: number;
+        skill: string;
     }>;
     deleteJobSkill(skillId: number): Promise<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        skill: string;
         jobId: number;
+        skill: string;
     }>;
 }

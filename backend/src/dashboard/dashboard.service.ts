@@ -1,12 +1,25 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class DashboardService {
-  constructor(private prisma: DatabaseService) {}
+  constructor(
+    private prisma: DatabaseService,
+    private redis: RedisService,
+  ) {}
 
   async getDashboardData(employeeId?: number) {
+    const cachedKey = employeeId
+      ? ` dashboardData:${employeeId}`
+      : 'dashboardData:admin';
+
+    const cachedData = await this.redis.get(cachedKey);
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+
     const [
       totals,
       growth,
@@ -23,7 +36,7 @@ export class DashboardService {
       this.getRecentApplications(employeeId),
     ]);
 
-    return {
+    const dashboardData = {
       totals,
       growth,
       topJobs,
@@ -31,6 +44,9 @@ export class DashboardService {
       applications,
       recentApplications,
     };
+
+    await this.redis.set(cachedKey, JSON.stringify(dashboardData), 600);
+    return dashboardData;
   }
 
   private async getTotals(employeeId?: number) {

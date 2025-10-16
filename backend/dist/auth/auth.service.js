@@ -20,14 +20,17 @@ const jwt_1 = require("@nestjs/jwt");
 const generateOtp_1 = __importDefault(require("../utils/generateOtp"));
 const mail_service_1 = require("../mail/mail.service");
 const database_service_1 = require("../database/database.service");
+const redis_service_1 = require("../redis/redis.service");
 let AuthService = class AuthService {
     prisma;
     jwtService;
     mailService;
-    constructor(prisma, jwtService, mailService) {
+    redis;
+    constructor(prisma, jwtService, mailService, redis) {
         this.prisma = prisma;
         this.jwtService = jwtService;
         this.mailService = mailService;
+        this.redis = redis;
     }
     async registerUser(createUserDto) {
         const existingUser = await this.prisma.user.findUnique({
@@ -102,11 +105,7 @@ let AuthService = class AuthService {
             throw new common_1.NotFoundException('User not found');
         }
         const otp = (0, generateOtp_1.default)();
-        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-        await this.prisma.user.update({
-            where: { email },
-            data: { otp, otpExpiry },
-        });
+        await this.redis.set(`otp:${email}`, otp, 300);
         await this.mailService.sendMail({
             email,
             subject: 'Password Reset OTP',
@@ -122,19 +121,16 @@ let AuthService = class AuthService {
         const userExists = await this.prisma.user.findUnique({
             where: { email },
         });
+        const storedOtp = await this.redis.get(`otp:${email}`);
         if (!userExists) {
             throw new common_1.NotFoundException('User not found');
         }
-        if (userExists.otp !== otp) {
-            throw new common_1.NotFoundException('Invalid OTP');
-        }
-        if (!userExists.otpExpiry || userExists.otpExpiry.getTime() < Date.now()) {
+        if (!storedOtp) {
             throw new common_1.NotFoundException('OTP expired');
         }
-        await this.prisma.user.update({
-            where: { email },
-            data: { otp: null, otpExpiry: null },
-        });
+        if (Number(storedOtp) !== otp) {
+            throw new common_1.NotFoundException('Invalid OTP');
+        }
         return { message: 'OTP verified successfully' };
     }
     async resetPassword(ressetPasswordDto) {
@@ -145,11 +141,12 @@ let AuthService = class AuthService {
         if (!userExists) {
             throw new common_1.NotFoundException('User not found');
         }
-        if (userExists.otp !== otp) {
-            throw new common_1.NotFoundException('Invalid OTP');
-        }
-        if (!userExists.otpExpiry || userExists.otpExpiry.getTime() < Date.now()) {
+        const storedOtp = await this.redis.get(`otp:${email}`);
+        if (!storedOtp) {
             throw new common_1.NotFoundException('OTP expired');
+        }
+        if (Number(storedOtp) !== otp) {
+            throw new common_1.NotFoundException('Invalid OTP');
         }
         if (password !== confirmPassword) {
             throw new common_1.NotFoundException('Password and confirm password not matched');
@@ -157,11 +154,16 @@ let AuthService = class AuthService {
         const hashedPassword = await (0, hashpassword_1.hashPassword)(password);
         await this.prisma.user.update({
             where: { email },
-            data: { password: hashedPassword, otp: null, otpExpiry: null },
+            data: { password: hashedPassword },
         });
+        await this.redis.del(`otp:${email}`);
         return { message: 'Password reset successfully' };
     }
     async getProfile(userId) {
+        const cachedProfile = await this.redis.get(`profile:${userId}`);
+        if (cachedProfile) {
+            return JSON.parse(cachedProfile);
+        }
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             include: {
@@ -184,6 +186,7 @@ let AuthService = class AuthService {
         if (!user) {
             throw new common_1.NotFoundException('User not found');
         }
+        await this.redis.set(`profile:${userId}`, JSON.stringify(user), 600);
         return user;
     }
     async updateProfilePicture(userId, imageUrl) {
@@ -199,9 +202,15 @@ let AuthService = class AuthService {
         });
     }
     async findUserByEmail(email) {
-        return await this.prisma.user.findFirst({
+        const cachedData = await this.redis.get(`user:${email}`);
+        if (cachedData) {
+            return JSON.parse(cachedData);
+        }
+        const users = await this.prisma.user.findFirst({
             where: { email },
         });
+        await this.redis.set(`user:${email}`, JSON.stringify(users), 600);
+        return users;
     }
     async updateProfile(userId, updateUserDto) {
         return this.prisma.user.update({
@@ -215,6 +224,7 @@ exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [database_service_1.DatabaseService,
         jwt_1.JwtService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        redis_service_1.RedisService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

@@ -14,11 +14,14 @@ exports.JobService = void 0;
 const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
 const apiFeatures_1 = require("../utils/apiFeatures");
+const redis_service_1 = require("../redis/redis.service");
 let JobService = JobService_1 = class JobService {
     prisma;
+    redis;
     logger = new common_1.Logger(JobService_1.name);
-    constructor(prisma) {
+    constructor(prisma, redis) {
         this.prisma = prisma;
+        this.redis = redis;
     }
     async createJob(createJobDto) {
         const company = await this.prisma.company.findUnique({
@@ -34,6 +37,11 @@ let JobService = JobService_1 = class JobService {
     }
     async getAllJobs(query) {
         try {
+            const cacheKey = `jobs:${JSON.stringify(query)}`;
+            const cachedJobs = await this.redis.get(cacheKey);
+            if (cachedJobs) {
+                return JSON.parse(cachedJobs);
+            }
             const features = new apiFeatures_1.ApiFeaturesPrisma(query)
                 .filter()
                 .sort()
@@ -59,30 +67,19 @@ let JobService = JobService_1 = class JobService {
                 ];
             }
             if (query.ownerId) {
-                where.company = {
-                    ownerId: query.ownerId,
-                };
+                where.company = { ownerId: query.ownerId };
             }
             const jobs = await this.prisma.job.findMany({
                 ...options,
                 where,
                 include: {
-                    category: {
-                        select: {
-                            id: true,
-                            categoryName: true,
-                        },
-                    },
+                    category: { select: { id: true, categoryName: true } },
                     company: {
-                        select: {
-                            id: true,
-                            name: true,
-                            logoUrl: true,
-                            ownerId: true,
-                        },
+                        select: { id: true, name: true, logoUrl: true, ownerId: true },
                     },
                 },
             });
+            await this.redis.set(cacheKey, JSON.stringify(jobs), 600);
             this.logger.log(`Fetched ${jobs.length} jobs`);
             return jobs;
         }
@@ -92,6 +89,11 @@ let JobService = JobService_1 = class JobService {
         }
     }
     async getSingleJob(jobId) {
+        const cachedJob = await this.redis.get(`job:${jobId}`);
+        if (cachedJob) {
+            console.log('Cache hit! hahahahahahahah');
+            return JSON.parse(cachedJob);
+        }
         const job = await this.prisma.job.findUnique({
             where: { id: jobId },
             include: {
@@ -109,6 +111,7 @@ let JobService = JobService_1 = class JobService {
             throw new common_1.NotFoundException(`Job with ID ${jobId} not found`);
         }
         this.logger.log(`Fetched job with ID ${jobId}`);
+        await this.redis.set(`job:${jobId}`, JSON.stringify(job), 600);
         return job;
     }
     async updateJob(jobId, updateJobDto) {
@@ -128,6 +131,7 @@ let JobService = JobService_1 = class JobService {
 exports.JobService = JobService;
 exports.JobService = JobService = JobService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+    __metadata("design:paramtypes", [database_service_1.DatabaseService,
+        redis_service_1.RedisService])
 ], JobService);
 //# sourceMappingURL=job.service.js.map

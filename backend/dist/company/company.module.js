@@ -16,6 +16,7 @@ const company_controller_1 = require("./company.controller");
 const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = __importDefault(require("../config/jwt.config"));
 const database_module_1 = require("../database/database.module");
+const redis_module_1 = require("../redis/redis.module");
 let CompanyModule = class CompanyModule {
 };
 exports.CompanyModule = CompanyModule;
@@ -27,6 +28,7 @@ exports.CompanyModule = CompanyModule = __decorate([
                 secret: jwt_config_1.default.secret,
                 signOptions: { expiresIn: jwt_config_1.default.expiresIn },
             }),
+            redis_module_1.RedisModule,
         ],
         providers: [company_service_1.CompanyService],
         controllers: [company_controller_1.CompanyController],

@@ -13,10 +13,13 @@ exports.CompanyService = void 0;
 const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
 const apiFeatures_1 = require("../utils/apiFeatures");
+const redis_service_1 = require("../redis/redis.service");
 let CompanyService = class CompanyService {
     prisma;
-    constructor(prisma) {
+    redis;
+    constructor(prisma, redis) {
         this.prisma = prisma;
+        this.redis = redis;
     }
     validateOwnership(company, ownerId) {
         if (company.ownerId !== ownerId) {
@@ -47,6 +50,12 @@ let CompanyService = class CompanyService {
     }
     async getAllCompanies(user, query) {
         try {
+            const cacheKey = `companies:${user.id}:${JSON.stringify(query)}`;
+            const cachedData = await this.redis.get(cacheKey);
+            if (cachedData) {
+                console.log('Cache hit! hahahahahahahah');
+                return JSON.parse(cachedData);
+            }
             const features = new apiFeatures_1.ApiFeaturesPrisma(query)
                 .filter()
                 .sort()
@@ -68,6 +77,7 @@ let CompanyService = class CompanyService {
                 ...options,
                 where: cleanWhere,
             });
+            await this.redis.set(cacheKey, JSON.stringify(companies), 600);
             return companies;
         }
         catch (error) {
@@ -151,6 +161,7 @@ let CompanyService = class CompanyService {
 exports.CompanyService = CompanyService;
 exports.CompanyService = CompanyService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [database_service_1.DatabaseService])
+    __metadata("design:paramtypes", [database_service_1.DatabaseService,
+        redis_service_1.RedisService])
 ], CompanyService);
 //# sourceMappingURL=company.service.js.map

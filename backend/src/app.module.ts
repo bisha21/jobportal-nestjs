@@ -18,6 +18,7 @@ import { MessageModule } from './message/message.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { CategoryModule } from './category/category.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     FavoriteModule,
     CategoryModule,
     DashboardModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],

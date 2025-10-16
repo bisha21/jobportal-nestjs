@@ -12,23 +12,6 @@ export declare class UserController {
         role: import("../../generated/prisma").$Enums.Role;
     }[]>;
     findAById(id: number): Promise<{
-        applications: ({
-            job: {
-                title: string;
-                company: {
-                    name: string;
-                };
-            };
-        } & {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: number;
-            jobId: number;
-            status: import("../../generated/prisma").$Enums.ApplicationStatus;
-            resumeUrl: string | null;
-        })[];
-    } & {
         id: number;
         fullName: string;
         email: string;
@@ -42,5 +25,5 @@ export declare class UserController {
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;
-    }>;
+    } | null>;
 }

@@ -14,10 +14,10 @@ export declare class NotificationGateway implements OnGatewayConnection, OnGatew
         success: boolean;
         data: {
             message: string;
+            type: string | null;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            type: string | null;
             userId: number;
         };
         error?: undefined;
@@ -30,10 +30,10 @@ export declare class NotificationGateway implements OnGatewayConnection, OnGatew
         success: boolean;
         data: {
             message: string;
+            type: string | null;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            type: string | null;
             userId: number;
         }[];
         error?: undefined;

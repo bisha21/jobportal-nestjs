@@ -10,6 +10,7 @@ export declare class JobController {
     private readonly applicationService;
     constructor(jobService: JobService, applicationService: ApplicationService);
     createJob(createJob: CreateJobDto): Promise<{
+        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -20,23 +21,12 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
     }>;
-    getAllJobs(query: SearchJobDto): Promise<({
-        company: {
-            id: number;
-            name: string;
-            logoUrl: string | null;
-            ownerId: number;
-        };
-        category: {
-            id: number;
-            categoryName: string;
-        };
-    } & {
+    getAllJobs(query: SearchJobDto): Promise<{
+        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -47,36 +37,12 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
-    })[]>;
+    }[]>;
     getSingleJob(id: number): Promise<{
-        company: {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            name: string;
-            description: string;
-            location: string;
-            website: string | null;
-            industry: string;
-            companySize: string;
-            logoUrl: string | null;
-            ownerId: number;
-        };
-        category: {
-            id: number;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            categoryName: string;
-        };
-        jobSkills: {
-            skill: string;
-        }[];
-    } & {
+        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -87,12 +53,12 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
-    }>;
+    } | null>;
     updateJob(id: number, updateJob: updateJobDto): Promise<{
+        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -103,12 +69,12 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
     }>;
     deleteJob(id: number): Promise<{
+        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -119,7 +85,6 @@ export declare class JobController {
         experience: string;
         salaryMin: number;
         salaryMax: number;
-        type: import("../../generated/prisma").$Enums.JobType;
         deadline: Date | null;
         companyId: number;
         categoryId: number;

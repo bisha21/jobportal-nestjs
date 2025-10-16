@@ -17,6 +17,7 @@ import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { CreateOAuthUserDto } from './dto/createoauth.dto';
 import { UpdateUserDto } from './dto/updateUserDto';
 import { DatabaseService } from 'src/database/database.service';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,7 @@ export class AuthService {
     private prisma: DatabaseService,
     private jwtService: JwtService,
     private mailService: MailService,
+    private redis: RedisService,
   ) {}
 
   async registerUser(createUserDto: CreateUserDto) {
@@ -122,13 +124,9 @@ export class AuthService {
 
     // generate OTP and expiry
     const otp = generateOtp();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    await this.redis.set(`otp:${email}`, otp, 300);
 
     // save OTP in DB
-    await this.prisma.user.update({
-      where: { email },
-      data: { otp, otpExpiry },
-    });
 
     // send email with OTP
     await this.mailService.sendMail({
@@ -147,23 +145,18 @@ export class AuthService {
     const userExists = await this.prisma.user.findUnique({
       where: { email },
     });
+    const storedOtp = await this.redis.get(`otp:${email}`);
 
     if (!userExists) {
       throw new NotFoundException('User not found');
     }
-
-    if (userExists.otp !== otp) {
-      throw new NotFoundException('Invalid OTP');
-    }
-
-    if (!userExists.otpExpiry || userExists.otpExpiry.getTime() < Date.now()) {
+    if (!storedOtp) {
       throw new NotFoundException('OTP expired');
     }
 
-    await this.prisma.user.update({
-      where: { email },
-      data: { otp: null, otpExpiry: null },
-    });
+    if (Number(storedOtp) !== otp) {
+      throw new NotFoundException('Invalid OTP');
+    }
 
     return { message: 'OTP verified successfully' };
   }
@@ -174,31 +167,42 @@ export class AuthService {
     const userExists = await this.prisma.user.findUnique({
       where: { email },
     });
-
     if (!userExists) {
       throw new NotFoundException('User not found');
     }
 
-    if (userExists.otp !== otp) {
+    const storedOtp = await this.redis.get(`otp:${email}`);
+    if (!storedOtp) {
+      throw new NotFoundException('OTP expired');
+    }
+
+    if (Number(storedOtp) !== otp) {
       throw new NotFoundException('Invalid OTP');
     }
 
-    // If otpExpiry is stored as a number
-    if (!userExists.otpExpiry || userExists.otpExpiry.getTime() < Date.now()) {
-      throw new NotFoundException('OTP expired');
-    }
     if (password !== confirmPassword) {
       throw new NotFoundException('Password and confirm password not matched');
     }
+
     const hashedPassword = await hashPassword(password);
     await this.prisma.user.update({
       where: { email },
-      data: { password: hashedPassword, otp: null, otpExpiry: null },
+      data: { password: hashedPassword },
     });
+
+    await this.redis.del(`otp:${email}`);
+
     return { message: 'Password reset successfully' };
   }
 
   async getProfile(userId: number) {
+    const cachedProfile = await this.redis.get(`profile:${userId}`);
+    if (cachedProfile) {
+      return JSON.parse(cachedProfile) as ReturnType<
+        typeof this.prisma.user.findUnique
+      >;
+    }
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -222,6 +226,7 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    await this.redis.set(`profile:${userId}`, JSON.stringify(user), 600);
 
     return user;
   }
@@ -241,9 +246,19 @@ export class AuthService {
   }
   async findUserByEmail(email: string) {
     // ✅ Correct way:
-    return await this.prisma.user.findFirst({
+    const cachedData = await this.redis.get(`user:${email}`);
+    if (cachedData) {
+      return JSON.parse(cachedData) as ReturnType<
+        typeof this.prisma.user.findFirst
+      >;
+    }
+
+    const users = await this.prisma.user.findFirst({
       where: { email }, // you need to wrap email in `where`
     });
+
+    await this.redis.set(`user:${email}`, JSON.stringify(users), 600);
+    return users;
   }
 
   async updateProfile(userId: number, updateUserDto: UpdateUserDto) {
