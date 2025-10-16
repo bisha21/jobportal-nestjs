@@ -40,7 +40,7 @@ export class MailService {
       : options.email;
 
     const mailOptions = {
-      from: `${process.env.MAIL_FROM_NAME} <${process.env.MAIL_FROM_ADDRESS}>`, // "XAV <timilsinab22bi@gmail.com>"
+      from: `${process.env.MAIL_FROM_NAME} <${process.env.MAIL_FROM_ADDRESS}>`,
       to: recipients,
       subject: options.subject,
       html: options.html,

@@ -19,6 +19,7 @@ import { FavoriteModule } from './favorite/favorite.module';
 import { CategoryModule } from './category/category.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { RedisModule } from './redis/redis.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -38,6 +39,18 @@ import { RedisModule } from './redis/redis.module';
     CategoryModule,
     DashboardModule,
     RedisModule,
+    BullModule.forRoot({
+      connection: {
+        host: 'redis-13412.c232.us-east-1-2.ec2.redns.redis-cloud.com',
+        port: 13412,
+        password: 'qdyb1BwpdrIbNyzK0BgL6lI5OETH3Mpf',
+      },
+      defaultJobOptions: {
+        attempts: 3,
+        removeOnComplete: 1000,
+        removeOnFail: 1000,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],
