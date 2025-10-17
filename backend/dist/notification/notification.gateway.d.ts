@@ -5,36 +5,29 @@ import { CreateNotificationDto } from './dto/createnotification.dto';
 export declare class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly notificationService;
     server: Server;
-    private users;
     constructor(notificationService: NotificationService);
+    private users;
     handleConnection(client: Socket): void;
     handleDisconnect(client: Socket): void;
     joinUserRoom(userId: number, client: Socket): Promise<void>;
     createNotification(payload: CreateNotificationDto): Promise<{
         success: boolean;
-        data: {
-            message: string;
-            type: string | null;
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: number;
-        };
+        message: string;
         error?: undefined;
     } | {
         success: boolean;
         error: any;
-        data?: undefined;
+        message?: undefined;
     }>;
     readNotification(userId: number): Promise<{
         success: boolean;
         data: {
             message: string;
-            type: string | null;
             id: number;
+            type: string | null;
+            userId: number;
             createdAt: Date;
             updatedAt: Date;
-            userId: number;
         }[];
         error?: undefined;
     } | {

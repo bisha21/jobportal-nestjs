@@ -1,25 +1,11 @@
 /* eslint-disable prettier/prettier */
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class MailService {
-  private transporter;
-
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST, // smtp-relay.brevo.com
-      port: parseInt(process.env.MAIL_PORT as string, 10), // 2525
-      secure: false, // false for TLS (STARTTLS), true for SSL (465)
-      auth: {
-        user: process.env.MAIL_USERNAME, // 91ba70001@smtp-brevo.com
-        pass: process.env.MAIL_PASSWORD, // your SMTP key
-      },
-      tls: {
-        rejectUnauthorized: false, // helps if Brevo TLS handshake fails
-      },
-    });
-  }
+  constructor(@InjectQueue('mail-queue') private mailQueue: Queue) {}
 
   async sendMail(options: {
     email: string | string[];
@@ -35,18 +21,11 @@ export class MailService {
       return;
     }
 
-    const recipients = Array.isArray(options.email)
-      ? options.email.join(',')
-      : options.email;
+    await this.mailQueue.add('sendMail', options, {
+      attempts: 3,
+      removeOnComplete: true,
+    });
 
-    const mailOptions = {
-      from: `${process.env.MAIL_FROM_NAME} <${process.env.MAIL_FROM_ADDRESS}>`,
-      to: recipients,
-      subject: options.subject,
-      html: options.html,
-      text: options.message,
-    };
-
-    return await this.transporter.sendMail(mailOptions) as {};
+    console.log(' Mail job added to the queue');
   }
 }

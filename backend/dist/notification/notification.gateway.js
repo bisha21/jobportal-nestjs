@@ -20,28 +20,26 @@ const createnotification_dto_1 = require("./dto/createnotification.dto");
 let NotificationGateway = class NotificationGateway {
     notificationService;
     server;
-    users = new Map();
     constructor(notificationService) {
         this.notificationService = notificationService;
     }
+    users = new Map();
     handleConnection(client) {
-        console.log('Client connected:', client.id);
+        console.log(`Client connected: ${client.id}`);
     }
     handleDisconnect(client) {
-        console.log('Client disconnected:', client.id);
+        console.log(`Client disconnected: ${client.id}`);
     }
     async joinUserRoom(userId, client) {
         await client.join(`user_${userId}`);
-        console.log(`User ${userId} joined socket room`);
+        this.users.set(userId, client.id);
+        console.log(`User ${userId} joined room user_${userId}`);
     }
     async createNotification(payload) {
         try {
             const dto = typeof payload === 'string' ? JSON.parse(payload) : payload;
-            const notification = await this.notificationService.createNotification(dto);
-            this.server
-                .to(`user_${dto.userId}`)
-                .emit('notification:created', notification);
-            return { success: true, data: notification };
+            await this.notificationService.createNotification(dto);
+            return { success: true, message: 'Notification queued' };
         }
         catch (err) {
             return { success: false, error: err.message };
@@ -63,7 +61,7 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], NotificationGateway.prototype, "server", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('JoinUserroom'),
+    (0, websockets_1.SubscribeMessage)('JoinUserRoom'),
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
@@ -79,15 +77,14 @@ __decorate([
 ], NotificationGateway.prototype, "createNotification", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('notification:read'),
+    __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], NotificationGateway.prototype, "readNotification", null);
 exports.NotificationGateway = NotificationGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
-        cors: {
-            origin: '*',
-        },
+        cors: { origin: '*' },
     }),
     __metadata("design:paramtypes", [notification_service_1.NotificationService])
 ], NotificationGateway);

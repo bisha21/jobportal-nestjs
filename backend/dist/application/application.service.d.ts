@@ -15,29 +15,29 @@ export declare class ApplicationService {
     getAllApplications(query: SearchApplicationDto): Promise<{
         id: number;
         userId: number;
-        jobId: number;
-        status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        resumeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
+        resumeUrl: string | null;
+        jobId: number;
     }[]>;
     updateApplication(applicationId: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         userId: number;
-        jobId: number;
-        status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        resumeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
+        resumeUrl: string | null;
+        jobId: number;
     }>;
     deleteApplication(applicationId: number): Promise<{
         id: number;
         userId: number;
-        jobId: number;
-        status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        resumeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
+        resumeUrl: string | null;
+        jobId: number;
     }>;
     getApplicationsByUser(userId: number): Promise<any>;
     getApplicationsByJob(jobId: number): Promise<any>;

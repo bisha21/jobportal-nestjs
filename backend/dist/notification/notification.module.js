@@ -17,6 +17,7 @@ const jwt_1 = require("@nestjs/jwt");
 const jwt_config_1 = __importDefault(require("../config/jwt.config"));
 const notification_gateway_1 = require("./notification.gateway");
 const database_module_1 = require("../database/database.module");
+const bullmq_1 = require("@nestjs/bullmq");
 let NotificationModule = class NotificationModule {
 };
 exports.NotificationModule = NotificationModule;
@@ -28,6 +29,9 @@ exports.NotificationModule = NotificationModule = __decorate([
                 secret: jwt_config_1.default.secret,
                 signOptions: { expiresIn: jwt_config_1.default.expiresIn },
             }),
+            bullmq_1.BullModule.registerQueue({
+                name: 'notification-queue',
+            })
         ],
         providers: [notification_service_1.NotificationService, notification_gateway_1.NotificationGateway],
         controllers: [notification_controller_1.NotificationController],

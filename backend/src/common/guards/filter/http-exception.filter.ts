@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   ExceptionFilter,
   Catch,
@@ -7,6 +6,7 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
+import { Response, Request } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -14,25 +14,32 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     let status = 500;
     let message = 'Internal server error';
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
-      message = exception.getResponse() as string;
+      const res = exception.getResponse();
+      message =
+        typeof res === 'string'
+          ? res
+          : (res as Record<string, any>).message || message;
     }
 
-    if (exception instanceof Error) {
-      this.logger.error(message, exception.stack);
-    } else {
-      this.logger.error('Unknown error', JSON.stringify(exception));
-    }
+    this.logger.error(
+      `[${request.method}] ${request.url} - ${status} - ${message}`,
+      exception instanceof Error ? exception.stack : JSON.stringify(exception),
+    );
 
     response.status(status).json({
+      success: false,
       statusCode: status,
+      path: request.url,
       message,
+      timestamp: new Date().toISOString(),
     });
   }
 }
