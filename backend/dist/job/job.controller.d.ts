@@ -10,8 +10,8 @@ export declare class JobController {
     private readonly applicationService;
     constructor(jobService: JobService, applicationService: ApplicationService);
     createJob(createJob: CreateJobDto): Promise<{
-        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
+        type: import("../../generated/prisma").$Enums.JobType;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -26,8 +26,8 @@ export declare class JobController {
         categoryId: number;
     }>;
     getAllJobs(query: SearchJobDto): Promise<{
-        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
+        type: import("../../generated/prisma").$Enums.JobType;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -42,8 +42,8 @@ export declare class JobController {
         categoryId: number;
     }[]>;
     getSingleJob(id: number): Promise<{
-        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
+        type: import("../../generated/prisma").$Enums.JobType;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -58,8 +58,8 @@ export declare class JobController {
         categoryId: number;
     } | null>;
     updateJob(id: number, updateJob: updateJobDto): Promise<{
-        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
+        type: import("../../generated/prisma").$Enums.JobType;
         createdAt: Date;
         updatedAt: Date;
         title: string;
@@ -74,8 +74,8 @@ export declare class JobController {
         categoryId: number;
     }>;
     deleteJob(id: number): Promise<{
-        type: import("../../generated/prisma").$Enums.JobType;
         id: number;
+        type: import("../../generated/prisma").$Enums.JobType;
         createdAt: Date;
         updatedAt: Date;
         title: string;

@@ -8,30 +8,30 @@ export declare class ApplicationController {
     getAllApplications(query: SearchApplicationDto): Promise<{
         id: number;
         userId: number;
-        jobId: number;
-        status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        resumeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
+        resumeUrl: string | null;
+        jobId: number;
     }[]>;
     getApplicationById(id: number): Promise<any>;
     updateApplication(id: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
         userId: number;
-        jobId: number;
-        status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        resumeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
+        resumeUrl: string | null;
+        jobId: number;
     }>;
     deleteApplication(id: number): Promise<{
         id: number;
         userId: number;
-        jobId: number;
-        status: import("../../generated/prisma").$Enums.ApplicationStatus;
-        resumeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma").$Enums.ApplicationStatus;
+        resumeUrl: string | null;
+        jobId: number;
     }>;
     getMyApplications(req: RequestWithUser): Promise<any>;
     checkIfApplied(jobId: number, req: RequestWithUser): Promise<{

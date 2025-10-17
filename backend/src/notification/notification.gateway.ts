@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-// src/notifications/notification.gateway.ts
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -14,9 +13,7 @@ import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/createnotification.dto';
 
 @WebSocketGateway({
-  cors: {
-    origin: '*', // allow all origins for dev
-  },
+  cors: { origin: '*' }, // allow all origins
 })
 export class NotificationGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -24,55 +21,52 @@ export class NotificationGateway
   @WebSocketServer()
   server: Server;
 
-  // Map to store connected users
-  private users = new Map<string, string>(); // userId => socket.id
-
   constructor(private readonly notificationService: NotificationService) {}
 
-  // Handle new connection
+  // Track connected clients (optional)
+  private users = new Map<number, string>(); // userId => socket.id
+
   handleConnection(client: Socket) {
-    console.log('Client connected:', client.id);
+    console.log(`Client connected: ${client.id}`);
   }
 
-  // Handle disconnection
   handleDisconnect(client: Socket) {
-    console.log('Client disconnected:', client.id);
+    console.log(`Client disconnected: ${client.id}`);
   }
-  @SubscribeMessage('JoinUserroom')
+
+  // User joins their personal socket room
+  @SubscribeMessage('JoinUserRoom')
   async joinUserRoom(
     @MessageBody() userId: number,
     @ConnectedSocket() client: Socket,
   ) {
     await client.join(`user_${userId}`);
-    console.log(`User ${userId} joined socket room`);
+    this.users.set(userId, client.id);
+    console.log(`User ${userId} joined room user_${userId}`);
   }
+
+  // Add a notification job to the queue
   @SubscribeMessage('notification:create')
   async createNotification(@MessageBody() payload: CreateNotificationDto) {
     try {
-      // If payload is string, parse it
       const dto = typeof payload === 'string' ? JSON.parse(payload) : payload;
 
-      const notification =
-        await this.notificationService.createNotification(dto);
+      // Add job to BullMQ queue instead of direct DB call
+      await this.notificationService.createNotification(dto);
 
-      // Emit event to the user room
-      this.server
-        .to(`user_${dto.userId}`)
-        .emit('notification:created', notification);
-
-      return { success: true, data: notification };
+      return { success: true, message: 'Notification queued' };
     } catch (err) {
       return { success: false, error: err.message };
     }
   }
 
+  // Read notifications for a user (direct DB read is okay)
   @SubscribeMessage('notification:read')
-  async readNotification(userId: number) {
+  async readNotification(@MessageBody() userId: number) {
     try {
       const notifications = await this.notificationService.findAll(userId);
       return { success: true, data: notifications };
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return { success: false, error: err.message };
     }
   }

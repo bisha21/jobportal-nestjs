@@ -9,11 +9,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailModule = void 0;
 const common_1 = require("@nestjs/common");
 const mail_service_1 = require("./mail.service");
+const bullmq_1 = require("@nestjs/bullmq");
 let MailModule = class MailModule {
 };
 exports.MailModule = MailModule;
 exports.MailModule = MailModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            bullmq_1.BullModule.registerQueue({
+                name: 'mail-queue',
+            }),
+        ],
         providers: [mail_service_1.MailService],
         exports: [mail_service_1.MailService],
     })

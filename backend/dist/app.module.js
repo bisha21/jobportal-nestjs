@@ -27,6 +27,7 @@ const favorite_module_1 = require("./favorite/favorite.module");
 const category_module_1 = require("./category/category.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
 const redis_module_1 = require("./redis/redis.module");
+const bullmq_1 = require("@nestjs/bullmq");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -49,6 +50,18 @@ exports.AppModule = AppModule = __decorate([
             category_module_1.CategoryModule,
             dashboard_module_1.DashboardModule,
             redis_module_1.RedisModule,
+            bullmq_1.BullModule.forRoot({
+                connection: {
+                    host: 'redis-13412.c232.us-east-1-2.ec2.redns.redis-cloud.com',
+                    port: 13412,
+                    password: 'qdyb1BwpdrIbNyzK0BgL6lI5OETH3Mpf',
+                },
+                defaultJobOptions: {
+                    attempts: 3,
+                    removeOnComplete: 1000,
+                    removeOnFail: 1000,
+                },
+            }),
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, cloudinary_service_1.CloudinaryService],
