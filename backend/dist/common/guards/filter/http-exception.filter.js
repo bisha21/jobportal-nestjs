@@ -14,21 +14,24 @@ let AllExceptionsFilter = AllExceptionsFilter_1 = class AllExceptionsFilter {
     catch(exception, host) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
+        const request = ctx.getRequest();
         let status = 500;
         let message = 'Internal server error';
         if (exception instanceof common_1.HttpException) {
             status = exception.getStatus();
-            message = exception.getResponse();
+            const res = exception.getResponse();
+            message =
+                typeof res === 'string'
+                    ? res
+                    : res.message || message;
         }
-        if (exception instanceof Error) {
-            this.logger.error(message, exception.stack);
-        }
-        else {
-            this.logger.error('Unknown error', JSON.stringify(exception));
-        }
+        this.logger.error(`[${request.method}] ${request.url} - ${status} - ${message}`, exception instanceof Error ? exception.stack : JSON.stringify(exception));
         response.status(status).json({
+            success: false,
             statusCode: status,
+            path: request.url,
             message,
+            timestamp: new Date().toISOString(),
         });
     }
 };
