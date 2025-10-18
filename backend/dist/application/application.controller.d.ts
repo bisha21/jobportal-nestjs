@@ -7,31 +7,31 @@ export declare class ApplicationController {
     constructor(applicationService: ApplicationService);
     getAllApplications(query: SearchApplicationDto): Promise<{
         id: number;
-        userId: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
+        jobId: number;
         status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        jobId: number;
     }[]>;
     getApplicationById(id: number): Promise<any>;
     updateApplication(id: number, updateApplicationDto: UpdateApplicationDto): Promise<{
         id: number;
-        userId: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
+        jobId: number;
         status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        jobId: number;
     }>;
     deleteApplication(id: number): Promise<{
         id: number;
-        userId: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
+        jobId: number;
         status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
-        jobId: number;
     }>;
     getMyApplications(req: RequestWithUser): Promise<any>;
     checkIfApplied(jobId: number, req: RequestWithUser): Promise<{

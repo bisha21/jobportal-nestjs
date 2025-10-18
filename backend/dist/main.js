@@ -32,6 +32,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
@@ -39,9 +42,17 @@ const dotenv = __importStar(require("dotenv"));
 const http_exception_filter_1 = require("./common/guards/filter/http-exception.filter");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const helmet_1 = __importDefault(require("helmet"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const csurf_1 = __importDefault(require("csurf"));
 async function bootstrap() {
     dotenv.config();
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.use((0, helmet_1.default)());
+    app.use((0, cookie_parser_1.default)());
+    app.use((0, csurf_1.default)({
+        cookie: true,
+    }));
     app.enableCors({
         origin: true,
         methods: 'GET,POST,PATCH,PUT,DELETE',

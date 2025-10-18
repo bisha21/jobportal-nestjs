@@ -28,6 +28,9 @@ const category_module_1 = require("./category/category.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
 const redis_module_1 = require("./redis/redis.module");
 const bullmq_1 = require("@nestjs/bullmq");
+const core_1 = require("@nestjs/core");
+const redis_config_1 = require("./config/redis.config");
+const throttler_1 = require("@nestjs/throttler");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -52,9 +55,9 @@ exports.AppModule = AppModule = __decorate([
             redis_module_1.RedisModule,
             bullmq_1.BullModule.forRoot({
                 connection: {
-                    host: 'redis-13412.c232.us-east-1-2.ec2.redns.redis-cloud.com',
-                    port: 13412,
-                    password: 'qdyb1BwpdrIbNyzK0BgL6lI5OETH3Mpf',
+                    host: redis_config_1.redisConfigConstant.host,
+                    port: redis_config_1.redisConfigConstant.port,
+                    password: redis_config_1.redisConfigConstant.password,
                 },
                 defaultJobOptions: {
                     attempts: 3,
@@ -62,9 +65,24 @@ exports.AppModule = AppModule = __decorate([
                     removeOnFail: 1000,
                 },
             }),
+            throttler_1.ThrottlerModule.forRoot({
+                throttlers: [
+                    {
+                        ttl: 60,
+                        limit: 10,
+                    },
+                ],
+            }),
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, cloudinary_service_1.CloudinaryService],
+        providers: [
+            app_service_1.AppService,
+            cloudinary_service_1.CloudinaryService,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

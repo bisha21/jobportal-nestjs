@@ -5,11 +5,25 @@ import * as dotenv from 'dotenv';
 import { AllExceptionsFilter } from './common/guards/filter/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+import  cookieParser from 'cookie-parser';
+import  csurf from 'csurf';
 
 async function bootstrap() {
   dotenv.config();
 
   const app = await NestFactory.create(AppModule);
+
+  app.use(helmet());
+
+  // Cookie parser for CSRF
+  app.use(cookieParser());
+
+  app.use(
+    csurf({
+      cookie: true,
+    }),
+  );
   app.enableCors({
     origin: true,
     methods: 'GET,POST,PATCH,PUT,DELETE',
