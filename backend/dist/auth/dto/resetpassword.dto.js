@@ -12,17 +12,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResetPasswordDto = void 0;
 const class_validator_1 = require("class-validator");
 const verifyotp_dto_1 = require("./verifyotp.dto");
+const swagger_1 = require("@nestjs/swagger");
 class ResetPasswordDto extends verifyotp_dto_1.VerifyOtpDto {
     password;
     confirmPassword;
 }
 exports.ResetPasswordDto = ResetPasswordDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ description: 'New password', example: 'newStrongPassword123' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], ResetPasswordDto.prototype, "password", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Confirm new password',
+        example: 'newStrongPassword123',
+    }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)

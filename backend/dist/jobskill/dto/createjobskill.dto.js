@@ -11,16 +11,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateJobSkillsDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateJobSkillsDto {
     jobId;
     skill;
 }
 exports.CreateJobSkillsDto = CreateJobSkillsDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ description: 'ID of the job', example: 1 }),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], CreateJobSkillsDto.prototype, "jobId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Skill for the job',
+        example: 'JavaScript',
+        minLength: 2,
+    }),
     (0, class_validator_1.IsNotEmpty)({ each: true }),
     (0, class_validator_1.IsString)({ each: true }),
     (0, class_validator_1.MinLength)(2, { each: true }),

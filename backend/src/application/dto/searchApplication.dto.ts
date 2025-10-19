@@ -1,59 +1,79 @@
 /* eslint-disable prettier/prettier */
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class SearchApplicationDto {
-  // Filter by job title
+  @ApiPropertyOptional({
+    description: 'Filter by job title',
+    example: 'Frontend Developer',
+  })
   @IsOptional()
   @IsString()
   title?: string;
 
-  // Filter by company owner
+  @ApiPropertyOptional({
+    description: 'Filter by company owner ID',
+    example: 1,
+  })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   ownerId?: number;
 
-  // Filter by user ID (applicant)
+  @ApiPropertyOptional({
+    description: 'Filter by user ID (applicant)',
+    example: 2,
+  })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   userId?: number;
 
-  // Filter by job ID
+  @ApiPropertyOptional({ description: 'Filter by job ID', example: 5 })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   jobId?: number;
 
-  // Filter by company ID
+  @ApiPropertyOptional({ description: 'Filter by company ID', example: 3 })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   companyId?: number;
 
-  // Pagination
+  @ApiPropertyOptional({
+    description: 'Page number for pagination',
+    example: 1,
+  })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   page?: number;
 
+  @ApiPropertyOptional({ description: 'Limit per page', example: 10 })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
   limit?: number;
 
-  // Sorting
+  @ApiPropertyOptional({ description: 'Sort by field', example: 'createdAt' })
   @IsOptional()
   @IsString()
   sort?: string;
 
-  // Field limiting
+  @ApiPropertyOptional({
+    description: 'Fields to include',
+    example: 'title,status',
+  })
   @IsOptional()
   @IsString()
   fields?: string;
 
-  // Relations include
+  @ApiPropertyOptional({
+    description: 'Relations to include',
+    example: 'user,job',
+  })
   @IsOptional()
   @IsString()
   include?: string;

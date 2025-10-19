@@ -10,12 +10,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateApplicationDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateApplicationDto {
     resumeUrl;
 }
 exports.CreateApplicationDto = CreateApplicationDto;
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        description: 'URL to the applicant’s resume (optional)',
+        example: 'https://example.com/resume.pdf',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsUrl)(),

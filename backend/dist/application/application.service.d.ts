@@ -13,31 +13,31 @@ export declare class ApplicationService {
     constructor(prisma: DatabaseService, notificationService: NotificationService, notificationGateway: NotificationGateway, redis: RedisService);
     applyJob(userId: number, jobId: number, createApplicationDto: CreateApplicationDto): Promise<any>;
     getAllApplications(query: SearchApplicationDto): Promise<{
+        userId: number;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
-        jobId: number;
         status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        jobId: number;
     }[]>;
     updateApplication(applicationId: number, updateApplicationDto: UpdateApplicationDto): Promise<{
+        userId: number;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
-        jobId: number;
         status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        jobId: number;
     }>;
     deleteApplication(applicationId: number): Promise<{
+        userId: number;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        userId: number;
-        jobId: number;
         status: import("../../generated/prisma").$Enums.ApplicationStatus;
         resumeUrl: string | null;
+        jobId: number;
     }>;
     getApplicationsByUser(userId: number): Promise<any>;
     getApplicationsByJob(jobId: number): Promise<any>;

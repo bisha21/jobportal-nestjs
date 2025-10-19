@@ -22,12 +22,12 @@ export declare class NotificationGateway implements OnGatewayConnection, OnGatew
     readNotification(userId: number): Promise<{
         success: boolean;
         data: {
-            message: string;
             type: string | null;
+            userId: number;
+            message: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            userId: number;
         }[];
         error?: undefined;
     } | {

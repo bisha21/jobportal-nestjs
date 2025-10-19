@@ -8,48 +8,48 @@ export declare class JobskillService {
     constructor(prisma: DatabaseService, redis: RedisService);
     createJobSkill(dto: CreateJobSkillsDto): Promise<({
         jobSkills: {
+            jobId: number;
+            skill: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
-            jobId: number;
-            skill: string;
         }[];
     } & {
-        type: import("../../generated/prisma").$Enums.JobType;
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
         description: string;
-        location: string | null;
+        type: import("../../generated/prisma").$Enums.JobType;
         title: string;
+        id: number;
         position: string;
+        location: string | null;
         experience: string;
         salaryMin: number;
         salaryMax: number;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
+        createdAt: Date;
+        updatedAt: Date;
     }) | null>;
     getJobSkills(jobId: number): Promise<{
+        jobId: number;
+        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        jobId: number;
-        skill: string;
     }[]>;
     updateJobSkills(skillId: number, updateJobSkillDto: UpdateJobSkillDto): Promise<{
+        jobId: number;
+        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        jobId: number;
-        skill: string;
     }>;
     deleteJobSkills(skillId: number): Promise<{
+        jobId: number;
+        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        jobId: number;
-        skill: string;
     }>;
     topSkills(): Promise<{
         skill: string;
