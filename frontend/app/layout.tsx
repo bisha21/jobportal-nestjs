@@ -8,8 +8,7 @@ import { Footer } from '@/components/footer';
 import { Providers } from './provider';
 import { AuthProvider } from '@/context/auth-context';
 import { ToastContainer } from 'react-toastify';
-import RoleNavigatorWithProtection from './role-navigator';
-import { SocketProvider } from '@/context/socket-context';
+import { LayoutWrapper } from './role-navigator';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -47,10 +46,8 @@ export default function RootLayout({
               <ToastContainer />
               <ModalProvider>
                 <ModalX />
-                  <RoleNavigatorWithProtection>
-                    {children}
-                  </RoleNavigatorWithProtection>
-                  <Footer />
+                <LayoutWrapper>{children}</LayoutWrapper>
+                <Footer />
               </ModalProvider>
             </AuthProvider>
           </Providers>

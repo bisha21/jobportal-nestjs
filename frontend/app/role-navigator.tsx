@@ -1,74 +1,25 @@
-'use client';
+"use client";
+import { SocketProvider } from "@/context/socket-context";
+import { useAuth } from "@/context/auth-context";
+import Navbar from "@/components/navbar";
 
-import { useAuth } from '@/context/auth-context';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, ReactNode } from 'react';
-import Navbar from '@/components/navbar';
-import ProtectedRoute from '@/components/protectedRoute';
-import { SocketProvider } from '@/context/socket-context';
-
-type RoleNavigatorProps = {
-  children: ReactNode;
-};
-
-export default function RoleNavigatorWithProtection({
-  children,
-}: RoleNavigatorProps) {
+export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
 
-  const publicPages = [
-    '/',
-    '/about',
-    '/contact',
-    '/jobs',
-    '/jobs/[id]',
-    '/login',
-    '/register',
-    '/reset-password',
-    '/forget-password',
-    '/verify-otp',
-  ];
-
-  const isPublicPage = publicPages.includes(pathname);
-
-  // Redirect admin/employee to their dashboards if they try to access public pages
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (user) {
-      if (user.role === 'ADMIN' && !pathname.startsWith('/admin')) {
-        router.replace('/admin');
-      } else if (
-        user.role === 'EMPLOYEE' &&
-        !pathname.startsWith('/employee')
-      ) {
-        router.replace('/employee');
-      }
-      // Jobseekers stay on public pages
-    }
-  }, [user, isLoading, pathname, router]);
+  // Show navbar for public pages and jobseekers
+  const showNavbar = !isLoading && (!user || user.role === 'JOBSEEKER');
 
   if (isLoading) {
     return <p className="text-center py-10">Loading...</p>;
   }
 
-  // Show navbar for public pages and jobseekers
-  const showNavbar = isPublicPage || (user && user.role === 'JOBSEEKER');
-
   return (
     <>
-      {showNavbar && <Navbar />}
-
-      {isPublicPage ? (
-        // Render the public page, either for non-logged-in users or jobseekers
-        <>{children}</>
+      {showNavbar && <Navbar/>}
+      {user && user.role !== 'JOBSEEKER' ? (
+        <SocketProvider>{children}</SocketProvider>
       ) : (
-        // Protected sections for admins/employees
-        <ProtectedRoute allowedRoles={['ADMIN', 'EMPLOYEE']}>
-          <SocketProvider>{children}</SocketProvider>
-        </ProtectedRoute>
+        <>{children}</>
       )}
     </>
   );

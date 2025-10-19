@@ -9,7 +9,7 @@ import { Form } from './ui/form';
 import FormInput from './reusable/form-input';
 import Link from 'next/link';
 import Image from 'next/image';
-
+import Cookies from 'js-cookie';
 
 export default function LoginForm() {
   const { mutate: login, isPending } = useLoginMutation();
@@ -26,13 +26,24 @@ export default function LoginForm() {
       onSuccess: (data) => {
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+
+        Cookies.set('authToken', data.token, {
+          expires: 1,
+          path: '/',
+          sameSite: 'strict',
+        });
+
+        // 🔁 Redirect based on role
+        const role = data.user.role;
+        if (role === 'ADMIN') window.location.href = '/admin';
+        else if (role === 'EMPLOYEE') window.location.href = '/employee';
+        else window.location.href = '/jobseeker';
       },
       onError: (error) => {
         console.error('Login failed:', error);
       },
     });
   };
-
   const handleGoogleLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}auth/google/login`;
   };

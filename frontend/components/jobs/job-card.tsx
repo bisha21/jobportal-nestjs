@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import { Briefcase, Clock, DollarSign, MapPin, Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,7 +35,7 @@ export function JobCard({ job }: JobCardProps) {
           <div className="flex gap-4 flex-1">
             {/* Company Logo */}
             <Image
-              src={job.company.logoUrl}
+              src={job.company.logoUrl || '/images/default-company.png'}
               alt="Company Logo"
               fill
               style={{ objectFit: 'contain' }}

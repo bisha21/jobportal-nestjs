@@ -19,11 +19,11 @@ async function bootstrap() {
   // Cookie parser for CSRF
   app.use(cookieParser());
 
-  app.use(
-    csurf({
-      cookie: true,
-    }),
-  );
+  // app.use(
+  //   csurf({
+  //     cookie: true,
+  //   }),
+  // );
   app.enableCors({
     origin: true,
     methods: 'GET,POST,PATCH,PUT,DELETE',
