@@ -9,6 +9,7 @@ import { ChatLayout } from './chatlayout';
 
 export default function AdminChatPage() {
   const { data: users } = useMessageQuery(); // fetch all users with messages
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   return (

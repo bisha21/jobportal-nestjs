@@ -12,7 +12,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-bold mb-4">Job Portal</h3>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">
-              Connect with top employers and find your dream job. We're here to
+              Connect with top employers and find your dream job. We&apos;re here to
               help you take the next step in your career journey.
             </p>
             <div className="flex space-x-2">

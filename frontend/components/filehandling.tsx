@@ -17,6 +17,7 @@ type UploadResumeFormValues = {
 
 export function ProfileUploadForm() {
   const form = useForm<UploadProfileFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     defaultValues: { profilePicture: undefined as any },
   });
 
@@ -50,6 +51,7 @@ export function ProfileUploadForm() {
 
 export function ResumeUploadForm() {
   const form = useForm<UploadResumeFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     defaultValues: { resume: undefined as any },
   });
 

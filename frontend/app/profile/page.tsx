@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -28,7 +29,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import useModalContext from '@/hooks/usemodal';
-import { useUserSkillQuery } from '@/services/query/userskill.query';
 import SkillList from './skilllist';
 import FavoriteList from './favoritelist';
 
@@ -36,7 +36,6 @@ export default function UserProfile() {
   const { data, isLoading, isError } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const { openModal } = useModalContext();
-  const { data: userSkills } = useUserSkillQuery();
 
   const form = useForm<UserProfile>({
     defaultValues: {

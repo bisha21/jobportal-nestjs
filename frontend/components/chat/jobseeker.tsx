@@ -9,6 +9,7 @@ import { ChatLayout } from './chatlayout';
 
 export default function JobSeekerChatPage() {
   const { data: jobs } = useUserApplications();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedJob, setSelectedJob] = useState<any>(null);
 
   return (
