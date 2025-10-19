@@ -9,7 +9,7 @@ import {
 import { DatabaseService } from 'src/database/database.service';
 import { CreateCompanyDto } from './dto/createDto';
 import { UpdateCompanyDto } from './dto/updateDto';
-import { Company } from '@prisma/client';
+import { Company } from '../../generated/prisma';
 import { ApiFeaturesPrisma } from 'src/utils/apiFeatures';
 import { SearchCompanyDto } from './dto/search-company';
 import { Prisma, User } from '../../generated/prisma';
