@@ -11,14 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateApplicationDto = void 0;
 const mapped_types_1 = require("@nestjs/mapped-types");
-const applyApplication_dto_1 = require("./applyApplication.dto");
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const prisma_1 = require("../../../generated/prisma");
+const applyApplication_dto_1 = require("./applyApplication.dto");
 class UpdateApplicationDto extends (0, mapped_types_1.PartialType)(applyApplication_dto_1.CreateApplicationDto) {
     status;
 }
 exports.UpdateApplicationDto = UpdateApplicationDto;
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        description: 'Application status',
+        enum: prisma_1.ApplicationStatus,
+        example: prisma_1.ApplicationStatus.PENDING,
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEnum)(prisma_1.ApplicationStatus),
     __metadata("design:type", String)

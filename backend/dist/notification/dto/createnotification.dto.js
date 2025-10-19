@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateNotificationDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateNotificationDto {
     userId;
     type;
@@ -18,16 +19,25 @@ class CreateNotificationDto {
 }
 exports.CreateNotificationDto = CreateNotificationDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'ID of the user to receive the notification',
+        example: 1,
+    }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateNotificationDto.prototype, "userId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ description: 'Type of notification', example: 'INFO' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateNotificationDto.prototype, "type", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Notification message content',
+        example: 'Your job application has been approved.',
+    }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
