@@ -68,7 +68,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="icon">
                       <Image
-                        src={user?.profile || ''}
+                        src={user?.profile || 'images/default-profile.png'}
                         alt="Profile"
                         width={32}
                         height={32}
@@ -80,7 +80,9 @@ export default function Navbar() {
                     <DropdownMenuItem>
                       <Link href="/profile">Profile</Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={()=>logout()}>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => logout()}>
+                      Logout
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>

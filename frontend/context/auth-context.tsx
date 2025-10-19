@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export interface UserType {
   id: number;
@@ -61,6 +62,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
+    Cookies.remove('authToken');
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
