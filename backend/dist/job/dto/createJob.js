@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateJobDto = void 0;
 const class_validator_1 = require("class-validator");
-const client_1 = require("@prisma/client");
+const prisma_1 = require("../../../generated/prisma");
 class CreateJobDto {
     title;
     description;
@@ -65,7 +65,7 @@ __decorate([
 ], CreateJobDto.prototype, "salaryMax", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.JobType),
+    (0, class_validator_1.IsEnum)(prisma_1.JobType),
     __metadata("design:type", String)
 ], CreateJobDto.prototype, "type", void 0);
 __decorate([

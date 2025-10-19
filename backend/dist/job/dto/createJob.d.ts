@@ -1,4 +1,4 @@
-import { JobType } from '@prisma/client';
+import { JobType } from '../../../generated/prisma';
 export declare class CreateJobDto {
     title: string;
     description: string;
