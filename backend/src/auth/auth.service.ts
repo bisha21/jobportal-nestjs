@@ -17,7 +17,7 @@ import { ResetPasswordDto } from './dto/resetpassword.dto';
 import { CreateOAuthUserDto } from './dto/createoauth.dto';
 import { UpdateUserDto } from './dto/updateUserDto';
 import { DatabaseService } from 'src/database/database.service';
-import { RedisService } from 'src/redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class AuthService {
