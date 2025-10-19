@@ -12,7 +12,6 @@ import {
 } from './ui/dropdown-menu';
 import { Button } from './ui/button';
 import { useTheme } from 'next-themes';
-import useModalContext from '@/hooks/usemodal';
 import { useAuth } from '@/context/auth-context';
 // navLinks.ts
 export const PUBLIC_NAV_LINKS = [
@@ -25,7 +24,6 @@ export const PUBLIC_NAV_LINKS = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setTheme } = useTheme();
-  const { openModal } = useModalContext();
   const { isAuthenticated, user, logout } = useAuth();
 
   const showProtectedLinks = !isAuthenticated || user?.role === 'JOBSEEKER';

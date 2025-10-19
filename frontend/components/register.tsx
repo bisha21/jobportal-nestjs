@@ -9,7 +9,7 @@ import FormInput from './reusable/form-input';
 import { useRegisterMutation } from '@/services/mutations/auth';
 
 export default function RegistrationForm() {
-  const { mutate: register, isPending } = useRegisterMutation();
+  const { mutate: register } = useRegisterMutation();
   const form = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {

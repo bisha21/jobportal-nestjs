@@ -50,7 +50,7 @@ export function PartnersSection() {
 
           <div>
             <h2 className="text-3xl font-bold text-foreground mb-6 text-balance">
-              We're Only Working With The Best
+              We&apos;re Only Working With The Best
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-8">
               We partner with industry-leading companies to provide you with the

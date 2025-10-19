@@ -1,4 +1,3 @@
-import { DashboardLayout } from '@/components/dashboard-layout';
 import {
   Card,
   CardContent,
@@ -11,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Settings, Mail, Bell, Shield, Database } from 'lucide-react';
+import { Settings, Mail, Bell,  Database } from 'lucide-react';
 
 export default function SettingsPage() {
 

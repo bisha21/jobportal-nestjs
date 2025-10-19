@@ -11,7 +11,7 @@ import { DataTable } from '@/components/reusable/data-table';
 export default function CompanyTable() {
   const { openModal } = useModalContext();
   const { user } = useAuth();
-  const { data, isFetching } = useCompanyQuery({ ownerId: user?.id });
+  const { data} = useCompanyQuery({ ownerId: user?.id });
 
   return (
     <div>

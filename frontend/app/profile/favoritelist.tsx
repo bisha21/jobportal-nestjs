@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { FavoriteJob, useFavoriteJobs } from '@/services/query/favorite.query';
-import { Loader2, Trash2 } from 'lucide-react';
+import { Loader2} from 'lucide-react';
 import { ActionButton } from '@/components/reusable/action-btn';
 
 export default function FavoriteTable() {

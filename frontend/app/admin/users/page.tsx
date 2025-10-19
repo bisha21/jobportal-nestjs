@@ -5,7 +5,7 @@ import { useUserQuery } from '@/services/query/user.query';
 import React from 'react';
 
 function User() {
-  const { data, isFetching } = useUserQuery();
+  const { data } = useUserQuery();
   console.log('hahah', data);
 
   return (
@@ -13,7 +13,6 @@ function User() {
       <DataTable
         columns={userColumns}
         data={data || []}
-        // isLoading={isFetching}
         functions={{
           search: {
             name: 'fullName',

@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginInput, loginSchema } from '@/schemas/login';
@@ -57,7 +56,7 @@ export default function LoginForm() {
             designed login form. Effortlessly access your account.
           </p>
           <p className="text-[15px] mt-6 lg:mt-12 text-slate-600 dark:text-gray-400">
-            Don't have an account{' '}
+            Don&apos;t have an account{' '}
             <Link
               href="/register"
               className="text-blue-600 font-medium hover:underline ml-1"

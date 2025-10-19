@@ -7,6 +7,7 @@ import { JobList } from '@/components/jobs/job-list';
 import { Job, useJobs } from '@/services/query/jobs.query';
 
 export default function JobsPage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [filters, setFilters] = useState<any>({});
   const { data: jobs, isLoading, error } = useJobs<Job[]>(filters);
 
@@ -14,7 +15,7 @@ export default function JobsPage() {
     jobs?.length||0 > 0
       ? Array.from(
           new Map(
-            jobs.map((job) => [
+            jobs?.map((job) => [
               job.category.id,
               { id: job.category.id, categoryName: job.category.categoryName },
             ])

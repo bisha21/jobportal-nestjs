@@ -9,7 +9,7 @@ import { getCategoryColumns } from './column';
 
 export default function CategoryTable() {
   const { openModal } = useModalContext();
-  const { data, isFetching } = useCategoryQuery();
+  const { data } = useCategoryQuery();
 
   return (
     <div>

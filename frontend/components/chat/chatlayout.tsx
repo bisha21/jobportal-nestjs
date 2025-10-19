@@ -30,43 +30,54 @@ interface ChatLayoutProps {
 
 export function ChatLayout({
   conversationId,
-  receiverId,
   receiverName,
   receiverProfile,
   compact = false,
 }: ChatLayoutProps) {
   const { user } = useAuth();
   const { socket, sendMessage, joinRoom } = useSocket();
+
   const [localMessages, setLocalMessages] = useState<MessageType[]>([]);
   const [message, setMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const loggedInUserId = user?.id || 0;
+
+  const loggedInUserId = user?.id ?? 0;
 
   const { data: messageHistory } = useMessageHistory(conversationId);
 
+  // Join room when conversationId changes
   useEffect(() => {
-    joinRoom(conversationId);
+    if (conversationId) joinRoom(conversationId);
   }, [conversationId, joinRoom]);
 
+  // Set initial message history
   useEffect(() => {
     if (messageHistory) setLocalMessages(messageHistory);
   }, [messageHistory]);
 
+  // Listen to new messages
   useEffect(() => {
-    socket?.on('newMessage', (msg: MessageType) => {
+    if (!socket) return;
+
+    const handleNewMessage = (msg: MessageType) => {
       if (msg.conversationId === conversationId) {
         setLocalMessages((prev) => [...prev, msg]);
       }
-    });
-    return () => socket?.off('newMessage');
+    };
+
+    socket.on('newMessage', handleNewMessage);
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
   }, [socket, conversationId]);
 
+  // Scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [localMessages]);
 
   const handleSendMessage = () => {
-    if (message.trim()) {
+    if (message.trim() && socket) {
       sendMessage(conversationId, message, loggedInUserId);
       setMessage('');
     }
@@ -76,8 +87,9 @@ export function ChatLayout({
     <Card
       className={`flex flex-col ${
         compact ? 'h-[500px]' : 'h-screen'
-      } bg-background border-0 rounded-lg overflow-y-scroll shadow-lg`}
+      } bg-background border-0 rounded-lg overflow-hidden shadow-lg`}
     >
+      {/* Header */}
       <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-card">
         <Avatar className="w-10 h-10">
           <AvatarImage src={receiverProfile || '/placeholder.svg'} />
@@ -91,13 +103,14 @@ export function ChatLayout({
         </div>
       </div>
 
+      {/* Message area */}
       <ScrollArea className="flex-1 p-6 bg-background">
         <div className="space-y-4">
-          {localMessages.map((msg, i) => {
+          {localMessages.map((msg) => {
             const isOwn = msg.senderId === loggedInUserId;
             return (
               <div
-                key={i}
+                key={msg.id}
                 className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
               >
                 <div
@@ -128,6 +141,7 @@ export function ChatLayout({
         </div>
       </ScrollArea>
 
+      {/* Input */}
       <div className="px-6 py-4 border-t border-border bg-card flex gap-2">
         <Input
           value={message}
