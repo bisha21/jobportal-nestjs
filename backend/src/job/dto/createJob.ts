@@ -8,7 +8,7 @@ import {
   IsEnum,
   IsDateString,
 } from 'class-validator';
-import { JobType } from '@prisma/client';
+import { JobType } from '../../../generated/prisma';
 
 export class CreateJobDto {
   @IsNotEmpty()
