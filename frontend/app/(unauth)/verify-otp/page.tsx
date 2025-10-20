@@ -15,7 +15,7 @@ import FormHeader from '@/components/reusable/form-header';
 export type VerifyOtpDto = z.infer<typeof verifyOtpSchema>;
 
 export default function VerifyOtpForm() {
-  const form = useForm<VerifyOtpDto>({
+  const form = useForm({
     resolver: zodResolver(verifyOtpSchema),
   });
 
