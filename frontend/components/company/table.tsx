@@ -9,7 +9,7 @@ import useModalContext from '@/hooks/usemodal';
 
 export default function CompanyTable() {
   const { openModal } = useModalContext();
-  const { data, isFetching } = useCompanyQuery();
+  const { data } = useCompanyQuery();
 
   return (
     <div>
