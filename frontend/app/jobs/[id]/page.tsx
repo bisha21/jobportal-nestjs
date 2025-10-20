@@ -16,11 +16,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { JobCard } from '@/components/jobs/job-card';
-import { useJob, useJobs, Job, singleJob } from '@/services/query/jobs.query';
+import { useJob, useJobs, Job,  type SingleJob } from '@/services/query/jobs.query';
 import { useApplyApplication } from '@/services/mutations/apply.mutation';
 import Link from 'next/link';
 import { useCheckApplication } from '@/services/query/application.query';
-import { useConversation } from '@/services/query/conversation';
 import useModalContext from '@/hooks/usemodal';
 import { useAuth } from '@/context/auth-context';
 import { useJobSkillQuery } from '@/services/query/jobskills.query';
@@ -28,14 +27,14 @@ import JobSkillsTable from './jobskilllist';
 
 export default function JobDetailsPage({
   params,
-  adminView = false, // 👈 default = user view
+  adminView = false, 
 }: {
   params: { id: string };
   adminView?: boolean;
 }) {
   const { id } = params;
   const jobId = Number(id);
-  const { mutate, isLoading } = useApplyApplication();
+  const { mutate,  } = useApplyApplication();
   const { data: isApplied } = useCheckApplication(jobId);
   const { openModal } = useModalContext();
   const { user } = useAuth();
@@ -44,7 +43,7 @@ export default function JobDetailsPage({
     data: job,
     isLoading: jobLoading,
     error: jobError,
-  } = useJob<singleJob>(jobId);
+  } = useJob<SingleJob>(jobId);
   const { data: skills } = useJobSkillQuery(jobId);
   console.log('our skills', skills);
 
@@ -70,8 +69,8 @@ export default function JobDetailsPage({
     <div
       className={`${
         adminView
-          ? 'max-h-[80vh] overflow-y-auto' // 👈 Admin view
-          : 'min-h-screen overflow-y-scroll' // 👈 User default
+          ? 'max-h-[80vh] overflow-y-auto' 
+          : 'min-h-screen overflow-y-scroll' 
       }`}
     >
       {/* Hero Section */}

@@ -15,7 +15,7 @@ import FormHeader from '@/components/reusable/form-header';
 export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordForm() {
-  const form = useForm<ResetPasswordDto>({
+  const form = useForm({
     resolver: zodResolver(resetPasswordSchema),
   });
 
