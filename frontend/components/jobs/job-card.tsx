@@ -3,6 +3,7 @@ import { Briefcase, Clock, DollarSign, MapPin, Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface JobCardProps {
   job: {
@@ -18,13 +19,14 @@ interface JobCardProps {
   };
 }
 
-
-
 export function JobCard({ job }: JobCardProps) {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">
-        <div className="flex items-start justify-between gap-4">
+        <Link
+          href={`/jobs/${job.id}`}
+          className="flex items-start justify-between gap-4"
+        >
           <div className="flex gap-4 flex-1">
             {/* Company Logo */}
             <Image
@@ -85,11 +87,15 @@ export function JobCard({ job }: JobCardProps) {
             >
               <Bookmark className="h-5 w-5" />
             </Button>
-            <Button className="bg-teal-600 hover:bg-teal-700 text-white">
-              Job Details
+            <Button
+              asChild
+              variant="default"
+              className="bg-teal-600 hover:bg-blue-700 text-white transition-colors"
+            >
+              <Link href={`/jobs/${job.id}`}>Job Details</Link>
             </Button>
           </div>
-        </div>
+        </Link>
       </CardContent>
     </Card>
   );
