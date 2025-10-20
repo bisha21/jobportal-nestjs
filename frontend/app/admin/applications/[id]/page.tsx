@@ -25,7 +25,9 @@ export default function AdminApplicationDetailPage({
 }) {
   const id = params.id; // ✅ get id from route params
 
-  const { data: application, isLoading } = useSingleApplicationQuery(Number(id));
+  const { data: application, isLoading } = useSingleApplicationQuery(
+    Number(id)
+  );
 
   // ✅ handle loading state
   if (isLoading) return <p className="p-4">Loading application details...</p>;
@@ -94,7 +96,7 @@ export default function AdminApplicationDetailPage({
                 <AvatarFallback>
                   {application.user.fullName
                     .split(' ')
-                    .map((n) => n[0])
+                    .map((n: string[]) => n[0])
                     .join('')}
                 </AvatarFallback>
               </Avatar>
