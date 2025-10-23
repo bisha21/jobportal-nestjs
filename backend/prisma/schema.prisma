@@ -42,7 +42,6 @@ model User {
   role          Role          @default(JOBSEEKER)
   otp Int? 
   otpExpiry DateTime?
-  
   companies     Company[]
   categories Category[]
   applications  Application[]
@@ -51,12 +50,9 @@ model User {
   notifications Notification[]
   sentMessages    Message[]      @relation("SentMessages")
   receivedMessages Message[]     @relation("ReceivedMessages")
-    
-        conversations Conversation[] @relation("ConversationParticipants")
-
-
-
-
+conversations Conversation[] @relation("ConversationParticipants")
+subscription Subscription?
+payment  Payment[]
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }
@@ -207,4 +203,46 @@ model Message {
   receiver       User         @relation("ReceivedMessages", fields: [receiverId], references: [id])
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+}
+
+
+model SubscriptionPlan{
+  id Int @id @default(autoincrement())
+  name String @unique
+  description String?
+  price Float
+  duration Int
+  features Json?
+  subscriptions Subscription[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  planId Int
+  startDate DateTime @default(now())
+  endDate DateTime
+  status String @default("ACTIVE")
+  user  User  @relation(fields: [userId], references: [id])
+  plan  SubscriptionPlan @relation(fields: [planId], references: [id])
+  Payment Payment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+   id Int @id @default(autoincrement())
+    subscriptionId Int
+    userId Int 
+    amount Float
+    currency String @default("Npr")
+    gateway String @default("khalti")
+    status String @default("PENDING")
+    transactionId String? @unique
+    subscription Subscription @relation(fields: [subscriptionId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
