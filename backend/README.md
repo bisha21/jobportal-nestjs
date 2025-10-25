@@ -137,7 +137,7 @@ This allows users to access advanced features such as premium job postings, unli
 * **Automatic Renewal & Expiration** — Managed using **BullMQ** background jobs  
 * **Redis Caching** — For fast subscription validation and performance  
 * **Access Control** — Restrict premium-only features via guards/decorators  
-* **Payment Integration (Optional)** — Supports **Stripe**, **PayPal**, or manual plans  
+* **Payment Integration (Optional)** — Supports **Khalti** or manual plans  
 
 ### 🔄 Subscription Flow
 
@@ -149,7 +149,7 @@ This allows users to access advanced features such as premium job postings, unli
 
 ### 🧠 Future Enhancements
 
-* Integration with **Stripe** for recurring billing and invoices  
+* Integration with **Khalti** for recurring billing and invoices  
 * **Admin Dashboard** to monitor active subscribers  
 * **Analytics** for plan popularity and revenue tracking  
 
