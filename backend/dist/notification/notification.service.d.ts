@@ -10,18 +10,18 @@ export declare class NotificationService {
     }>;
     findAll(userId: number): Promise<{
         type: string | null;
-        userId: number;
         message: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
     }[]>;
     delete(id: number): Promise<{
         type: string | null;
-        userId: number;
         message: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        userId: number;
     }>;
 }
