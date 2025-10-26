@@ -6,47 +6,47 @@ export declare class JobskillController {
     constructor(jobskillService: JobskillService);
     createJobSkill(dto: CreateJobSkillsDto): Promise<({
         jobSkills: {
-            jobId: number;
-            skill: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            jobId: number;
+            skill: string;
         }[];
     } & {
         description: string;
         type: import("../../generated/prisma").$Enums.JobType;
         title: string;
         id: number;
-        position: string;
+        createdAt: Date;
+        updatedAt: Date;
         location: string | null;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;
         deadline: Date | null;
         companyId: number;
         categoryId: number;
-        createdAt: Date;
-        updatedAt: Date;
     }) | null>;
     getJobSkills(jobId: number): Promise<{
-        jobId: number;
-        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        jobId: number;
+        skill: string;
     }[]>;
     updateJobSkill(skillId: number, updateJobSkillDto: UpdateJobSkillDto): Promise<{
-        jobId: number;
-        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        jobId: number;
+        skill: string;
     }>;
     deleteJobSkill(skillId: number): Promise<{
-        jobId: number;
-        skill: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        jobId: number;
+        skill: string;
     }>;
 }

@@ -16,8 +16,8 @@ export declare class JobController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        position: string;
         location: string | null;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;
@@ -32,8 +32,8 @@ export declare class JobController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        position: string;
         location: string | null;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;
@@ -48,8 +48,8 @@ export declare class JobController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        position: string;
         location: string | null;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;
@@ -64,8 +64,8 @@ export declare class JobController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        position: string;
         location: string | null;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;
@@ -80,8 +80,8 @@ export declare class JobController {
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        position: string;
         location: string | null;
+        position: string;
         experience: string;
         salaryMin: number;
         salaryMax: number;

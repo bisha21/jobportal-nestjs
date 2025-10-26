@@ -16,6 +16,11 @@ enum Role {
   ADMIN
 }
 
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
 enum JobType {
   FULLTIME
   PARTTIME
@@ -27,6 +32,12 @@ enum ApplicationStatus {
   PENDING
   REJECTED 
   APPROVED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
 }
 
 // User Model
@@ -224,7 +235,7 @@ model Subscription {
   planId Int
   startDate DateTime @default(now())
   endDate DateTime
-  status String @default("ACTIVE")
+  status SubscriptionStatus @default(INACTIVE)
   user  User  @relation(fields: [userId], references: [id])
   plan  SubscriptionPlan @relation(fields: [planId], references: [id])
   Payment Payment[]
@@ -239,7 +250,7 @@ model Payment {
     amount Float
     currency String @default("Npr")
     gateway String @default("khalti")
-    status String @default("PENDING")
+    status  PaymentStatus @default(PENDING)
     transactionId String? @unique
     subscription Subscription @relation(fields: [subscriptionId], references: [id])
     user User @relation(fields: [userId], references: [id])

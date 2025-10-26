@@ -23,11 +23,11 @@ export declare class NotificationGateway implements OnGatewayConnection, OnGatew
         success: boolean;
         data: {
             type: string | null;
-            userId: number;
             message: string;
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            userId: number;
         }[];
         error?: undefined;
     } | {
