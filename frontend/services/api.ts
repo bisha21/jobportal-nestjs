@@ -93,6 +93,8 @@ export const apiRequest = async <T = any>(
   options: AxiosRequestConfig = {}
 ): Promise<T> => {
   try {
+    const fullUrl = `${apiClient.defaults.baseURL}/${url}`;
+    console.log('🌐 API Request URL:', fullUrl, options.params || '');
     const response = await apiClient({
       url,
       ...options,

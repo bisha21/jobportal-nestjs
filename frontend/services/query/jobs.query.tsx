@@ -58,16 +58,21 @@ export interface SearchJobParams {
   include?: string;
 }
 
-/**
- * Generic hook to fetch jobs with query parameters
- */
-export const useJobs = <T = Job[]>(params: SearchJobParams): UseQueryResult<T, unknown> => {
-  // Clean out undefined, null, empty strings, or empty arrays
-  const cleanedParams = Object.fromEntries(
-    Object.entries(params).filter(([_, v]) => {
-      if (Array.isArray(v)) return v.length > 0;
-      return v !== undefined && v !== '' && v !== null;
-    })
+export const useJobs = <T = Job[],>(
+  params: SearchJobParams
+): UseQueryResult<T, unknown> => {
+  const cleanedParams: Record<string, any> = {
+    ...params,
+    salaryMin: params.salaryRange?.[0],
+    salaryMax: params.salaryRange?.[1],
+  };
+  delete cleanedParams.salaryRange; // remove array, axios cannot handle it
+
+  // remove undefined or empty values
+  Object.keys(cleanedParams).forEach(
+    (key) =>
+      (cleanedParams[key] === undefined || cleanedParams[key] === '') &&
+      delete cleanedParams[key]
   );
 
   return useQuery<T>({
@@ -80,10 +85,9 @@ export const useJobs = <T = Job[]>(params: SearchJobParams): UseQueryResult<T, u
   });
 };
 
-/**
- * Hook to fetch single job by ID
- */
-export const useJob = <T = SingleJob>(id: number): UseQueryResult<T, unknown> =>
+export const useJob = <T = SingleJob,>(
+  id: number
+): UseQueryResult<T, unknown> =>
   useQuery<T>({
     queryKey: ['job', id],
     queryFn: async () =>

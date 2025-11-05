@@ -8,11 +8,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
+import { Category, Company } from '@/services/query/jobs.query';
 
 interface JobFiltersProps {
-  onFilterChange: (query: string) => void;
-  categories: Array<{ id: number; categoryName: string }>;
-  companies: Array<{ id: number; name: string }>;
+  onFilterChange: (filters: Record<string, any>) => void;
+  categories: Category[];
+  companies: Company[];
 }
 
 export function JobFilters({
@@ -30,54 +31,43 @@ export function JobFilters({
 
   const [showMoreCategories, setShowMoreCategories] = useState(false);
 
-  const buildQuery = (newFilters: typeof filters) => {
-    const params = new URLSearchParams();
-
-    if (newFilters.companyId)
-      params.set('companyId', newFilters.companyId.toString());
-    if (newFilters.categoryId)
-      params.set('categoryId', newFilters.categoryId.toString());
-    if (newFilters.title) params.set('title', newFilters.title);
-    if (newFilters.salaryRange[0] > 0)
-      params.set('salaryMin', newFilters.salaryRange[0].toString());
-    if (newFilters.salaryRange[1] < 99999)
-      params.set('salaryMax', newFilters.salaryRange[1].toString());
-    if (newFilters.experience) params.set('experience', newFilters.experience);
-
-    return params.toString();
-  };
-
-  const handleCategoryChange = (id: number) => {
-    const updated = filters.categoryId === id ? 0 : id;
-    const newFilters = { ...filters, categoryId: updated };
+  const handleChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
-    onFilterChange(buildQuery(newFilters));
+    const apiFilters = {
+      ...newFilters,
+      salaryMin: newFilters.salaryRange[0],
+      salaryMax: newFilters.salaryRange[1],
+    };
+    delete apiFilters.salaryRange;
+    onFilterChange(apiFilters);
   };
 
-  const handleCompanyChange = (id: number) => {
-    const updated = filters.companyId === id ? 0 : id;
-    const newFilters = { ...filters, companyId: updated };
-    setFilters(newFilters);
-    onFilterChange(buildQuery(newFilters));
-  };
+  const handleCategoryChange = (id: number) =>
+    handleChange({
+      ...filters,
+      categoryId: filters.categoryId === id ? 0 : id,
+    });
 
-  const handleTitleChange = (value: string) => {
-    const newFilters = { ...filters, title: value };
-    setFilters(newFilters);
-    onFilterChange(buildQuery(newFilters));
-  };
+  const handleCompanyChange = (id: number) =>
+    handleChange({ ...filters, companyId: filters.companyId === id ? 0 : id });
 
-  const handleSalaryChange = (value: number[]) => {
-    const newFilters = { ...filters, salaryRange: value };
-    setFilters(newFilters);
-    onFilterChange(buildQuery(newFilters));
-  };
+  const handleTitleChange = (title: string) =>
+    handleChange({ ...filters, title });
 
-  const handleExperienceChange = (value: string) => {
-    const newFilters = { ...filters, experience: value };
-    setFilters(newFilters);
-    onFilterChange(buildQuery(newFilters));
-  };
+  const handleExperienceChange = (exp: string) =>
+    handleChange({ ...filters, experience: exp });
+
+  const handleSalaryChange = (salaryRange: number[]) =>
+    handleChange({ ...filters, salaryRange });
+
+  const handleReset = () =>
+    handleChange({
+      title: '',
+      categoryId: 0,
+      companyId: 0,
+      experience: '',
+      salaryRange: [0, 99999],
+    });
 
   return (
     <aside className="space-y-6">
@@ -187,22 +177,7 @@ export function JobFilters({
             </div>
           </div>
 
-          {/* Reset Filters */}
-          <Button
-            onClick={() => {
-              const resetFilters = {
-                title: '',
-                categoryId: 0,
-                companyId: 0,
-                experience: '',
-                salaryRange: [0, 99999],
-              };
-              setFilters(resetFilters);
-              onFilterChange(buildQuery(resetFilters));
-            }}
-            variant="outline"
-            className="w-full"
-          >
+          <Button onClick={handleReset} variant="outline" className="w-full">
             Reset Filters
           </Button>
         </CardContent>
