@@ -24,13 +24,13 @@ export interface RequestWithUser extends Request {
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prisma: DatabaseService, // access your DB
+    private readonly prisma: DatabaseService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const authHeader = request.headers['authorization'] as string;
-    const token = authHeader?.split(' ')[1];
+    const token = authHeader?.split(' ')[1]; 
 
     if (!token) {
       throw new UnauthorizedException('Unauthorized: No token provided');

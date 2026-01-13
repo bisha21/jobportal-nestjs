@@ -45,7 +45,7 @@ export default function LoginForm() {
     });
   };
   const handleGoogleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}auth/google/login`;
+    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google/login`;
   };
 
   return (

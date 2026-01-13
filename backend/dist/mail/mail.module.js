@@ -10,6 +10,7 @@ exports.MailModule = void 0;
 const common_1 = require("@nestjs/common");
 const mail_service_1 = require("./mail.service");
 const bullmq_1 = require("@nestjs/bullmq");
+const mail_processer_1 = require("./mail.processer");
 let MailModule = class MailModule {
 };
 exports.MailModule = MailModule;
@@ -20,7 +21,7 @@ exports.MailModule = MailModule = __decorate([
                 name: 'mail-queue',
             }),
         ],
-        providers: [mail_service_1.MailService],
+        providers: [mail_service_1.MailService, mail_processer_1.MailProcessor],
         exports: [mail_service_1.MailService],
     })
 ], MailModule);

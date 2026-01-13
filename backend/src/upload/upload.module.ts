@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { UploadController } from './upload.controller';
 import { CloudinaryService } from 'src/cloudinary/cloudinary/cloudinary.service';
@@ -12,6 +13,7 @@ import { CompanyModule } from 'src/company/company.module';
   imports: [
     DatabaseModule,
     MailModule,
+
     CompanyModule,
     JwtModule.register({
       secret: JwtConstants.secret,

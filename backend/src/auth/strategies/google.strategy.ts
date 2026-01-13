@@ -14,7 +14,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     @Inject(googleAuthConfig.KEY)
     private readonly googleConfiguration: ConfigType<typeof googleAuthConfig>,
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService, // ⬅️ inject JwtService
+    private readonly jwtService: JwtService,
   ) {
     super({
       clientID: googleConfiguration.clientId!,

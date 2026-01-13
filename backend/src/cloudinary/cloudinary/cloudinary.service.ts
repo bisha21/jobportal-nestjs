@@ -1,5 +1,5 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { rejects } from 'assert';
 import { v2 as cloudinary } from 'cloudinary';
 import * as streamifier from 'streamifier';
 

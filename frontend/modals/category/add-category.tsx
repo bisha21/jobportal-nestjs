@@ -36,7 +36,7 @@ export default function CreateCategoryForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 w-full mx-auto bg-card border border-border p-6 rounded-lg shadow-md"
+        className="space-y-4 w-full mx-auto  border border-border  rounded-lg shadow-md"
       >
         <h2 className="text-2xl font-bold text-center mb-6">Create Category</h2>
 

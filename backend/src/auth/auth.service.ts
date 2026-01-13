@@ -122,13 +122,10 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    // generate OTP and expiry
     const otp = generateOtp();
     await this.redis.set(`otp:${email}`, otp, 300);
 
-    // save OTP in DB
 
-    // send email with OTP
     await this.mailService.sendMail({
       email,
       subject: 'Password Reset OTP',
@@ -245,7 +242,6 @@ export class AuthService {
     });
   }
   async findUserByEmail(email: string) {
-    // ✅ Correct way:
     const cachedData = await this.redis.get(`user:${email}`);
     if (cachedData) {
       return JSON.parse(cachedData) as ReturnType<

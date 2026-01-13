@@ -1,5 +1,6 @@
-import { VerifyOtpDto } from './verifyotp.dto';
-export declare class ResetPasswordDto extends VerifyOtpDto {
+export declare class ResetPasswordDto {
+    email: string;
+    otp: number;
     password: string;
     confirmPassword: string;
 }
