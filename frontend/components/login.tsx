@@ -10,9 +10,11 @@ import FormInput from './reusable/form-input';
 import Link from 'next/link';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
+import { useAuth } from '@/context/auth-context';
 
 export default function LoginForm() {
   const { mutate: login, isPending } = useLoginMutation();
+  const { login: authLogin } = useAuth();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -24,9 +26,7 @@ export default function LoginForm() {
   const onSubmit = (values: LoginInput) => {
     login(values, {
       onSuccess: (data) => {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-
+        authLogin(data.user, data.token);
         Cookies.set('authToken', data.token, {
           expires: 1,
           path: '/',
@@ -56,7 +56,7 @@ export default function LoginForm() {
           <h1 className="text-4xl font-semibold text-gray-800 mb-6">
             Login to Job Portal
           </h1>
-
+          P
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}

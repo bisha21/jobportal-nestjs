@@ -23,12 +23,16 @@ export class CategoryService {
     if (category) {
       throw new ConflictException('Category already exist');
     }
-    return this.prisma.category.create({
+
+    const created = this.prisma.category.create({
       data: {
         categoryName: createCategoryDto.categoryName,
         userId: userId,
       },
     });
+    await this.redis.del('categories:all');
+
+    return created;
   }
 
   async getCategories() {

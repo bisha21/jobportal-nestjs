@@ -15,13 +15,13 @@ export declare class JobskillService {
             skill: string;
         }[];
     } & {
-        description: string;
         type: import("../../generated/prisma").$Enums.JobType;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        description: string;
         location: string | null;
+        title: string;
         position: string;
         experience: string;
         salaryMin: number;

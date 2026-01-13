@@ -10,11 +10,11 @@ export declare class CompanyService {
     constructor(prisma: DatabaseService, redis: RedisService);
     private validateOwnership;
     createCompany(createCompanyDto: CreateCompanyDto, ownerId: number): Promise<{
-        description: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        description: string;
         location: string;
         website: string | null;
         industry: string;
@@ -23,11 +23,11 @@ export declare class CompanyService {
         ownerId: number;
     }>;
     getAllCompanies(user: User, query: SearchCompanyDto): Promise<{
-        description: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        description: string;
         location: string;
         website: string | null;
         industry: string;
@@ -36,11 +36,11 @@ export declare class CompanyService {
         ownerId: number;
     }[]>;
     getCompanyById(companyId: number): Promise<{
-        description: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        description: string;
         location: string;
         website: string | null;
         industry: string;
@@ -49,11 +49,11 @@ export declare class CompanyService {
         ownerId: number;
     }>;
     deleteComapnyId(companyId: number, ownerId: number): Promise<{
-        description: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        description: string;
         location: string;
         website: string | null;
         industry: string;
@@ -62,11 +62,11 @@ export declare class CompanyService {
         ownerId: number;
     }>;
     updateCompany(companyId: number, updateCompanyDto: UpdateCompanyDto, ownerId: number): Promise<{
-        description: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        description: string;
         location: string;
         website: string | null;
         industry: string;
@@ -75,11 +75,11 @@ export declare class CompanyService {
         ownerId: number;
     }>;
     updateCompanyLogo(companyId: number, logoUrl: string): Promise<{
-        description: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
         name: string;
+        description: string;
         location: string;
         website: string | null;
         industry: string;

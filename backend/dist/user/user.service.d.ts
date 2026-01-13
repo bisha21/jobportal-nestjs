@@ -5,25 +5,25 @@ export declare class UserService {
     private readonly redis;
     constructor(prisma: DatabaseService, redis: RedisService);
     findAllUsers(): Promise<{
-        fullName: string;
+        id: number;
         email: string;
+        fullName: string;
         resume: string | null;
         profile: string | null;
         phoneNumber: string;
-        id: number;
         role: import("../../generated/prisma").$Enums.Role;
     }[]>;
     findUserById(id: number): Promise<{
-        fullName: string;
+        id: number;
         email: string;
+        fullName: string;
         password: string;
         resume: string | null;
         profile: string | null;
         phoneNumber: string;
         bio: string | null;
-        otp: number | null;
-        id: number;
         role: import("../../generated/prisma").$Enums.Role;
+        otp: number | null;
         otpExpiry: Date | null;
         createdAt: Date;
         updatedAt: Date;

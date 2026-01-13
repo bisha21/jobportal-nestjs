@@ -9,13 +9,13 @@ export declare class JobService {
     private readonly logger;
     constructor(prisma: DatabaseService, redis: RedisService);
     createJob(createJobDto: CreateJobDto): Promise<{
-        description: string;
         type: import("../../generated/prisma").$Enums.JobType;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        description: string;
         location: string | null;
+        title: string;
         position: string;
         experience: string;
         salaryMin: number;
@@ -25,13 +25,13 @@ export declare class JobService {
         categoryId: number;
     }>;
     getAllJobs(query: SearchJobDto): Promise<{
-        description: string;
         type: import("../../generated/prisma").$Enums.JobType;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        description: string;
         location: string | null;
+        title: string;
         position: string;
         experience: string;
         salaryMin: number;
@@ -41,13 +41,13 @@ export declare class JobService {
         categoryId: number;
     }[]>;
     getSingleJob(jobId: number): Promise<{
-        description: string;
         type: import("../../generated/prisma").$Enums.JobType;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        description: string;
         location: string | null;
+        title: string;
         position: string;
         experience: string;
         salaryMin: number;
@@ -57,13 +57,13 @@ export declare class JobService {
         categoryId: number;
     } | null>;
     updateJob(jobId: number, updateJobDto: updateJobDto): Promise<{
-        description: string;
         type: import("../../generated/prisma").$Enums.JobType;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        description: string;
         location: string | null;
+        title: string;
         position: string;
         experience: string;
         salaryMin: number;
@@ -73,13 +73,13 @@ export declare class JobService {
         categoryId: number;
     }>;
     deleteJob(jobId: number): Promise<{
-        description: string;
         type: import("../../generated/prisma").$Enums.JobType;
-        title: string;
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        description: string;
         location: string | null;
+        title: string;
         position: string;
         experience: string;
         salaryMin: number;

@@ -184,13 +184,15 @@ export class DashboardService {
 
     const grouped = await this.prisma.application.groupBy({
       by: ['status'],
-      _count: { id: true },
+      _count: {
+        _all: true,
+      },
       where: whereFilter,
     });
 
     const formatted = grouped.reduce(
       (acc, cur) => {
-        acc[cur.status] = Number(cur._count.id);
+        acc[cur.status] = Number(cur._count._all);
         return acc;
       },
       {} as Record<string, number>,

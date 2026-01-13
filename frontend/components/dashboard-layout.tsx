@@ -112,13 +112,13 @@ export function DashboardLayout({
 
   const visibleNavItems = navItems.filter((item) => !item.adminOnly || isAdmin);
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase();
-  };
+  // const getInitials = (name: string) => {
+  //   return name
+  //     .split(' ')
+  //     .map((n) => n[0])
+  //     .join('')
+  //     .toUpperCase();
+  // };
 
   return (
     <div className="flex h-screen bg-background">
@@ -171,7 +171,7 @@ export function DashboardLayout({
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/placeholder.svg" />
-                  <AvatarFallback>{getInitials(userName)}</AvatarFallback>
+                  <AvatarFallback>HI</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col items-start text-sm">
                   <span className="font-medium">{userName}</span>
