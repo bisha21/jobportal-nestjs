@@ -1,5 +1,8 @@
 'use client';
 
+import { useState } from 'react';
+import { useTheme } from 'next-themes';
+import { useAuth } from '@/context/auth-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,14 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, Sun, Moon, LogOut } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import Link from 'next/link';
-
-interface NavbarProps {
-  userName: string;
-  userEmail: string;
-  userAvatar?: string;
-}
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,44 +26,64 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useState } from 'react';
-import { useAuth } from '@/context/auth-context';
 
-export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
+export function Navbar() {
+  const { user, logout } = useAuth();
   const { setTheme } = useTheme();
-  const [open, setOpen] = useState<boolean>(false);
-  const { logout } = useAuth();
+  const [open, setOpen] = useState(false);
 
-  const getInitials = (name: string) => {
-    return name
+  const getInitials = (name: string) =>
+    name
       .split(' ')
       .map((n) => n[0])
       .join('')
       .toUpperCase();
-  };
+
+  if (!user) {
+    return (
+      <nav className="border-b bg-card -mt-6 -ml-7">
+        <div className="flex h-24 items-center justify-between px-6">
+          <div className="flex-1">My App</div>
+          <Link href="/login">
+            <Button>Login</Button>
+          </Link>
+        </div>
+      </nav>
+    );
+  }
+
+  const userDisplayName =
+    'name' in user &&
+    typeof user.name === 'string' &&
+    user.name.trim().length > 0
+      ? user.name
+      : user.email;
 
   return (
     <nav className="border-b bg-card -mt-6 -ml-7">
       <div className="flex h-24 items-center justify-between px-6">
-        {/* Left side - can add logo or title here if needed */}
-        <div className="flex-1" />
+        <div className="flex-1">My App</div>
 
-        {/* Right side - User info and actions */}
         <div className="flex items-center gap-3">
-          {/* User Avatar and Name */}
+          {/* Avatar */}
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={userAvatar || '/placeholder.svg'} />
+              <AvatarImage
+                src={
+                  (user as { avatarUrl?: string }).avatarUrl ||
+                  '/placeholder.svg'
+                }
+              />
               <AvatarFallback className="bg-primary text-primary-foreground">
-                {getInitials(userName)}
+                {getInitials(userDisplayName)}
               </AvatarFallback>
             </Avatar>
             <span className="text-sm font-medium text-foreground">
-              {userName}
+              {userDisplayName}
             </span>
           </div>
 
-          {/* Profile Dropdown */}
+          {/* User dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -79,9 +95,9 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <div className="flex flex-col">
-                  <span className="font-medium">{userName}</span>
+                  <span className="font-medium">{userDisplayName}</span>
                   <span className="text-xs text-muted-foreground">
-                    {userEmail}
+                    {user.email}
                   </span>
                 </div>
               </DropdownMenuItem>
@@ -93,6 +109,7 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* Theme toggle */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -125,7 +142,6 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
                 <LogOut className="h-5 w-5" />
               </Button>
             </AlertDialogTrigger>
-
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
@@ -133,7 +149,6 @@ export function Navbar({ userName, userEmail, userAvatar }: NavbarProps) {
                   Are you sure you want to log out from your account?
                 </AlertDialogDescription>
               </AlertDialogHeader>
-
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction

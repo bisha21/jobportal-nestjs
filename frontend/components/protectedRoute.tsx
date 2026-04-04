@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 type UserRole = 'ADMIN' | 'EMPLOYEE' | 'JOBSEEKER' | 'PUBLIC';
 
@@ -17,34 +17,46 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
 
-    // Not logged in
+    // ✅ PUBLIC route → allow everyone (IMPORTANT FIX)
+    if (allowedRoles.includes('PUBLIC')) return;
+
+    // ❌ Not logged in
     if (!user) {
-      if (!allowedRoles.includes('PUBLIC')) {
-        router.replace('/login');
-      }
-      setChecked(true);
+      router.replace('/login');
       return;
     }
 
-    // Logged in but unauthorized
+    // ❌ Logged in but not allowed
     if (!allowedRoles.includes(user.role as UserRole)) {
-      router.replace('/');
-      setChecked(true);
+      router.replace('/'); // safe now (won’t loop)
       return;
     }
-
-    // Authorized
-    setChecked(true);
   }, [user, isLoading, allowedRoles, router]);
 
-  if (isLoading || !checked) {
+  // ⏳ Loading state
+  if (isLoading) {
     return <p className="text-center py-10">Loading...</p>;
   }
 
+  // ✅ PUBLIC → render directly
+  if (allowedRoles.includes('PUBLIC')) {
+    return <>{children}</>;
+  }
+
+  // ❌ Not logged in → wait for redirect
+  if (!user) {
+    return null;
+  }
+
+  // ❌ Unauthorized → wait for redirect
+  if (!allowedRoles.includes(user.role as UserRole)) {
+    return null;
+  }
+
+  // ✅ Authorized
   return <>{children}</>;
 }

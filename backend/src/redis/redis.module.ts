@@ -10,9 +10,9 @@ import { RedisService } from './redis.service';
       provide: 'REDIS_CLIENT',
       useFactory: async () => {
         const client = new Redis({
-          host: 'redis-13412.c232.us-east-1-2.ec2.redns.redis-cloud.com',
-          port: 13412,
-          password: 'qdyb1BwpdrIbNyzK0BgL6lI5OETH3Mpf',
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
+          password: process.env.REDIS_PASSWORD,
         });
 
         const logger = new Logger('RedisModule');

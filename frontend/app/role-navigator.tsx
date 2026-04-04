@@ -1,26 +1,33 @@
-"use client";
-import { SocketProvider } from "@/context/socket-context";
-import { useAuth } from "@/context/auth-context";
-import Navbar from "@/components/navbar";
+'use client';
 
-export function LayoutWrapper({ children }: { children: React.ReactNode }) {
+import { ReactNode } from 'react';
+import { SocketProvider } from '@/context/socket-context';
+import { useAuth } from '@/context/auth-context';
+import Navbar from '@/components/navbar';
+
+const NavbarWithProps = Navbar as React.ComponentType<{
+  userName?: string;
+  userEmail?: string;
+  userAvatar?: string;
+}>;
+
+export function LayoutWrapper({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
-
-  // Show navbar for public pages and jobseekers
-  const showNavbar = !isLoading && (!user || user.role === 'JOBSEEKER');
 
   if (isLoading) {
     return <p className="text-center py-10">Loading...</p>;
   }
 
+  // Show navbar for all logged in users (adjust as needed)
+  const showNavbar = !!user;
+
   return (
     <>
-      {showNavbar && <Navbar/>}
-      {user && user.role !== 'JOBSEEKER' ? (
-        <SocketProvider>{children}</SocketProvider>
-      ) : (
-        <>{children}</>
+      {showNavbar && user && (
+        <NavbarWithProps userName={user.email} userEmail={user.email} />
       )}
+
+      {user ? <SocketProvider>{children}</SocketProvider> : <>{children}</>}
     </>
   );
 }

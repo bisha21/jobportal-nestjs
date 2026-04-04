@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import  {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface DecodedToken {
   role?: 'ADMIN' | 'EMPLOYEE' | 'JOBSEEKER';
@@ -8,9 +8,8 @@ interface DecodedToken {
 }
 
 export function middleware(req: NextRequest) {
-  // ✅ Read JWT token from cookies (not localStorage)
   const token = req.cookies.get('authToken')?.value;
-  const url = req.nextUrl.clone();
+  const { pathname } = req.nextUrl;
 
   const publicPaths = [
     '/',
@@ -23,55 +22,54 @@ export function middleware(req: NextRequest) {
     '/verify-otp',
   ];
 
-  // ✅ Allow access to public routes
-  if (publicPaths.some((path) => url.pathname.startsWith(path))) {
+  const isPublic = publicPaths.some(
+    (path) => pathname === path || pathname.startsWith(path + '/'),
+  );
+
+  if (isPublic) {
+    // 🔥 If logged in user visits login → redirect to home
+    if (token && (pathname === '/login' || pathname === '/register')) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+
     return NextResponse.next();
   }
 
-  // 🚫 No token → redirect to login
   if (!token) {
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  // ✅ Decode the token safely
   let decoded: DecodedToken;
   try {
     decoded = jwtDecode(token);
   } catch {
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  // ⏰ Check token expiry
+  // ⏰ Expired token
   if (decoded.exp && Date.now() >= decoded.exp * 1000) {
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  const role = decoded.role;
+  const role = decoded.role || 'PUBLIC';
 
-  // 🔒 Role-based route protection
-  if (url.pathname.startsWith('/admin') && role !== 'ADMIN') {
-    url.pathname = '/unauthorized';
-    return NextResponse.redirect(url);
+  const roleAccessMap: Record<string, string[]> = {
+    ADMIN: ['/admin'],
+    EMPLOYEE: ['/employee'],
+    JOBSEEKER: ['/jobseeker'],
+  };
+
+  const allowedRoutes = roleAccessMap[role] || [];
+
+  const isAllowed = allowedRoutes.some((route) => pathname.startsWith(route));
+
+  if (!isAllowed) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
   }
 
-  if (url.pathname.startsWith('/employee') && role !== 'EMPLOYEE') {
-    url.pathname = '/unauthorized';
-    return NextResponse.redirect(url);
-  }
-
-  if (url.pathname.startsWith('/jobseeker') && role !== 'JOBSEEKER') {
-    url.pathname = '/unauthorized';
-    return NextResponse.redirect(url);
-  }
-
-  // ✅ Everything OK → continue
   return NextResponse.next();
 }
 
-// ✅ Apply middleware to all pages except static assets
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
 };
